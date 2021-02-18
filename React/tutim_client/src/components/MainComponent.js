@@ -9,6 +9,8 @@ import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Favorites from './FavoriteComponent';
 
+import HomePageComponent from './HomePageComponent';
+
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {postFavorite, deleteFavorite, fetchFavorites, postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, fetchLeaders, loginUser, logoutUser} from '../redux/ActionCreators'
@@ -123,6 +125,7 @@ class Main extends Component{
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
                 <Route path="/home" component={HomePage}/>
+                <Route path="/homepage" component={HomePageComponent}/>
                 <Route exact path="/menu" component={() => <Menu dishes={this.props.dishes}/>}/>
                 <Route path="/menu/:dishId" component={DishWithId}/>
                 <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
@@ -130,6 +133,7 @@ class Main extends Component{
                 <Route exact path="/aboutus" component={()=><About leaders={this.props.leaders}/>}/>
                 <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites?this.props.favorites:false} deleteFavorite={this.props.deleteFavorite} />} />
                 <Redirect to="/home"/>
+               
               </Switch>
             </CSSTransition>
         </TransitionGroup>  

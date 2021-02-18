@@ -38,7 +38,10 @@ function Home(props){
             }}>
         <div className="container">
             <div className="row align-items-start">
-                <div className="col-12 col-md m-1">
+                <p>
+                    Test homepage
+                </p>
+                {/* <div className="col-12 col-md m-1">
                     <RenderCard item={props.dish}
                     isLoading={props.dishesLoading}
                     errMess={props.dishesErrMess}/>
@@ -54,7 +57,7 @@ function Home(props){
                     isLoading={props.leadersLoading}
                     errMess={props.leadersErrMess}
                     />
-                </div>            
+                </div>             */}
             </div>
         </div>
         </FadeTransform>
