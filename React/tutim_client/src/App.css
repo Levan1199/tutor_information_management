@@ -29,8 +29,8 @@ address{
   color:#0f0f0f;
 }
 
-.navbar-dark {
-  background-color: #512DA8;
+.navbar-grey {
+  background-color: #8e939d16;
 }
 
 .page-enter{
@@ -53,4 +53,8 @@ address{
   opacity: 0.01;
   transform: translateX(100%);
   transition: all 300ms ease-out;
+}
+
+.black{
+  color: rgba(50, 43, 43, 0.727);
 }

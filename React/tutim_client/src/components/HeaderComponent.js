@@ -41,7 +41,7 @@ class Header extends Component{
     render(){
         return( 
             <>
-                <Navbar dark expand="md">
+                <Navbar grey expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav}/>
                         <NavbarBrand className="mr-auto" href="/">
@@ -52,36 +52,36 @@ class Header extends Component{
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/home">
-                                        <span className="fa fa-home fa-lg"></span> Home
+                                    <NavLink className="nav-link black" to="/home">
+                                        <span className="fa fa-home fa-lg"></span> Trang chủ
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink className="nav-link" to="/aboutus">
-                                        <span className="fa fa-info fa-lg"></span> About Us
+                                        <span className="fa fa-info fa-lg"></span> Các khóa học
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink className="nav-link" to="/menu">
-                                        <span className="fa fa-list fa-lg"></span> Menu
+                                        <span className="fa fa-list fa-lg"></span> Gia sư
                                     </NavLink>
                                 </NavItem>
-                                <NavItem>
+                                {/* <NavItem>
                                     <NavLink className="nav-link" to="/favorites">
                                         <span className="fa fa-heart fa-lg"></span> My Favorites
                                     </NavLink>
-                                </NavItem>
-                                <NavItem>
+                                </NavItem> */}
+                                {/* <NavItem>
                                     <NavLink className="nav-link" to="/contactus">
                                         <span className="fa fa-address-card fa-lg"></span> Contact Us
                                     </NavLink>
-                                </NavItem>
+                                </NavItem> */}
                             </Nav>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
                                     { !this.props.auth.isAuthenticated ?
                                         <Button outline onClick={this.toggleModal}>
-                                            <span className="fa fa-sign-in fa-lg"></span> Login
+                                            <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
                                             {this.props.auth.isFetching ?
                                                 <span className="fa fa-spinner fa-pulse fa-fw"></span>
                                                 : null
