@@ -41,7 +41,7 @@ class Header extends Component{
     render(){
         return( 
             <>
-                <Navbar grey expand="md">
+                <Navbar light expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav}/>
                         <NavbarBrand className="mr-auto" href="/">
@@ -52,35 +52,25 @@ class Header extends Component{
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                                 <NavItem>
-                                    <NavLink className="nav-link black" to="/home">
+                                    <NavLink className="nav-link" to="/home">
                                         <span className="fa fa-home fa-lg"></span> Trang chủ
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink className="nav-link" to="/aboutus">
-                                        <span className="fa fa-info fa-lg"></span> Các khóa học
+                                        <span className="fa fa-table fa-lg"></span> Các khóa học
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink className="nav-link" to="/menu">
-                                        <span className="fa fa-list fa-lg"></span> Gia sư
+                                    <span class="fa fa-users fa-lg"></span> Gia sư
                                     </NavLink>
                                 </NavItem>
-                                {/* <NavItem>
-                                    <NavLink className="nav-link" to="/favorites">
-                                        <span className="fa fa-heart fa-lg"></span> My Favorites
-                                    </NavLink>
-                                </NavItem> */}
-                                {/* <NavItem>
-                                    <NavLink className="nav-link" to="/contactus">
-                                        <span className="fa fa-address-card fa-lg"></span> Contact Us
-                                    </NavLink>
-                                </NavItem> */}
                             </Nav>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>
                                     { !this.props.auth.isAuthenticated ?
-                                        <Button outline onClick={this.toggleModal}>
+                                        <Button onClick={this.toggleModal}>
                                             <span className="fa fa-sign-in fa-lg"></span> Đăng nhập
                                             {this.props.auth.isFetching ?
                                                 <span className="fa fa-spinner fa-pulse fa-fw"></span>
@@ -90,8 +80,8 @@ class Header extends Component{
                                         :
                                         <div>
                                         <div className="navbar-text mr-3">{this.props.auth.user.username}</div>
-                                        <Button outline onClick={this.handleLogout}>
-                                            <span className="fa fa-sign-out fa-lg"></span> Logout
+                                        <Button onClick={this.handleLogout}>
+                                            <span className="fa fa-sign-out fa-lg"></span> Đăng xuất
                                             {this.props.auth.isFetching ?
                                                 <span className="fa fa-spinner fa-pulse fa-fw"></span>
                                                 : null
@@ -108,25 +98,24 @@ class Header extends Component{
                 </Navbar>
                 <Jumbotron>
                     <div className="container">
-                        <div className="row row-header">
-                            <div className="col-12 col-sm-6">
-                                <h1>Ristorante Con Fusion</h1>
-                                <p> We take iinspiration from We take iinspiration from We take iinspiration from We take iinspiration from</p>
+                        <div className="row row-header justify-content-center grey">
+                            <div className="col-12 col-sm-6 text-center">
+                                <h1></h1>
                             </div>
                         </div>
                     </div>
                 </Jumbotron>
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+                    <ModalHeader toggle={this.toggleModal}>Đăng nhập</ModalHeader>
                     <ModalBody>
                         <Form onSubmit={this.handleLogin}>
                             <FormGroup>
-                                <Label htmlFor="username">Username</Label>
+                                <Label htmlFor="username">Tên tài khoản</Label>
                                 <Input type="text" id="username" name="username"
                                 innerRef={(input)=>this.username=input}/>
                             </FormGroup>
                             <FormGroup>
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">Mật khẩu</Label>
                                 <Input type="password" id="password" name="password"
                                 innerRef={(input)=>this.password=input}/>
                             </FormGroup>
@@ -134,10 +123,10 @@ class Header extends Component{
                                 <Label check>
                                     <Input type="checkbox" name="remember"
                                     innerRef={(input)=>this.remember=input}/>
-                                    Remember me
+                                    Nhớ tài khoản
                                 </Label>
                             </FormGroup>
-                            <Button type="submit" value="submit" className="bg-primary">Login</Button>
+                            <Button type="submit" value="submit" className="bg-primary">Đăng nhập</Button>
                         </Form>
                     </ModalBody>
                 </Modal>
