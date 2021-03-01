@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 import {Card, CardImg, CardText, CardBody, CardTitle, 
-    Media,CardSubtitle, UncontrolledCarousel, Jumbotron} from 'reactstrap';
+    Media,CardSubtitle, UncontrolledCarousel, Jumbotron,
+    Label, Modal, ModalHeader, ModalBody, Button, Row, Col} from 'reactstrap';
+import {LocalForm, Control} from 'react-redux-form';
 // import { Loading } from './LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {FadeTransform} from 'react-animation-components';
@@ -26,7 +28,67 @@ function RenderCard(){
     );
 }
 
-function RenderRatingSection(){
+class CommentForm extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        
+        this.state = {
+          isNavOpen: false,
+          isModalOpen: false
+        };
+    }
+
+    toggleModal() {
+        this.setState({
+          isModalOpen: !this.state.isModalOpen
+        });
+    }
+
+    handleSubmit(values) {
+        this.toggleModal();
+        this.props.postComment(this.props.dishId, values.rating, values.comment);
+    }
+
+    render() {
+        return(
+        <div>
+            <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comment</Button>
+            <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+            <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+            <ModalBody>
+                <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                    <Row className="form-group">
+                        <Col>
+                        <Label htmlFor="rating">Rating</Label>
+                        <Control.select model=".rating" id="rating" className="form-control" defaultValue={'1'}>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </Control.select>
+                        </Col>
+                    </Row>
+                    <Row className="form-group">
+                        <Col>
+                        <Label htmlFor="comment">Comment</Label>
+                        <Control.textarea model=".comment" id="comment"
+                                    rows="6" className="form-control" />
+                        </Col>
+                    </Row>
+                    <Button type="submit" className="bg-primary">
+                        Submit
+                    </Button>
+                </LocalForm>
+            </ModalBody>
+           </Modal>
+        </div>
+        );
+    }
 
 }
 
@@ -39,7 +101,7 @@ function RenderUserComment(){
             </Media>
             <Media body>
                 <h5>Name</h5>
-                <h6> <i className="fa fa-star fa-lg"></i> 5/10 - Time</h6>
+                <h6> <i className="fa fa-star fa-lg"></i> 5/10 <small><i>Posted on January 10, 2019</i></small></h6>
                 Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
             </Media>
         </Media>
@@ -74,6 +136,7 @@ function TeacherInfo(){
                     <p>The restaurant traces its humble beginnings to <em>The Frying Pan</em>,
                     a successful chain started by our CEO, Mr. Peter Pan, that featured for the 
                     first time the world's best cuisines in a pan.</p>
+                    <CommentForm/>
                 </div>
             </div>
             <hr/>
