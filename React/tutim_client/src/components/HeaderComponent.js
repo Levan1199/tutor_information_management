@@ -41,7 +41,7 @@ class Header extends Component{
     render(){
         return( 
             <>
-                <Navbar light expand="md">
+                <Navbar fixed="top" light expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav}/>
                         <NavbarBrand className="mr-auto" href="/">
@@ -52,17 +52,17 @@ class Header extends Component{
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/home">
+                                    <NavLink className="nav-link" to="/homepage">
                                         <span className="fa fa-home fa-lg"></span> Trang chủ
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink className="nav-link" to="/aboutus">
-                                        <span className="fa fa-table fa-lg"></span> Các khóa học
+                                        <span className="fa fa-table fa-lg"></span> Khóa học
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink className="nav-link" to="/menu">
+                                    <NavLink className="nav-link" to="/teacher">
                                     <span class="fa fa-users fa-lg"></span> Gia sư
                                     </NavLink>
                                 </NavItem>
@@ -96,15 +96,7 @@ class Header extends Component{
                         </Collapse>
                     </div>
                 </Navbar>
-                <Jumbotron>
-                    <div className="container">
-                        <div className="row row-header justify-content-center grey">
-                            <div className="col-12 col-sm-6 text-center">
-                                <h1></h1>
-                            </div>
-                        </div>
-                    </div>
-                </Jumbotron>
+        
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggleModal}>Đăng nhập</ModalHeader>
                     <ModalBody>

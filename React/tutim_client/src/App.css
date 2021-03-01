@@ -10,18 +10,24 @@
   border-bottom: 1px ridge;
   min-height:400px;
 }
-
+/* Footer */
 .footer{
   background-color: #46696d;
   margin:0px auto;
   padding: 20px 0px 20px 0px;
 
 }
+
+.list-unstyled a{
+  color: #000;
+}
+/*  */
+
 .jumbotron {
   padding:70px 30px 70px 30px;
   margin:0px auto;
   background: #f7e7e2;
-  color:floralwhite;
+  color:black;
 }
 
 address{
@@ -29,7 +35,7 @@ address{
   margin:0px;
   color:#0f0f0f;
 }
-/* Header Color */
+/* Header */
 .navbar-light {
   background-color: #67989d;
 }
@@ -52,6 +58,7 @@ address{
   border-radius: 10%;
 }
 /*  */
+
 .page-enter{
   opacity: 0.01;
   transform: translateX(-100%);
@@ -75,7 +82,7 @@ address{
 }
 
 .black{
-  color: rgba(50, 43, 43, 0.727);
+  color: black;
 }
 
 
