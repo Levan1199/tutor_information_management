@@ -11,6 +11,7 @@ import Favorites from './FavoriteComponent';
 
 import HomePageComponent from './homepage/HomePageComponent';
 import TeacherInfo from './teacher/TeacherInfo';
+import findTeacher from './forms/findTeacher';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -128,6 +129,8 @@ class Main extends Component{
                 <Route path="/home" component={HomePage}/>
                 <Route path="/homepage" component={HomePageComponent}/>
                 <Route path="/teacher" component={TeacherInfo}/>
+                <Route path='/findTeacher' component={findTeacher}/>
+
                 <Route exact path="/menu" component={() => <Menu dishes={this.props.dishes}/>}/>
                 <Route path="/menu/:dishId" component={DishWithId}/>
                 <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
