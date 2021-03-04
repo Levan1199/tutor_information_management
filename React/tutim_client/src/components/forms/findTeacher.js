@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {Control, Errors, Form} from 'react-redux-form';
+import {Multiselect} from 'multiselect-react-dropdown';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -14,7 +15,9 @@ class findTeacher extends Component {
         super(props);      
         
         this.handleSubmit = this.handleSubmit.bind(this);
-        
+        this.state = {
+            options: [{name: 'Srigar', id: 1},{name: 'Sam', id: 2}]
+        };
     }
   
     handleSubmit(values){
@@ -99,8 +102,18 @@ class findTeacher extends Component {
                                     />
                                     </Col>
                                 </Row>
-
                                 <Row className="form-group">
+                                    <Label htmlFor="lastname" md={2}>Last Name</Label>
+                                    <Multiselect
+                                        options={this.state.options} // Options to display in the dropdown
+                                        selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
+                                        onSelect={this.onSelect} // Function will trigger on select event
+                                        onRemove={this.onRemove} // Function will trigger on remove event
+                                        displayValue="name" // Property name to display in the dropdown options
+                                        />
+                                </Row>
+
+                                {/* <Row className="form-group">
                                     <Label htmlFor="lastname" md={2}>Last Name</Label>
                                     <Col md={10}>
                                         <Control.select model=".district" name="district" className="form-control" defaultValue="1">
@@ -125,7 +138,7 @@ class findTeacher extends Component {
                                             <option value="19">Quận Tân Bình</option>
                                         </Control.select>
                                     </Col>                        
-                                </Row>
+                                </Row> */}
 
                                 <Row className="form-group">
                                     <Label htmlFor="name" md={2}>Địa chỉ</Label>
