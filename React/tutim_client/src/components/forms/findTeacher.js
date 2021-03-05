@@ -10,27 +10,50 @@ const minLength = (len) => (val) => (val) && (val.length >= len);
 const isNumber = (val) => !isNaN(Number(val));
 const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val)
 
+// function myCustom() {
+//     return (
+       
+//     );
+// }
+
 class findTeacher extends Component {
     constructor(props){
         super(props);      
         
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.myCustom = this.myCustom.bind(this);
         this.state = {
-            options: [{name: 'Srigar', id: 1},{name: 'Sam', id: 2}]
-        };
-    }
+            options: [
+                {name: 'Srigar', id: 1},
+                {name: 'Sam', id: 2},
+                {name:'Alibaba', id:3}
+            ]         
+        }
+    }      
+        
   
     handleSubmit(values){
         // this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email, values.agree, values.contactType, values.message);
         // console.log(JSON.stringify(this.state));
         // alert((values.name, values.lastname, values.telnum, values.email));
         // this.props.resetFeedbackForm();
-
-        // console.log('Current State is: ' + JSON.stringify(values));
-        // alert('Current State is: ' + JSON.stringify(values));
-        alert('aa');
+        // console.log(this.lastname.value);
+        console.log('Current State is: ' + JSON.stringify(values));
+        alert('Current State is: ' + JSON.stringify(values));
     }
-    
+
+    myCustom(){
+        return ( <Multiselect 
+            options={this.state.options} // Options to display in the dropdown
+            selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
+            // onSelect={this.onSelect} // Function will trigger on select event
+            // onRemove={this.onRemove} // Function will trigger on remove event
+            displayValue="name" // Property name to display in the dropdown options
+            showCheckbox
+        />);
+    }
+
+ 
 
     
     render(){
@@ -102,16 +125,16 @@ class findTeacher extends Component {
                                     />
                                     </Col>
                                 </Row>
-                                <Row className="form-group">
+                                
+                                {/* <Row className="form-group">
                                     <Label htmlFor="lastname" md={2}>Last Name</Label>
-                                    <Multiselect
-                                        options={this.state.options} // Options to display in the dropdown
-                                        selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-                                        onSelect={this.onSelect} // Function will trigger on select event
-                                        onRemove={this.onRemove} // Function will trigger on remove event
-                                        displayValue="name" // Property name to display in the dropdown options
+                                    <Col md={10}>
+                                        <Control                                    
+                                            model="lastname"
+                                            // component={this.myCustom}
                                         />
-                                </Row>
+                                    </Col>
+                                </Row> */}
 
                                 {/* <Row className="form-group">
                                     <Label htmlFor="lastname" md={2}>Last Name</Label>
@@ -212,15 +235,11 @@ class findTeacher extends Component {
 
                                     </Col>
                                 </Row>
-
+{/* 
                                 <Row className="form-group">
                                     <Label htmlFor="grade" md={2}>Lớp</Label>
                                     <Col md={10}>
-                                        {/* <Control.checkbox model=".grade" id="grade" name="grade"
-                                            className="form-control"
-                                            placeholder="Lớp">
-                                        <option value="16" label="aa">Quận Phú Nhuận</option>
-                                        </Control.checkbox> */}
+                                        
                                         <div className="field">
                                         <label>
                                             <Control.checkbox model=".grade" value={true} />
@@ -229,7 +248,7 @@ class findTeacher extends Component {
                                             </div>                                
                                         
                                     </Col>
-                                </Row>
+                                </Row> */}
 
                                 <Row className="form-group">
                                     <Label htmlFor="students" md={2}>Số lượng học sinh</Label>
