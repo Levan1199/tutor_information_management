@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
 import { Link } from 'react-router-dom';
-import {Control, Errors, Form} from 'react-redux-form';
+// import {Control, Errors, Form} from 'react-redux-form';
 import {Multiselect} from 'multiselect-react-dropdown';
+
+import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
+import * as Yup from "yup";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -16,45 +19,95 @@ const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val
 //     );
 // }
 
+
 class findTeacher extends Component {
     constructor(props){
         super(props);      
         
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.myCustom = this.myCustom.bind(this);
+        this.multiSelectDropdown = this.multiSelectDropdown.bind(this);
         this.state = {
-            options: [
-                {name: 'Srigar', id: 1},
-                {name: 'Sam', id: 2},
-                {name:'Alibaba', id:3}
-            ]         
+            initialValues: {
+                name: '',
+                district: [''],
+                address: '',
+                telnum:'',
+                grade: [''],
+                subject: [''],
+                students: '',
+                lessons:'',
+                time:'',
+                description: ''
+            },
+            validationSchema: Yup.object({
+                name: Yup.string()
+                    .required('Bạn cần điền mục này')
+                    .min(4,'Cần nhiều hơn 4 chữ cái')
+                    .max(36,'Ít hơn 36 chữ cái'),
+                // telnum: Yup.number()
+                //     .min(10,'Số điện thoại cần có 10 hoặc 11 số')
+                //     .max(11, 'Số điện thoại cần có 10 hoặc 11 số')
+                //     .required('Bạn cần điền mục này')
+            }),
+            options:{
+                district:[
+                    {name: 'Quận 1', id: 1},
+                    {name: 'Quận 2', id: 2},
+                    {name: 'Quận 3', id: 3},
+                    {name: 'Quận 4', id: 4},
+                    {name: 'Quận 5', id: 5},
+                    {name: 'Quận 6', id: 6},
+                    {name: 'Quận 7', id: 7},
+                    {name: 'Quận 8', id: 8},
+                    {name: 'Quận 9', id: 9},
+                    {name: 'Quận 10', id: 10},
+                    {name: 'Quận 11', id: 11},
+                    {name: 'Quận 12', id: 12},
+                    {name: 'Quận Thủ Đức', id: 13},
+                    {name: 'Quận Bình Thạnh', id: 14},
+                    {name: 'Quận Tân Bình', id: 15},
+                    {name: 'Quận Phú Nhuận', id: 16},
+                    {name: 'Quận Tân Phú', id: 17},
+                    {name: 'Quận Bình Tân', id: 18},
+                    {name: 'Quận Gò Vấp', id: 19}
+                ],
+                grade:[
+                    {name: 'Lớp 1', id: 1},
+                    {name: 'Lớp 2', id: 2},
+                    {name: 'Lớp 3', id: 3},
+                    {name: 'Lớp 4', id: 4},
+                    {name: 'Lớp 5', id: 5},
+                    
+                ],
+                subject:[
+                    {name: 'Toán', id: 1},
+                    {name: 'Lý', id: 2},
+                    {name: 'Hóa', id: 3},
+                ]
+
+            }
         }
     }      
         
   
     handleSubmit(values){
-        // this.props.postFeedback(values.firstname, values.lastname, values.telnum, values.email, values.agree, values.contactType, values.message);
-        // console.log(JSON.stringify(this.state));
-        // alert((values.name, values.lastname, values.telnum, values.email));
-        // this.props.resetFeedbackForm();
-        // console.log(this.lastname.value);
-        console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        console.log('Current State is: ' +JSON.stringify(values));
     }
 
-    myCustom(){
-        return ( <Multiselect 
-            options={this.state.options} // Options to display in the dropdown
-            selectedValues={this.state.selectedValue} // Preselected value to persist in dropdown
-            // onSelect={this.onSelect} // Function will trigger on select event
-            // onRemove={this.onRemove} // Function will trigger on remove event
-            displayValue="name" // Property name to display in the dropdown options
-            showCheckbox
-        />);
+    multiSelectDropdown({field, form, meta, ...props}){
+        const optionName = field.name;
+        const options = this.state.options[optionName];
+        return (
+            <Multiselect
+                options={options}
+                displayValue="name" 
+                showCheckbox
+                onSelect={(value)=>{
+                   form.setFieldValue(optionName,value);
+                }}
+            />
+        );
     }
-
- 
-
     
     render(){
         return(
@@ -101,40 +154,133 @@ class findTeacher extends Component {
                         <h3>
                             Send us Your feedback
                         </h3>
-                        <div className="col-12 col-md-9">
-                            <Form model="feedback" onSubmit={(values)=>this.handleSubmit(values)}>
+                        <Formik className="col-12 col-md-9"
+                            initialValues={this.state.initialValues}
+                            onSubmit={this.handleSubmit}
+                            validationSchema={this.state.validationSchema}
+                        >
+                            <Form >
                                 <Row className="form-group">
                                     <Label htmlFor="name" md={2}>Họ và tên</Label>
                                     <Col md={10}>
-                                        <Control.text model=".name" id="name" name="name" 
+                                        <Field type="text"  id="name" name="name" 
                                         placeholder="Họ và tên" 
-                                        className="form-control" 
-                                        validators={{
-                                            required, minLength:minLength(4), maxLength:maxLength(36)
-                                        }}
+                                        className="form-control"                                        
                                         />
-                                    <Errors
-                                        className="text-danger"
-                                        model=".name"
-                                        show="touched"
-                                        messages={{
-                                            required:'Bạn cần điền mục này',
-                                            minLength:'Cần nhiều hơn 4 chữ cái',
-                                            maxLength:'Ít hơn 36 chữ cái'
-                                        }}
-                                    />
+                                    <ErrorMessage name="name"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="district" md={2}>Quận</Label>
+                                    <Col md={10}>
+                                        <FastField
+                                            id="district"
+                                            name="district"
+                                            component={this.multiSelectDropdown}
+                                        />                                        
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="address" md={2}>Địa chỉ</Label>
+                                    <Col md={10}>
+                                        <Field type="textarea"  id="address" name="address" 
+                                        placeholder="Địa chỉ" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="address"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="telnum" md={2}>Số điện thoại</Label>
+                                    <Col md={10}>
+                                        <Field type="text"  id="telnum" name="telnum" 
+                                        placeholder="Số điện thoại" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="telnum"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="grade" md={2}>Lớp</Label>
+                                    <Col md={10}>
+                                        <FastField id="grade" name="grade" 
+                                        className="form-control"    
+                                        component={this.multiSelectDropdown}                                    
+                                        />
+                                    <ErrorMessage name="grade"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="subject" md={2}>Môn học</Label>
+                                    <Col md={10}>
+                                        <FastField id="subject" name="subject" 
+                                        className="form-control"    
+                                        component={this.multiSelectDropdown}                                    
+                                        />
+                                    <ErrorMessage name="subject"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="students" md={2}>Số lượng học sinh</Label>
+                                    <Col md={10}>
+                                        <Field type="text"  id="students" name="students" 
+                                        placeholder="Số lượng học sinh" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="students"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="lessons" md={2}>Số buổi trong tuần</Label>
+                                    <Col md={10}>
+                                        <Field type="text"  id="lessons" name="lessons" 
+                                        placeholder="Số buổi trong tuần" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="lessons"/>
                                     </Col>
                                 </Row>
                                 
-                                {/* <Row className="form-group">
-                                    <Label htmlFor="lastname" md={2}>Last Name</Label>
+                                <Row className="form-group">
+                                    <Label htmlFor="time" md={2}>Thời gian</Label>
                                     <Col md={10}>
-                                        <Control                                    
-                                            model="lastname"
-                                            // component={this.myCustom}
+                                        <Field type="text"  id="time" name="time" 
+                                        placeholder="VD: T3-T5-T7, 18h-20h" 
+                                        className="form-control"                                        
                                         />
+                                    <ErrorMessage name="time"/>
                                     </Col>
-                                </Row> */}
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="description" md={2}>Yêu cầu khác</Label>
+                                    <Col md={10}>
+                                        <Field type="textarea"  id="description" name="description" 
+                                        placeholder="Yêu cầu khác" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="description"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Col md={{size: 10, offset: 2}}>
+                                        <Button type="submit" color="primary">
+                                            Xác nhận
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Formik>
+                                
+                              
 
                                 {/* <Row className="form-group">
                                     <Label htmlFor="lastname" md={2}>Last Name</Label>
@@ -163,7 +309,7 @@ class findTeacher extends Component {
                                     </Col>                        
                                 </Row> */}
 
-                                <Row className="form-group">
+                                {/* <Row className="form-group">
                                     <Label htmlFor="name" md={2}>Địa chỉ</Label>
                                     <Col md={10}>
                                         <Control.text model=".address" id="address" name="address" 
@@ -234,7 +380,8 @@ class findTeacher extends Component {
                                         />
 
                                     </Col>
-                                </Row>
+                                </Row> */}
+                                {/* /////////////////////// */}
 {/* 
                                 <Row className="form-group">
                                     <Label htmlFor="grade" md={2}>Lớp</Label>
@@ -250,7 +397,7 @@ class findTeacher extends Component {
                                     </Col>
                                 </Row> */}
 
-                                <Row className="form-group">
+                                {/* <Row className="form-group">
                                     <Label htmlFor="students" md={2}>Số lượng học sinh</Label>
                                     <Col md={10}>
                                         <Control.text model=".students" id="students" name="students"
@@ -271,7 +418,7 @@ class findTeacher extends Component {
                                         }}
                                         />
                                     </Col>
-                                </Row>
+                                </Row> */}
 
                                 {/* <Row className="form-group">
                                     <Col md={{size: 6, offset: 2}}>
@@ -303,15 +450,7 @@ class findTeacher extends Component {
                                     </Col>
                                 </Row> */}
 
-                                <Row className="form-group">
-                                    <Col md={{size: 10, offset: 2}}>
-                                        <Button type="submit" color="primary">
-                                            Send Feedback
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Form>
-                        </div>
+                            
                     </div>
                 </div>
             </div>
