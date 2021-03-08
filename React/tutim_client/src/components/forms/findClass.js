@@ -1,46 +1,42 @@
 import React, {Component} from 'react';
 import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
 import { Link } from 'react-router-dom';
-// import {Control, Errors, Form} from 'react-redux-form';
 import {Multiselect} from 'multiselect-react-dropdown';
+import DatePicker from "react-datepicker";
+import {TextField} from "@material-ui/core";
 
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import * as Yup from "yup";
-
-const required = (val) => val && val.length;
-const maxLength = (len) => (val) => !(val) || (val.length <= len);
-const minLength = (len) => (val) => (val) && (val.length >= len);
-const isNumber = (val) => !isNaN(Number(val));
-const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val)
-
-class findTeacher extends Component {
+class findClass extends Component {
     constructor(props){
         super(props);      
         
         this.handleSubmit = this.handleSubmit.bind(this);
         this.multiSelectDropdown = this.multiSelectDropdown.bind(this);
+        this.datePicker = this.datePicker.bind(this);
         this.state = {
             initialValues: {
                 name: '',
+                sex: '',
+                age: '',
                 district: [''],
+                identify:'',
                 address: '',
-                telnum:'',
-                grade: [''],
-                subject: [''],
+                telnum: '',              
+                email: '',
+                grade:[''],
+                subject:[''],
                 students: '',
+                fee:'',
                 periodAWeek:'',
                 time:'',
-                description: ''
+                description:''
             },
             validationSchema: Yup.object({
                 name: Yup.string()
                     .required('Bạn cần điền mục này')
                     .min(4,'Cần nhiều hơn 4 chữ cái')
                     .max(36,'Ít hơn 36 chữ cái'),
-                // telnum: Yup.number()
-                //     .min(10,'Số điện thoại cần có 10 hoặc 11 số')
-                //     .max(11, 'Số điện thoại cần có 10 hoặc 11 số')
-                //     .required('Bạn cần điền mục này')
             }),
             options:{
                 district:[
@@ -101,7 +97,23 @@ class findTeacher extends Component {
             />
         );
     }
-    
+
+    datePicker({form,...props}){
+        return (
+            <TextField
+                type="date"
+                id="age"
+                name="age"
+                className='age'
+                onChange = {
+                        (e) => {
+                            form.setFieldValue("age",e.target.value);
+                        } 
+                    }
+            />
+        );
+    }
+
     render(){
         return(
             <div className="container">
@@ -150,9 +162,9 @@ class findTeacher extends Component {
                         <Formik className="col-12 col-md-9"
                             initialValues={this.state.initialValues}
                             onSubmit={this.handleSubmit}
-                            validationSchema={this.state.validationSchema}
+                            // validationSchema={this.state.validationSchema}
                         >
-                            <Form >
+                            <Form >                          
                                 <Row className="form-group">
                                     <Label htmlFor="name" md={2}>Họ và tên</Label>
                                     <Col md={10}>
@@ -163,6 +175,32 @@ class findTeacher extends Component {
                                     <ErrorMessage name="name"/>
                                     </Col>
                                 </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="sex" md={2}>Giới tính</Label>
+                                    <Col md={10}>
+                                        <Field as="select"  id="sex" name="sex"
+                                        className="form-control">
+                                        <option></option>
+                                        <option value="Nam">Nam</option>    
+                                        <option value="Nữ">Nữ</option>    
+                                        </Field>                                  
+                                    <ErrorMessage name="sex"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="age" md={2}>Năm sinh</Label>
+                                    <Col md={10}>
+                                        <FastField
+                                            component={this.datePicker}
+                                            className="form-control"
+                                            name="age"
+                                            id="age"
+                                        />
+                                    <ErrorMessage name="age"/>
+                                    </Col>
+                                </Row>                              
 
                                 <Row className="form-group">
                                     <Label htmlFor="district" md={2}>Quận</Label>
@@ -176,9 +214,20 @@ class findTeacher extends Component {
                                 </Row>
 
                                 <Row className="form-group">
+                                    <Label htmlFor="identify" md={2}>Chứng minh thư</Label>
+                                    <Col md={10}>
+                                        <Field type="text"  id="identify" name="identify" 
+                                        placeholder="Chứng minh thư" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="identify"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
                                     <Label htmlFor="address" md={2}>Địa chỉ</Label>
                                     <Col md={10}>
-                                        <Field type="textarea"  id="address" name="address" 
+                                        <Field as="textarea"  id="address" name="address" 
                                         placeholder="Địa chỉ" 
                                         className="form-control"                                        
                                         />
@@ -194,6 +243,17 @@ class findTeacher extends Component {
                                         className="form-control"                                        
                                         />
                                     <ErrorMessage name="telnum"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="email" md={2}>Email</Label>
+                                    <Col md={10}>
+                                        <Field type="text"  id="email" name="email" 
+                                        placeholder="Email" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="email"/>
                                     </Col>
                                 </Row>
 
@@ -227,6 +287,17 @@ class findTeacher extends Component {
                                         className="form-control"                                        
                                         />
                                     <ErrorMessage name="students"/>
+                                    </Col>
+                                </Row>
+
+                                <Row className="form-group">
+                                    <Label htmlFor="fee" md={2}>Học phí</Label>
+                                    <Col md={10}>
+                                        <Field type="text"  id="fee" name="fee" 
+                                        placeholder="Học phí" 
+                                        className="form-control"                                        
+                                        />
+                                    <ErrorMessage name="fee"/>
                                     </Col>
                                 </Row>
 
@@ -272,7 +343,6 @@ class findTeacher extends Component {
                                 </Row>
                             </Form>
                         </Formik>
-      
                     </div>
                 </div>
             </div>
@@ -281,4 +351,4 @@ class findTeacher extends Component {
     
 }
 
-export default findTeacher;
+export default findClass;
