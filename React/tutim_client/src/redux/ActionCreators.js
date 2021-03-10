@@ -441,3 +441,44 @@ export const fetchTeachers = () => (dispatch) => {
         // .then(comments => dispatch(addComments(comments)))
         // .catch(error => dispatch(commentsFailed(error.message)));
 }
+
+
+
+
+export const fetchTeacher = () => (dispatch) => {
+    dispatch(teacherLoading(true));
+
+    return fetch(baseUrl + 'teachers')
+        .then(response => {
+            if(response.ok){
+                return response;
+            }
+            else{
+                console.log('what happened');
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(teachers => dispatch(addTeacher(teachers)))
+        .catch(error => dispatch(teacherFailed(error.message)));
+}
+
+export const addTeacher = (teacher)=> ({
+    type: ActionTypes.ADD_TEACHER,
+    payload: teacher
+});
+
+export const teacherFailed = (errmess)=>({
+    type: ActionTypes.TEACHER_FAILED,
+    payload: errmess
+})
+
+export const teacherLoading = () =>({
+    type: ActionTypes.TEACHER_LOADING
+})
