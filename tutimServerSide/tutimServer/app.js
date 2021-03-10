@@ -15,16 +15,17 @@ var uploadRouter = require('./routes/uploadRouter');
 var favoriteRouter = require('./routes/favoriteRouter');
 var commentRouter = require('./routes/commentRouter');
 
+var teacherRouter = require('./routes/teacherRouter');
 // Mongoose
 const mongoose = require('mongoose');
 
 // Connect to mongoDB
-// const url = 'mongodb://localhost:27017/conFusion';
-// const connect = mongoose.connect(url,{ useNewUrlParser: true });
+const url = 'mongodb://localhost:27017/tutim';
+const connect = mongoose.connect(url,{ useNewUrlParser: true });
 
-// connect.then((db)=>{
-//   console.log('Connected correctly to server');
-// },(err)=>{ console.log(err); });
+connect.then((db)=>{
+  console.log('Connected correctly to server');
+},(err)=>{ console.log(err); });
 
 
 var app = express();
@@ -48,6 +49,7 @@ app.use('/promotions', promoRouter);
 app.use('/imageUpload', uploadRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/comments', commentRouter);
+app.use('/teachers', teacherRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

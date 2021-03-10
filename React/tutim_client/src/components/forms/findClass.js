@@ -1,9 +1,14 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {Multiselect} from 'multiselect-react-dropdown';
-import DatePicker from "react-datepicker";
+import DatePicker, {DateView} from "react-datepicker";
 import {TextField} from "@material-ui/core";
+// import { DatePicker, KeyboardDatePicker , MuiPickersUtilsProvider } from '@material-ui/pickers'
+// import DateMomentUtils from "@date-io/moment";
+// import DateFnsUtils from '@date-io/date-fns';
+import MomentUtils from '@date-io/moment';
+import moment from 'moment';
 
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import * as Yup from "yup";
@@ -18,7 +23,7 @@ class findClass extends Component {
             initialValues: {
                 name: '',
                 sex: '',
-                age: '',
+                dateOfBirth: '',
                 district: [''],
                 identify:'',
                 address: '',
@@ -98,16 +103,33 @@ class findClass extends Component {
         );
     }
 
+    // datePicker({form,...props}){
+    //     return (
+    //         <MuiPickersUtilsProvider utils={MomentUtils}>
+    //             <KeyboardDatePicker
+    //                 // autoOk={true}   
+    //                 format="DD-mm-yyyy"
+    //                 onChange={(value) => {
+    //                     // form.setFieldValue("date", moment(value).format('dd-mm-yyyy'));
+    //                     console.log(value);
+    //                 }}
+    //             />
+    //         </MuiPickersUtilsProvider>
+    //     );
+    // }
+
     datePicker({form,...props}){
         return (
             <TextField
                 type="date"
-                id="age"
-                name="age"
-                className='age'
+                id="dateOfBirth"
+                name="dateOfBirth"
+                className='dateOfBirth'
+                // format="DD/MM/YYYY"
+                // placeholder="Tháng/Ngày/Năm"
                 onChange = {
                         (e) => {
-                            form.setFieldValue("age",e.target.value);
+                            form.setFieldValue("age",moment(e.target.value).format('DD-MM-YYYY'));
                         } 
                     }
             />
@@ -190,15 +212,16 @@ class findClass extends Component {
                                 </Row>
 
                                 <Row className="form-group">
-                                    <Label htmlFor="age" md={2}>Năm sinh</Label>
+                                    <Label htmlFor="dateOfBirth" md={2}>Năm sinh</Label>
                                     <Col md={10}>
-                                        <FastField
+                                        <Field
                                             component={this.datePicker}
                                             className="form-control"
-                                            name="age"
-                                            id="age"
+                                            name="dateOfBirth"
+                                            id="dateOfBirth"
                                         />
-                                    <ErrorMessage name="age"/>
+                                                                             
+                                    <ErrorMessage name="dateOfBirth"/>
                                     </Col>
                                 </Row>                              
 
