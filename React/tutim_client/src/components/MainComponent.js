@@ -13,6 +13,7 @@ import HomePageComponent from './homepage/HomePageComponent';
 import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
 import findClass from './forms/findClass';
+import Teachers from './class/teachers';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -23,7 +24,7 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 const mapStatetoProps = state =>{
   return{
-    teacher: state.teachers,
+    teachers: state.teachers,
     dishes: state.dishes,
     comments: state.comments,
     promotions: state.promotions,
@@ -121,6 +122,16 @@ class Main extends Component{
       )} />
     );
 
+    const TESTING = ()=>{
+      console.log(this.props.teachers[0]);
+      return(
+        <p>
+          {this.props.teachers}
+        </p>
+      );
+    }
+      
+
     return (
       <div>      
         <Header
@@ -131,6 +142,9 @@ class Main extends Component{
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
                 <Route path="/home" component={HomePage}/>
+                <Route path="/teacherCard" component={() => <Teachers teachers={this.props.teachers}/>}/>
+                {/* <Route path="/teacherCard" component={TESTING}/> */}
+
                 <Route path="/homepage" component={HomePageComponent}/>
                 <Route path="/teacher" component={TeacherInfo}/>
                 <Route path='/findTeacher' component={findTeacher}/>

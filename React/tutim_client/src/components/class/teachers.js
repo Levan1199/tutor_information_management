@@ -1,50 +1,64 @@
 import React from 'react';
 import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import {Link} from 'react-router-dom';
-import {Loading} from './LoadingComponent';
-import {baseUrl} from '../shared/baseUrl';
+import {Loading} from '../LoadingComponent';
+// import {baseUrl} from '../shared/baseUrl';
 
-    function RenderMenuItem({dish}){
+    function RenderMenuItem({teacher}){
         return(
         <Card >
-            <Link to={`/menu/${dish._id}`} >
-                <CardImg width="100%" src = {baseUrl + dish.image} alt={dish.name} />
-                <CardImgOverlay body className="ml-5">
-                    <CardTitle heading> {dish.name} </CardTitle>
-                </CardImgOverlay>
-            </Link>
+            {/* <Link to={`/menu/${teacher._id}`} > */}
+                {/* <CardImg width="100%" src = {baseUrl + dish.image} alt={dish.name} /> */}
+                <Card body className="ml-5">
+                    <CardText> {teacher.name} </CardText>
+                </Card>
+            {/* </Link> */}
         </Card>
         )
     }
 
-    const Menu = (props) =>{
-        const menu = props.dishes.dishes.map((dish)=>{
+    const Teachers = (props) =>{
+        // console.log(props.teachers);
+        const teachers = props.teachers.teachers.map((teacher)=>{
             return (
-                <div key={dish.id} className="col-12 col-md-5 m-1">
-                  <RenderMenuItem dish={dish} />
+                <div key={teacher.id} className="col-12 col-md-5 m-1">
+                  <RenderMenuItem teacher={teacher}/>
                 </div>
             );
         });
+        // const menu = (({props})=>{
+        //     return (
+        //         <div key={props.teachers.id} className="col-12 col-md-5 m-1">
+        //             <p>
+        //                 {props.teachers.name}
+        //             </p>
+        //             <p>
+        //                 {props.teachers.email}
+        //             </p>
+        //           {/* <RenderMenuItem dish={dish} /> */}
+        //         </div>
+        //     );
+        // });
 
-        if (props.dishes.isLoading){
-            return (
-                <div className="container">
-                    <div className="row">
-                        <Loading />
-                    </div>
-                </div>
-            );
-        }
-        else if (props.dishes.errMess){
-            return (
-                <div className="container">
-                    <div className="row">
-                        <h4>{props.dishes.errMess}</h4>
-                    </div>
-                </div>
-            );
-        }
-        else
+        // if (props.teachers.isLoading){
+        //     return (
+        //         <div className="container">
+        //             <div className="row">
+        //                 <Loading />
+        //             </div>
+        //         </div>
+        //     );
+        // }
+        // else if (props.teachers.errMess){
+        //     return (
+        //         <div className="container">
+        //             <div className="row">
+        //                 <h4>{props.teachers.errMess}</h4>
+        //             </div>
+        //         </div>
+        //     );
+        // }
+        // else
             return (
                 <div className="container">
                     <div className="row">
@@ -58,9 +72,15 @@ import {baseUrl} from '../shared/baseUrl';
                         </div>
                     </div>
                     <div className="row">
-                        {menu}
+                        {/* {menu} */}
+                        <p>
+                            {/* {props.teachers.name} */}
+                        </p>
+                        <p>
+                            {teachers}
+                        </p>
                     </div>
                 </div>
             );
     }
-export default Menu;
+export default Teachers;

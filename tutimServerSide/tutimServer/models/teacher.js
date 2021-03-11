@@ -51,7 +51,7 @@ const teacherSchema = new Schema({
         required: true
     },
     periodAWeek:{
-        type:String,
+        type:Number,
         required: true
     },
     time:{

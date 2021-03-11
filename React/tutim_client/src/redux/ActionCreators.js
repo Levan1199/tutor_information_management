@@ -445,33 +445,42 @@ export const fetchTeachers = () => (dispatch) => {
 
 
 
+// export const fetchTeacher = () => (dispatch) => {
+//     dispatch(teacherLoading(true));
+
+//     return fetch(baseUrl + 'teachers')
+//         .then(response => {
+//             if(response.ok){
+//                 console.log(response.json());
+//                 return response;
+//             }
+//             else{
+//                 console.log('what happened');
+//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
+//                 error.response = response;
+//                 throw error;
+//             }
+//         },
+//         error => {
+//             var errmess = new Error(error.message);
+//             throw errmess;
+//         })
+//         .then(response => response.json())
+//         .then(teachers => dispatch(addTeacher(teachers)))
+//         .catch(error => dispatch(teacherFailed(error.message)));
+// }
+
 export const fetchTeacher = () => (dispatch) => {
     dispatch(teacherLoading(true));
 
     return fetch(baseUrl + 'teachers')
-        .then(response => {
-            if(response.ok){
-                return response;
-            }
-            else{
-                console.log('what happened');
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
         .then(response => response.json())
-        .then(teachers => dispatch(addTeacher(teachers)))
-        .catch(error => dispatch(teacherFailed(error.message)));
+        .then(teachers => dispatch(addTeachers(teachers)));
 }
 
-export const addTeacher = (teacher)=> ({
+export const addTeachers = (teachers)=> ({
     type: ActionTypes.ADD_TEACHER,
-    payload: teacher
+    payload: teachers
 });
 
 export const teacherFailed = (errmess)=>({
