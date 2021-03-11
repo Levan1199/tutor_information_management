@@ -10,7 +10,7 @@ import {Loading} from '../LoadingComponent';
             {/* <Link to={`/menu/${teacher._id}`} > */}
                 {/* <CardImg width="100%" src = {baseUrl + dish.image} alt={dish.name} /> */}
                 <Card body className="ml-5">
-                    <CardText> {teacher.name} </CardText>
+                    <CardTitle> {teacher.name} </CardTitle>
                 </Card>
             {/* </Link> */}
         </Card>
@@ -72,13 +72,7 @@ import {Loading} from '../LoadingComponent';
                         </div>
                     </div>
                     <div className="row">
-                        {/* {menu} */}
-                        <p>
-                            {/* {props.teachers.name} */}
-                        </p>
-                        <p>
                             {teachers}
-                        </p>
                     </div>
                 </div>
             );
