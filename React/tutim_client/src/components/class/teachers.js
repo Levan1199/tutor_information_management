@@ -8,9 +8,13 @@ import {Loading} from '../LoadingComponent';
         return(
         <Card >
             {/* <Link to={`/menu/${teacher._id}`} > */}
-                {/* <CardImg width="100%" src = {baseUrl + dish.image} alt={dish.name} /> */}
+                <CardImg width="20%" src = {'/assets/images/download.png'} alt={teacher.name}  top-left/>
                 <Card body className="ml-5">
                     <CardTitle> {teacher.name} </CardTitle>
+                    <CardText> {teacher.email}</CardText>
+                    <CardText> {teacher.telnum}</CardText>
+                    <CardText> {teacher.address}</CardText>
+
                 </Card>
             {/* </Link> */}
         </Card>
@@ -18,7 +22,6 @@ import {Loading} from '../LoadingComponent';
     }
 
     const Teachers = (props) =>{
-        // console.log(props.teachers);
         const teachers = props.teachers.teachers.map((teacher)=>{
             return (
                 <div key={teacher.id} className="col-12 col-md-5 m-1">
