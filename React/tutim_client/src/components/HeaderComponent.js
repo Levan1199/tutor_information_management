@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem,
-    Jumbotron, Button, Modal, ModalHeader, ModalBody,
+    Jumbotron, Button, Modal, ModalHeader, ModalBody, DropdownMenu, DropdownItem, Dropdown, DropdownToggle, 
     Form, FormGroup, Input, Label} from 'reactstrap';
 import {NavLink} from 'react-router-dom';
 class Header extends Component{
@@ -56,11 +56,18 @@ class Header extends Component{
                                         <span className="fa fa-home fa-lg"></span> Trang chủ
                                     </NavLink>
                                 </NavItem>
-                                <NavItem>
-                                    <NavLink className="nav-link" to="/aboutus">
-                                        <span className="fa fa-table fa-lg"></span> Khóa học
-                                    </NavLink>
-                                </NavItem>
+                                <Dropdown nav >
+                                    <DropdownToggle nav caret>
+                                        Dropdown
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        <DropdownItem header>Header</DropdownItem>
+                                        <DropdownItem disabled>Action</DropdownItem>
+                                        <DropdownItem>Another Action</DropdownItem>
+                                        <DropdownItem divider />
+                                        <DropdownItem>Another Action</DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
                                 <NavItem>
                                     <NavLink className="nav-link" to="/teacher">
                                     <span class="fa fa-users fa-lg"></span> Gia sư
