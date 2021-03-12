@@ -1,31 +1,48 @@
 import React from 'react';
-import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import {Link} from 'react-router-dom';
 import {Loading} from '../LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
+import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
-    function RenderMenuItem({teacher}){
+
+    function RenderTeacherCard({teacher}){
+        let subject = teacher.subject.join(' ');
+        let grade = teacher.grade.join(' ');
+        let district = teacher.district.join(' ');
         return(
-        <Card >
-            {/* <Link to={`/menu/${teacher._id}`} > */}
-                <CardImg width="20%" src = {'/assets/images/download.png'} alt={teacher.name}  top-left/>
-                <Card body className="ml-5">
-                    <CardTitle> {teacher.name} </CardTitle>
-                    <CardText> {teacher.email}</CardText>
-                    <CardText> {teacher.telnum}</CardText>
-                    <CardText> {teacher.address}</CardText>
-
-                </Card>
-            {/* </Link> */}
+       
+        <Card className="border">
+            <CardHeader avatar={<Avatar alt="avatar" src="/assets/images/download.png" />}
+                        title={<Link to={`/home`}>{teacher.name}</Link>}
+                        subheader={'Email: '+ teacher.email}
+                        titleTypographyProps={{variant:'h6' }}
+                        action={
+                            <Link to={`/home`} className="align-self-center">
+                                <Button color="primary">Đăng ký</Button>
+                            </Link>
+                        }
+            />
+            <CardContent>
+                <strong>Các lớp: </strong>{grade}
+                <br/>
+                <strong>Môn học: </strong>{subject}
+                <br/>
+                <strong>Khu vực quận: </strong>{district}
+                <br/>
+                <strong>Học phí: </strong>{teacher.fee}
+                <br/>
+                <strong>Thông tin khác: </strong>{teacher.description}
+            </CardContent> 
         </Card>
-        )
+        );
     }
 
     const Teachers = (props) =>{
         const teachers = props.teachers.teachers.map((teacher)=>{
             return (
                 <div key={teacher.id} className="col-12 col-md-5 m-1">
-                  <RenderMenuItem teacher={teacher}/>
+                  <RenderTeacherCard teacher={teacher}/>
                 </div>
             );
         });

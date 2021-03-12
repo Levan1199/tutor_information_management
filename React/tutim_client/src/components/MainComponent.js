@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, NavbarBrand } from 'reactstrap';
-import Home from './HomeComponent';
+import Home from './homepage/HomeComponent';
 import Menu from './MenuComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
@@ -9,7 +9,7 @@ import Header from './HeaderComponent';
 import Footer from './FooterComponent';
 import Favorites from './FavoriteComponent';
 
-import HomePageComponent from './homepage/HomePageComponent';
+// import HomePageComponent from './homepage/HomePageComponent';
 import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
 import findClass from './forms/findClass';
@@ -145,10 +145,11 @@ class Main extends Component{
                 <Route path="/teacherCard" component={() => <Teachers teachers={this.props.teachers}/>}/>
                 {/* <Route path="/teacherCard" component={TESTING}/> */}
 
-                <Route path="/homepage" component={HomePageComponent}/>
+                {/* <Route path="/homepage" component={HomePageComponent}/> */}
                 <Route path="/teacher" component={TeacherInfo}/>
                 <Route path='/findTeacher' component={findTeacher}/>
                 <Route path='/findClass' component={findClass}/>
+                {/*  */}
                 <Route exact path="/menu" component={() => <Menu dishes={this.props.dishes}/>}/>
                 <Route path="/menu/:dishId" component={DishWithId}/>
                 <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}

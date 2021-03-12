@@ -115,7 +115,7 @@ function TeacherInfo(){
         <div className="container">
             <div className="row">
                 <Breadcrumb>
-                    <BreadcrumbItem><Link to="/homepage">Trang chủ</Link></BreadcrumbItem>
+                    <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
                     <BreadcrumbItem active>Gia sư</BreadcrumbItem>
                 </Breadcrumb>
                 <div className="col-12">

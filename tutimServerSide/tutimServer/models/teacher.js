@@ -15,7 +15,7 @@ const teacherSchema = new Schema({
         required: true
     },
     district:[{
-        type: Number,
+        type: String,
         default:''
     }],   
     identify:{
@@ -35,7 +35,7 @@ const teacherSchema = new Schema({
         required:true
     },
     grade:[{
-        type:Number,
+        type:String,
         default:''
     }]
     ,subject:[{

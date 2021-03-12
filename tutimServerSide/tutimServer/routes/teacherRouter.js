@@ -44,15 +44,15 @@ teacherRouter.route('/')
 //     res.end('PUT operation not supported on /dishes');
 // })
 
-// .delete( cors(), (req,res,next)=>{
-//     Dishes.remove({})
-//     .then((resp)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(resp);
-//     },(err)=> next(err))
-//     .catch((err)=>next(err));
-// });
+.delete( cors(), (req,res,next)=>{
+    Teachers.remove({})
+    .then((resp)=>{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(resp);
+    },(err)=> next(err))
+    .catch((err)=>next(err));
+});
 
 // // For specific dish Id
 // dishRouter.route('/:dishId')
