@@ -14,6 +14,7 @@ import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
 import findClass from './forms/findClass';
 import Teachers from './class/teachers';
+import Classes from './class/classes';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -121,16 +122,7 @@ class Main extends Component{
             }} />
       )} />
     );
-
-    const TESTING = ()=>{
-      console.log(this.props.teachers[0]);
-      return(
-        <p>
-          {this.props.teachers}
-        </p>
-      );
-    }
-      
+  
 
     return (
       <div>      
@@ -141,8 +133,9 @@ class Main extends Component{
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
-                <Route path="/home" component={HomePage}/>
-                <Route path="/teacherCard" component={() => <Teachers teachers={this.props.teachers}/>}/>
+                <Route path="/home" component={Home}/>
+                <Route path="/teacherList" component={() => <Teachers teachers={this.props.teachers}/>}/>
+                <Route path="/classList" component={Classes}/>
                 {/* <Route path="/teacherCard" component={TESTING}/> */}
 
                 {/* <Route path="/homepage" component={HomePageComponent}/> */}

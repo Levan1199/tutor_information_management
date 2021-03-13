@@ -6,7 +6,7 @@ import {Loading} from '../LoadingComponent';
 import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
 
-    function RenderTeacherCard({teacher}){
+    function RenderClassCard({teacher}){
         let subject = teacher.subject.join(' ');
         let grade = teacher.grade.join(' ');
         let district = teacher.district.join(' ');
@@ -38,11 +38,11 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
         );
     }
 
-    const Teachers = (props) =>{
+    const Classes = (props) =>{
         const teachers = props.teachers.teachers.map((teacher)=>{
             return (
                 <div key={teacher.id} className="col-12 col-md-5 m-1">
-                  <RenderTeacherCard teacher={teacher}/>
+                  <RenderClassCard teacher={teacher}/>
                 </div>
             );
         });
@@ -97,4 +97,4 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
                 </div>
             );
     }
-export default Teachers;
+export default Classes;

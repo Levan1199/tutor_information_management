@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem,
-    Jumbotron, Button, Modal, ModalHeader, ModalBody, DropdownMenu, DropdownItem, Dropdown, DropdownToggle, 
+    Jumbotron, Button, Modal, ModalHeader, ModalBody, DropdownMenu, DropdownItem, Dropdown, DropdownToggle, UncontrolledDropdown,
     Form, FormGroup, Input, Label} from 'reactstrap';
 import {NavLink} from 'react-router-dom';
 class Header extends Component{
@@ -8,8 +8,10 @@ class Header extends Component{
         super(props);
         this.state = {
             isNavOpen: false,
-            isModalOpen: false
+            isModalOpen: false,
+            isDropdownOpen: false
         };
+        this.toggleDropdown = this.toggleDropdown.bind(this);
         this.toggleNav = this.toggleNav.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
@@ -25,6 +27,12 @@ class Header extends Component{
     toggleModal(){
         this.setState({
             isModalOpen: !this.state.isModalOpen
+        });
+    }
+    
+    toggleDropdown(){
+        this.setState({
+            isDropdownOpen: !this.state.isDropdownOpen
         });
     }
 
@@ -56,23 +64,25 @@ class Header extends Component{
                                         <span className="fa fa-home fa-lg"></span> Trang chủ
                                     </NavLink>
                                 </NavItem>
-                                <Dropdown nav >
-                                    <DropdownToggle nav caret>
-                                        Dropdown
+                                <UncontrolledDropdown setActiveFromChild>
+                                    <DropdownToggle className="nav-link" color="">
+                                        <span className="fa fa-address-book fa-lg"></span> Phụ huynh
                                     </DropdownToggle>
                                     <DropdownMenu>
-                                        <DropdownItem header>Header</DropdownItem>
-                                        <DropdownItem disabled>Action</DropdownItem>
-                                        <DropdownItem>Another Action</DropdownItem>
-                                        <DropdownItem divider />
-                                        <DropdownItem>Another Action</DropdownItem>
-                                    </DropdownMenu>
-                                </Dropdown>
-                                <NavItem>
-                                    <NavLink className="nav-link" to="/teacher">
-                                    <span class="fa fa-users fa-lg"></span> Gia sư
-                                    </NavLink>
-                                </NavItem>
+                                        <DropdownItem  href="/teacherList" >Gia sư hiện có</DropdownItem>
+                                        <DropdownItem  href="/findTeacher" >Đăng ký tìm gia sư</DropdownItem>
+                                    </DropdownMenu>                                    
+                                </UncontrolledDropdown>
+
+                                <UncontrolledDropdown setActiveFromChild>
+                                    <DropdownToggle className="nav-link" color="">
+                                        <span class="fa fa-users fa-lg"></span> Gia sư
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        <DropdownItem  href="/teacherList" >Lớp học hiện có</DropdownItem>
+                                        <DropdownItem  href="/findClass" >Đăng ký tìm lớp học</DropdownItem>
+                                    </DropdownMenu>                                    
+                                </UncontrolledDropdown>
                             </Nav>
                             <Nav className="ml-auto" navbar>
                                 <NavItem>

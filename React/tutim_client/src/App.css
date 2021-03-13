@@ -49,13 +49,18 @@ address{
   border-color: black;
   background-color: transparent;
 }
-.navbar-light .navbar-nav .nav-item button:hover{
+.navbar-light .navbar-nav .nav-item:hover{
+  background-color: #46696d;
+  /* border-radius: 20%; */
+}
+
+.navbar-light .navbar-nav .dropdown button:hover{
   background-color: #46696d;
 }
 
 .navbar-light .navbar-nav .nav-item .active{
   background-color: #46696d;
-  border-radius: 10%;
+  /* border-radius: 20%; */
 }
 /*  */
 
