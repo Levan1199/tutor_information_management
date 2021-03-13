@@ -16,6 +16,7 @@ var favoriteRouter = require('./routes/favoriteRouter');
 var commentRouter = require('./routes/commentRouter');
 
 var teacherRouter = require('./routes/teacherRouter');
+var classRouter = require('./routes/classRouter');
 // Mongoose
 const mongoose = require('mongoose');
 
@@ -50,6 +51,7 @@ app.use('/imageUpload', uploadRouter);
 app.use('/favorites', favoriteRouter);
 app.use('/comments', commentRouter);
 app.use('/teachers', teacherRouter);
+app.use('/classes', classRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

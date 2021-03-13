@@ -6,16 +6,16 @@ import {Loading} from '../LoadingComponent';
 import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
 
-    function RenderClassCard({teacher}){
-        let subject = teacher.subject.join(' ');
-        let grade = teacher.grade.join(' ');
-        let district = teacher.district.join(' ');
+    function RenderClassCard({classes}){
+        let subject = classes.subject.join(' ');
+        let grade = classes.grade.join(' ');
+        // let district = classes.district.join(' ');
         return(
        
         <Card className="border">
             <CardHeader avatar={<Avatar alt="avatar" src="/assets/images/download.png" />}
-                        title={<Link to={`/home`}>{teacher.name}</Link>}
-                        subheader={'Email: '+ teacher.email}
+                        title={<Link to={`/home`}>{classes.name}</Link>}
+                        subheader={'Email: '+ classes.email}
                         titleTypographyProps={{variant:'h6' }}
                         action={
                             <Link to={`/home`} className="align-self-center">
@@ -24,25 +24,25 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
                         }
             />
             <CardContent>
-                <strong>Các lớp: </strong>{grade}
+                <strong>Lớp: </strong>{grade}
                 <br/>
                 <strong>Môn học: </strong>{subject}
                 <br/>
-                <strong>Khu vực quận: </strong>{district}
+                {/* <strong>Khu vực quận: </strong>{district}
+                <br/> */}
+                <strong>Học phí: </strong>{classes.fee}
                 <br/>
-                <strong>Học phí: </strong>{teacher.fee}
-                <br/>
-                <strong>Thông tin khác: </strong>{teacher.description}
+                <strong>Thông tin khác: </strong>{classes.description}
             </CardContent> 
         </Card>
         );
     }
 
     const Classes = (props) =>{
-        const teachers = props.teachers.teachers.map((teacher)=>{
+        const classes = props.classes.classes.map((classes)=>{
             return (
-                <div key={teacher.id} className="col-12 col-md-5 m-1">
-                  <RenderClassCard teacher={teacher}/>
+                <div key={classes.id} className="col-12 col-md-5 m-1">
+                  <RenderClassCard classes={classes}/>
                 </div>
             );
         });
@@ -92,7 +92,7 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
                         </div>
                     </div>
                     <div className="row">
-                            {teachers}
+                            {classes}
                     </div>
                 </div>
             );
