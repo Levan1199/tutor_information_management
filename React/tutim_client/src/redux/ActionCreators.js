@@ -421,26 +421,26 @@ export const logoutUser = () => (dispatch) => {
     dispatch(receiveLogout());
 }
 
-export const fetchTeachers = () => (dispatch) => {
-    return fetch(baseUrl + 'teachers')
-        .then(response => {
-            if(response.ok){
-                return response;
-            }
-            else{
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-        .then(response => response.json())
-        // .then(comments => dispatch(addComments(comments)))
-        // .catch(error => dispatch(commentsFailed(error.message)));
-}
+// export const fetchTeachers = () => (dispatch) => {
+//     return fetch(baseUrl + 'teachers')
+//         .then(response => {
+//             if(response.ok){
+//                 return response;
+//             }
+//             else{
+//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
+//                 error.response = response;
+//                 throw error;
+//             }
+//         },
+//         error => {
+//             var errmess = new Error(error.message);
+//             throw errmess;
+//         })
+//         .then(response => response.json())
+//         // .then(comments => dispatch(addComments(comments)))
+//         // .catch(error => dispatch(commentsFailed(error.message)));
+// }
 
 
 
@@ -470,24 +470,24 @@ export const fetchTeachers = () => (dispatch) => {
 //         .catch(error => dispatch(teacherFailed(error.message)));
 // }
 
-export const fetchTeacher = () => (dispatch) => {
-    dispatch(teacherLoading(true));
+export const fetchTeacherReg = () => (dispatch) => {
+    dispatch(teacherRegLoading(true));
 
-    return fetch(baseUrl + 'teachers')
+    return fetch(baseUrl + 'teacherReg')
         .then(response => response.json())
-        .then(teachers => dispatch(addTeachers(teachers)));
+        .then(teachers => dispatch(addTeacherReg(teachers)));
 }
 
-export const addTeachers = (teachers)=> ({
-    type: ActionTypes.ADD_TEACHER,
+export const addTeacherReg = (teachers)=> ({
+    type: ActionTypes.ADD_TEACHERREG,
     payload: teachers
 });
 
-export const teacherFailed = (errmess)=>({
-    type: ActionTypes.TEACHER_FAILED,
+export const teacherRegFailed = (errmess)=>({
+    type: ActionTypes.TEACHERREG_FAILED,
     payload: errmess
 })
 
-export const teacherLoading = () =>({
-    type: ActionTypes.TEACHER_LOADING
+export const teacherRegLoading = () =>({
+    type: ActionTypes.TEACHERREG_LOADING
 })

@@ -18,14 +18,14 @@ import Classes from './class/classes';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {fetchTeacher ,postFavorite, deleteFavorite, fetchFavorites, postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, fetchLeaders, loginUser, logoutUser} from '../redux/ActionCreators'
+import {fetchTeacherReg ,postFavorite, deleteFavorite, fetchFavorites, postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, fetchLeaders, loginUser, logoutUser} from '../redux/ActionCreators'
 import { actions } from 'react-redux-form';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 
 const mapStatetoProps = state =>{
   return{
-    teachers: state.teachers,
+    teacherRegs: state.teacherRegs,
     dishes: state.dishes,
     comments: state.comments,
     promotions: state.promotions,
@@ -42,7 +42,7 @@ const mapDispatchToProps = dispatch => ({
   resetFeedbackForm: ()=>{
     dispatch(actions.reset('feedback'))
   },
-  fetchTeacher:()=>{dispatch(fetchTeacher())},
+  fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
   fetchComments: () => {dispatch(fetchComments())},
   fetchPromos: () => {dispatch(fetchPromos())},
   fetchLeaders: () => {dispatch(fetchLeaders())},
@@ -58,7 +58,7 @@ const mapDispatchToProps = dispatch => ({
 class Main extends Component{
   
   componentDidMount(){
-    this.props.fetchTeacher();
+    this.props.fetchTeacherReg();
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromos();
@@ -134,7 +134,7 @@ class Main extends Component{
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
                 <Route path="/home" component={Home}/>
-                <Route path="/teacherList" component={() => <Teachers teachers={this.props.teachers}/>}/>
+                <Route path="/teacherList" component={() => <Teachers teacherRegs={this.props.teacherRegs}/>}/>
                 <Route path="/classList" component={Classes}/>
                 {/* <Route path="/teacherCard" component={TESTING}/> */}
 

@@ -7,19 +7,19 @@ const cors = require('cors');
 
 mongoose.set('useFindAndModify',false);
 
-const Teachers = require('../models/teacher');
+const TeacherRegs = require('../models/teacherReg');
 
-const teacherRouter = express.Router();
+const teacherRegRouter = express.Router();
 
-teacherRouter.use(bodyParser.json());
+teacherRegRouter.use(bodyParser.json());
 
 
-teacherRouter.route('/')
+teacherRegRouter.route('/')
 .options( (req,res)=>{
     res.sendStatus(200);
 })
 .get(cors(), (req,res,next)=>{
-    Teachers.find(req.query)
+    TeacherRegs.find(req.query)
     .then((teachers)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -29,7 +29,7 @@ teacherRouter.route('/')
 })
 
 .post( cors(), (req,res,next)=>{
-    Teachers.create(req.body)
+    TeacherRegs.create(req.body)
     .then((teacher)=>{
         console.log('Teacher Created ', teacher);
         res.statusCode = 200;
@@ -45,7 +45,7 @@ teacherRouter.route('/')
 // })
 
 .delete( cors(), (req,res,next)=>{
-    Teachers.remove({})
+    TeacherRegs.remove({})
     .then((resp)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -102,5 +102,5 @@ teacherRouter.route('/')
 // For specific comment inside a dish
 
 
-module.exports = teacherRouter;
+module.exports = teacherRegRouter;
 

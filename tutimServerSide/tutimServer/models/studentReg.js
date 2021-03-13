@@ -1,27 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const teacherSchema = new Schema({
+const studentRegSchema = new Schema({
     name:{
         type: String,
         required: true
     },   
-    sex:{
-        type:String,
-        required:true
-    },
-    dateOfBirth:{
-        type:Date,
-        required: true
-    },
     district:[{
         type: String,
         default:''
     }],   
-    identify:{
-        type:Number,
-        default:''
-    },
     address:{
         type:String,
         default:''
@@ -30,25 +18,17 @@ const teacherSchema = new Schema({
         type: Number,
         required: true
     },   
-    email:{
-        type:String,
-        required:true
-    },
     grade:[{
         type:String,
         default:''
-    }]
-    ,subject:[{
+    }],
+    subject:[{
         type:String,
         default:''
     }],   
     students:{
         type:Number,
         default:''
-    },
-    fee:{
-        type:Number,
-        required: true
     },
     periodAWeek:{
         type:Number,
@@ -61,11 +41,11 @@ const teacherSchema = new Schema({
     description:{
         type:String,
         default:''
-    },
+    }  
 },{
     timestamps: true
 });
 
-var Teacher = mongoose.model('Teacher', teacherSchema);
+var StudentReg = mongoose.model('StudentReg', studentRegSchema);
 
-module.exports = Teacher;
+module.exports = StudentReg;

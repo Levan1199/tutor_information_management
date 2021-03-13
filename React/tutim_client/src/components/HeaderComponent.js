@@ -80,7 +80,7 @@ class Header extends Component{
                                     </DropdownToggle>
                                     <DropdownMenu>
                                         <DropdownItem  href="/teacherList" >Lớp học hiện có</DropdownItem>
-                                        <DropdownItem  href="/findClass" >Đăng ký tìm lớp học</DropdownItem>
+                                        <DropdownItem  href="/findClass" >Đăng ký tìm lớp</DropdownItem>
                                     </DropdownMenu>                                    
                                 </UncontrolledDropdown>
                             </Nav>

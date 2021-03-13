@@ -6,34 +6,34 @@ const cors = require('cors');
 
 mongoose.set('useFindAndModify',false);
 
-const Class = require('../models/class');
+const StudentReg = require('../models/studentReg');
 
-const classRouter = express.Router();
+const studentRegRouter = express.Router();
 
-classRouter.use(bodyParser.json());
+studentRegRouter.use(bodyParser.json());
 
 
-classRouter.route('/')
+studentRegRouter.route('/')
 .options( (req,res)=>{
     res.sendStatus(200);
 })
 .get(cors(), (req,res,next)=>{
-    Class.find(req.query)
-    .then((classes)=>{
+    StudentReg.find(req.query)
+    .then((studentRegs)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(classes);
+        res.json(studentRegs);
     },(err)=>next(err))
     .catch((err)=> next(err));
 })
 
 .post( cors(), (req,res,next)=>{
-    Class.create(req.body)
-    .then((classes)=>{
-        console.log('Teacher Created ', classes);
+    StudentReg.create(req.body)
+    .then((studentRegs)=>{
+        console.log('Teacher Created ', studentRegs);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(classes);
+        res.json(studentRegs);
     },(err)=>next(err))
     .catch((err)=> next(err));
 })
@@ -54,4 +54,4 @@ classRouter.route('/')
 // });
 
 
-module.exports = classRouter;
+module.exports = studentRegRouter;
