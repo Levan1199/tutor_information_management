@@ -475,12 +475,12 @@ export const fetchTeacherReg = () => (dispatch) => {
 
     return fetch(baseUrl + 'teacherReg')
         .then(response => response.json())
-        .then(teachers => dispatch(addTeacherReg(teachers)));
+        .then(teacherReg => dispatch(addTeacherReg(teacherReg)));
 }
 
-export const addTeacherReg = (teachers)=> ({
+export const addTeacherReg = (teacherReg)=> ({
     type: ActionTypes.ADD_TEACHERREG,
-    payload: teachers
+    payload: teacherReg
 });
 
 export const teacherRegFailed = (errmess)=>({
@@ -490,4 +490,26 @@ export const teacherRegFailed = (errmess)=>({
 
 export const teacherRegLoading = () =>({
     type: ActionTypes.TEACHERREG_LOADING
+})
+//////////////////////////////
+export const fetchStudentReg = () => (dispatch) => {
+    dispatch(studentRegLoading(true));
+
+    return fetch(baseUrl + 'studentReg')
+        .then(response => response.json())
+        .then(studentReg => dispatch(addStudentReg(studentReg)));
+}
+
+export const addStudentReg = (studentReg)=> ({
+    type: ActionTypes.ADD_STUDENTREG,
+    payload: studentReg
+});
+
+export const studentRegFailed = (errmess)=>({
+    type: ActionTypes.STUDENTREG_FAILED,
+    payload: errmess
+})
+
+export const studentRegLoading = () =>({
+    type: ActionTypes.STUDENTREG_LOADING
 })

@@ -1,12 +1,13 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import {createForms} from 'react-redux-form';
-import { Dishes } from './dishes'
-import { Comments } from './comments'
-import { Promotions } from './promotions'
-import { Leaders } from './leaders'
-import { TeacherRegs } from './teacherRegs'
-import thunk from 'redux-thunk'
-import logger from 'redux-logger'
+import { Dishes } from './dishes';
+import { Comments } from './comments';
+import { Promotions } from './promotions';
+import { Leaders } from './leaders';
+import { TeacherRegs } from './teacherRegs';
+import { StudentRegs } from './studentReg';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 import { InitialFeedback } from './forms';
 
 import {Auth} from './auth';
@@ -20,6 +21,7 @@ export const ConfigureStore = () => {
                 promotions: Promotions,
                 leaders: Leaders,
                 teacherRegs: TeacherRegs,
+                studentRegs: StudentRegs,
                 auth: Auth,
                 favorites,
                 ...createForms({

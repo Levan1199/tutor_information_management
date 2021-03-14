@@ -79,7 +79,7 @@ class Header extends Component{
                                         <span class="fa fa-users fa-lg"></span> Gia sư
                                     </DropdownToggle>
                                     <DropdownMenu>
-                                        <DropdownItem  href="/teacherList" >Lớp học hiện có</DropdownItem>
+                                        <DropdownItem  href="/studentList" >Lớp học hiện có</DropdownItem>
                                         <DropdownItem  href="/findClass" >Đăng ký tìm lớp</DropdownItem>
                                     </DropdownMenu>                                    
                                 </UncontrolledDropdown>

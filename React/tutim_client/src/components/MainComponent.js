@@ -13,12 +13,15 @@ import Favorites from './FavoriteComponent';
 import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
 import findClass from './forms/findClass';
-import Teachers from './class/teachers';
-import Classes from './class/classes';
+import TeacherRegs from './list/teacherRegs';
+import StudentRegs from './list/studentRegs';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {fetchTeacherReg ,postFavorite, deleteFavorite, fetchFavorites, postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, fetchLeaders, loginUser, logoutUser} from '../redux/ActionCreators'
+import {fetchTeacherReg, fetchStudentReg,
+    postFavorite, deleteFavorite, fetchFavorites,
+    postComment, postFeedback, fetchDishes, fetchComments, fetchPromos, 
+    fetchLeaders, loginUser, logoutUser} from '../redux/ActionCreators'
 import { actions } from 'react-redux-form';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
@@ -26,6 +29,7 @@ import {TransitionGroup, CSSTransition} from 'react-transition-group';
 const mapStatetoProps = state =>{
   return{
     teacherRegs: state.teacherRegs,
+    studentRegs: state.studentRegs,
     dishes: state.dishes,
     comments: state.comments,
     promotions: state.promotions,
@@ -43,6 +47,8 @@ const mapDispatchToProps = dispatch => ({
     dispatch(actions.reset('feedback'))
   },
   fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
+  fetchStudentReg: ()=>{dispatch(fetchStudentReg())},
+
   fetchComments: () => {dispatch(fetchComments())},
   fetchPromos: () => {dispatch(fetchPromos())},
   fetchLeaders: () => {dispatch(fetchLeaders())},
@@ -59,6 +65,7 @@ class Main extends Component{
   
   componentDidMount(){
     this.props.fetchTeacherReg();
+    this.props.fetchStudentReg();
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromos();
@@ -134,8 +141,8 @@ class Main extends Component{
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
                 <Route path="/home" component={Home}/>
-                <Route path="/teacherList" component={() => <Teachers teacherRegs={this.props.teacherRegs}/>}/>
-                <Route path="/classList" component={Classes}/>
+                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs}/>}/>
+                <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs}/>}/>
                 {/* <Route path="/teacherCard" component={TESTING}/> */}
 
                 {/* <Route path="/homepage" component={HomePageComponent}/> */}

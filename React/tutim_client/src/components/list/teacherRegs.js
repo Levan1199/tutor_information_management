@@ -18,7 +18,7 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
                         subheader={'Email: '+ teacher.email}
                         titleTypographyProps={{variant:'h6' }}
                         action={
-                            <Link to={`/home`} className="align-self-center">
+                            <Link to={`/findTeacher`} className="align-self-center">
                                 <Button color="primary">Đăng ký</Button>
                             </Link>
                         }
@@ -38,47 +38,15 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
         );
     }
 
-    const Teachers = (props) =>{
-        const teachers = props.teacherRegs.teacherRegs.map((teacher)=>{
+    const TeacherRegs = (props) =>{
+        const teacherRegs = props.teacherRegs.teacherRegs.map((teacher)=>{
             return (
                 <div key={teacher.id} className="col-12 col-md-5 m-1">
                   <RenderTeacherCard teacher={teacher}/>
                 </div>
             );
         });
-        // const menu = (({props})=>{
-        //     return (
-        //         <div key={props.teachers.id} className="col-12 col-md-5 m-1">
-        //             <p>
-        //                 {props.teachers.name}
-        //             </p>
-        //             <p>
-        //                 {props.teachers.email}
-        //             </p>
-        //           {/* <RenderMenuItem dish={dish} /> */}
-        //         </div>
-        //     );
-        // });
-
-        // if (props.teachers.isLoading){
-        //     return (
-        //         <div className="container">
-        //             <div className="row">
-        //                 <Loading />
-        //             </div>
-        //         </div>
-        //     );
-        // }
-        // else if (props.teachers.errMess){
-        //     return (
-        //         <div className="container">
-        //             <div className="row">
-        //                 <h4>{props.teachers.errMess}</h4>
-        //             </div>
-        //         </div>
-        //     );
-        // }
-        // else
+      
             return (
                 <div className="container">
                     <div className="row">
@@ -92,9 +60,9 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
                         </div>
                     </div>
                     <div className="row">
-                            {teachers}
+                            {teacherRegs}
                     </div>
                 </div>
             );
     }
-export default Teachers;
+export default TeacherRegs;
