@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem,
     Jumbotron, Button, Modal, ModalHeader, ModalBody, DropdownMenu, DropdownItem, Dropdown, DropdownToggle, UncontrolledDropdown,
     Form, FormGroup, Input, Label} from 'reactstrap';
-import {NavLink} from 'react-router-dom';
+import {NavLink, Link} from 'react-router-dom';
 class Header extends Component{
     constructor(props){
         super(props);
@@ -44,6 +44,10 @@ class Header extends Component{
 
     handleLogout(){
         this.props.loginUser();
+    }
+
+    componentDidMount(){
+        console.log(this.props.auth.isAuthenticated);
     }
 
     render(){
@@ -96,7 +100,7 @@ class Header extends Component{
                                         </Button>
                                         :
                                         <div>
-                                        <div className="navbar-text mr-3">{this.props.auth.user.username}</div>
+                                        <Link to="/teacherInfo"><div className="navbar-text mr-3">{this.props.auth.user.username}</div></Link>
                                         <Button onClick={this.handleLogout}>
                                             <span className="fa fa-sign-out fa-lg"></span> Đăng xuất
                                             {this.props.auth.isFetching ?

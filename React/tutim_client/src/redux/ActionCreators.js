@@ -387,7 +387,7 @@ export const loginUser = (creds) => (dispatch) => {
         if(response.success){
             localStorage.setItem('token', response.token);
             localStorage.setItem('creds', JSON.stringify(creds));
-            dispatch(fetchFavorites());
+            // dispatch(fetchFavorites());
             dispatch(receiveLogin(response));
         }
         else{

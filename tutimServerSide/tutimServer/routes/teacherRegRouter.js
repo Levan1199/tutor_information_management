@@ -2,8 +2,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-// const authenticate = require('../authenticate');
-const cors = require('cors');
+const authenticate = require('../authenticate');
+const cors = require('./cors');
 
 mongoose.set('useFindAndModify',false);
 
@@ -15,10 +15,10 @@ teacherRegRouter.use(bodyParser.json());
 
 
 teacherRegRouter.route('/')
-.options( (req,res)=>{
+.options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-.get(cors(), (req,res,next)=>{
+.get(cors.cors, (req,res,next)=>{
     TeacherRegs.find(req.query)
     .then((teachers)=>{
         res.statusCode = 200;
@@ -28,7 +28,7 @@ teacherRegRouter.route('/')
     .catch((err)=> next(err));
 })
 
-.post( cors(), (req,res,next)=>{
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     TeacherRegs.create(req.body)
     .then((teacher)=>{
         console.log('Teacher Created ', teacher);
@@ -44,7 +44,7 @@ teacherRegRouter.route('/')
 //     res.end('PUT operation not supported on /dishes');
 // })
 
-.delete( cors(), (req,res,next)=>{
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     TeacherRegs.remove({})
     .then((resp)=>{
         res.statusCode = 200;

@@ -62,6 +62,13 @@ address{
   background-color: #46696d;
   /* border-radius: 20%; */
 }
+
+.navbar-nav .nav-item .navbar-text{
+  font-weight: bold;
+  color: #B2D9EA;
+  background-color: #67989d;
+  font-size: 25px;
+}
 /*  */
 
 .page-enter{

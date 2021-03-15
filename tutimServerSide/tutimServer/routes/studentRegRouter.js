@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-// const authenticate = require('../authenticate');
-const cors = require('cors');
+const authenticate = require('../authenticate');
+const cors = require('./cors');
 
 mongoose.set('useFindAndModify',false);
 
@@ -14,10 +14,10 @@ studentRegRouter.use(bodyParser.json());
 
 
 studentRegRouter.route('/')
-.options( (req,res)=>{
+.options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-.get(cors(), (req,res,next)=>{
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     StudentReg.find(req.query)
     .then((studentRegs)=>{
         res.statusCode = 200;
@@ -27,7 +27,7 @@ studentRegRouter.route('/')
     .catch((err)=> next(err));
 })
 
-.post( cors(), (req,res,next)=>{
+.post(cors.corsWithOptions, authenticate.verifyUser,(req,res,next)=>{
     StudentReg.create(req.body)
     .then((studentRegs)=>{
         console.log('Teacher Created ', studentRegs);

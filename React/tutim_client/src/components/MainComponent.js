@@ -146,7 +146,7 @@ class Main extends Component{
                 {/* <Route path="/teacherCard" component={TESTING}/> */}
 
                 {/* <Route path="/homepage" component={HomePageComponent}/> */}
-                <Route path="/teacher" component={TeacherInfo}/>
+                <Route path="/teacherInfo" component={TeacherInfo}/>
                 <Route path='/findTeacher' component={findTeacher}/>
                 <Route path='/findClass' component={findClass}/>
                 {/*  */}
