@@ -43,7 +43,7 @@ class Header extends Component{
     }
 
     handleLogout(){
-        this.props.loginUser();
+        this.props.logoutUser();
     }
 
     componentDidMount(){
@@ -58,8 +58,8 @@ class Header extends Component{
                         <NavbarToggler onClick={this.toggleNav}/>
                         <NavbarBrand className="mr-auto" href="/">
                             {/* <img src="assets/images/logo.png" height="30" width="41" alt="Ristorante Con Fusion" /> */}
-                            <img src="assets/images/logo.png" height="30" width="41"
-                                alt="Ristorante Con Fusion" />
+                            <img src="/logo512.png" height="30" width="41"
+                                alt="Gia Su Viet" />
                         </NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>

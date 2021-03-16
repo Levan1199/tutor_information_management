@@ -6,9 +6,7 @@ import {FadeTransform} from 'react-animation-components';
 
 // import local data
 import './homepage.css';
-import {DISHES} from '../../shared/dishes';
-import {LEADERS} from '../../shared/leaders';
-import {PROMOTIONS} from '../../shared/promotions';
+import {TEXT} from '../../shared/basicText';
 
 const items = [
     {
@@ -37,13 +35,13 @@ const items = [
 function RenderCard(){
         return(
             <Card>
-                <CardImg src={'/assets/images/download.png'} alt={DISHES[0].name}/>
+                <CardImg src={'/assets/images/download.png'} alt={TEXT[0].name}/>
                 <CardBody>
                     <CardTitle>
-                        {DISHES[0].name}
+                        {TEXT[0].name}
                     </CardTitle>
-                    {DISHES[0].designation ? <CardSubtitle>{DISHES[0].designation}</CardSubtitle>:null}
-                    <CardText>{DISHES[0].description}</CardText>
+                    {/* {TEXT[0].designation ? <CardSubtitle>{TEXT[0].designation}</CardSubtitle>:null} */}
+                    <CardText>{TEXT[0].description}</CardText>
                 </CardBody>
             </Card>
         );

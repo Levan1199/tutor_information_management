@@ -14,12 +14,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 // API routes
-var dishRouter = require('./routes/dishRouter');
-var leaderRouter = require('./routes/leaderRouter');
-var promoRouter = require('./routes/promoRouter');
-var uploadRouter = require('./routes/uploadRouter');
-var favoriteRouter = require('./routes/favoriteRouter');
-var commentRouter = require('./routes/commentRouter');
+// var uploadRouter = require('./routes/uploadRouter');
+// var commentRouter = require('./routes/commentRouter');
 
 var teacherRegRouter = require('./routes/teacherRegRouter');
 var studentRegRouter = require('./routes/studentRegRouter');
@@ -54,12 +50,8 @@ app.use(passport.initialize());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // Adding routes of API endpoints
-app.use('/leaders', leaderRouter);
-app.use('/dishes', dishRouter);
-app.use('/promotions', promoRouter);
-app.use('/imageUpload', uploadRouter);
-app.use('/favorites', favoriteRouter);
-app.use('/comments', commentRouter);
+// app.use('/imageUpload', uploadRouter);
+// app.use('/comments', commentRouter);
 app.use('/teacherReg', teacherRegRouter);
 app.use('/studentReg', studentRegRouter);
 

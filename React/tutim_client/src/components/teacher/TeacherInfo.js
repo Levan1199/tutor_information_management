@@ -8,12 +8,9 @@ import {LocalForm, Control} from 'react-redux-form';
 // import { Loading } from './LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {FadeTransform} from 'react-animation-components';
-
+import {TEXT} from '../../shared/basicText';
 // import local data
 import './teacherInfo.css';
-import {DISHES} from '../../shared/dishes';
-import {LEADERS} from '../../shared/leaders';
-import {PROMOTIONS} from '../../shared/promotions';
 
 // export const Timee = new Date().toISOString();
 
@@ -21,9 +18,9 @@ function RenderCard(){
     return(
         <Card>
             <CardTitle>
-                {DISHES[0].name}
+                {TEXT[0].name}
             </CardTitle>
-            <CardImg src={'/assets/images/download.png'} alt={DISHES[0].name}/>
+            <CardImg src={'/assets/images/download.png'} alt={TEXT[0].name}/>
         </Card>
     );
 }
@@ -129,13 +126,15 @@ function TeacherInfo(){
                 </div>
                 <div className="col-12 col-sm-6">
                 <h2>Our History</h2>
-                    <p>Started in 2010, Ristorante con Fusion quickly established itself as a
-                         culinary icon par excellence in Hong Kong. With its unique brand of world
-                         
-                          fusion cuisine that can be found nowhere else, it enjoys patronage from the A-list clientele in Hong Kong.  Featuring four of the best three-star Michelin chefs in the world, you never know what will arrive on your plate the next time you visit us.</p>
-                    <p>The restaurant traces its humble beginnings to <em>The Frying Pan</em>,
-                    a successful chain started by our CEO, Mr. Peter Pan, that featured for the 
-                    first time the world's best cuisines in a pan.</p>
+                    <strong>Các lớp: </strong> Lớp 7 8
+                    <br/>
+                    <strong>Môn học: </strong> Toán Lý Hóa
+                    <br/>
+                    <strong>Khu vực quận: </strong> Quận 10, Quận Phú Nhuận
+                    <br/>
+                    <strong>Học phí: </strong> 2500000
+                    <br/>
+                    <strong>Thông tin khác: </strong> Tốt nghiệp Đại Học Bách Khoa, Ielts 6.5
                     <CommentForm/>
                 </div>
             </div>

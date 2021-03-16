@@ -1,7 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 import { actionTypes } from 'react-redux-form';
-import { NavbarText } from 'reactstrap';
 
 export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
@@ -45,43 +44,6 @@ export const postComment = (dishId, rating, comment) => (dispatch) =>  {
             alert('Your comment could not be posted\nError: ' + error.message);});
 }
 
-export const fetchDishes = () => (dispatch) => {
-    dispatch(dishesLoading(true));
-
-    return fetch(baseUrl + 'dishes')
-        .then(response => {
-            if(response.ok){
-                return response;
-            }
-            else{
-                console.log('what happened');
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-        .then(response => response.json())
-        .then(dishes => dispatch(addDishes(dishes)))
-        .catch(error => dispatch(dishesFailed(error.message)));
-}
-
-export const dishesLoading = () => ({
-    type: ActionTypes.DISHES_LOADING
-});
-
-export const dishesFailed = (errmess) => ({
-    type: ActionTypes.DISHES_FAILED,
-    payload: errmess
-});
-
-export const addDishes = (dishes) => ({
-    type: ActionTypes.ADD_DISHES,
-    payload: dishes
-})
 
 export const fetchComments = () => (dispatch) => {
     return fetch(baseUrl + 'comments')
@@ -115,82 +77,7 @@ export const addComments = (comments) => ({
 })
 
 
-export const fetchPromos = () => (dispatch) => {
-    dispatch(promosLoading(true));
 
-    return fetch(baseUrl + 'promotions')
-        .then(response => {
-            if(response.ok){
-                return response;
-            }
-            else{
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-        .then(response => response.json())
-        .then(promos => dispatch(addPromos(promos)))
-        .catch(error => dispatch(promosFailed(error.message)));
-}
-
-export const promosLoading = () => ({
-    type: ActionTypes.PROMOS_LOADING
-});
-
-export const promosFailed = (errmess) => ({
-    type: ActionTypes.PROMOS_FAILED,
-    payload: errmess
-});
-
-export const addPromos = (promos) => ({
-    type: ActionTypes.ADD_PROMOS,
-    payload: promos
-})
-
-// Task 1 - Fetch Leaders
-export const fetchLeaders = () => (dispatch) => {
-    dispatch(leadersLoading(true));
-
-    return fetch(baseUrl + 'leaders')
-        .then(response => {
-            if(response.ok){
-                return response;
-            }
-            else{
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        },
-        error => {
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-        .then(response => response.json())
-        .then(leaders => dispatch(addLeaders(leaders)))
-        .catch(error => dispatch(leadersFailed(error.message)));
-}
-
-export const leadersLoading = () => ({
-    type: ActionTypes.LEADERS_LOADING
-});
-
-export const leadersFailed = (errmess) => ({
-    type: ActionTypes.LEADERS_FAILED,
-    payload: errmess
-});
-
-export const addLeaders = (leaders) => ({
-    type: ActionTypes.ADD_LEADERS,
-    payload: leaders
-})
-
-// Task 2 - Post Feedback
 
 export const postFeedback = (firstname, lastname, telnum, email, agree, contactType, message) => (dispatch) =>  {
     const newFeedback = {
@@ -232,109 +119,6 @@ export const postFeedback = (firstname, lastname, telnum, email, agree, contactT
             alert('Your feedback could not be posted\nError: ' + error.message);});
 }
 
-// Favorite feature
-export const addFavorites = (favorites)=> ({
-    type: ActionTypes.ADD_FAVORITES,
-    payload: favorites
-});
-
-export const favoritesFailed = (errmess)=>({
-    type: ActionTypes.FAVORITES_FAILED,
-    payload: errmess
-})
-
-export const favoritesLoading = () =>({
-    type: ActionTypes.FAVORITES_LOADING
-})
-
-export const fetchFavorites = () =>(dispatch)=>{
-    dispatch(favoritesLoading(true));
-
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + 'favorites',{
-        headers: {
-            'Authorization': bearer
-        },
-    })
-    .then(response =>{
-        if(response.ok){
-            return response;
-        }
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.response = response;
-            throw error;
-        }
-    },(error)=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then(response => response.json())
-    .then(favorites => dispatch(addFavorites(favorites)))
-    .catch(error => dispatch(favoritesFailed(error.message)));
-}
-
-
-export const postFavorite = (dishId) => (dispatch) => {
-    //syntax error 'Bearer' -> 'Bearer '
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + 'favorites/' + dishId,{
-        method: "POST",
-        body: JSON.stringify({"_id": dishId}),
-        headers:{
-            'Content-Type': 'application/json',
-            'Authorization': bearer
-        },
-        // credentials: 'same-origin'
-    })
-    .then((response)=>{
-        if(response.ok){
-            return response
-        }
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.response = response;
-            throw error;
-        }
-    },(error)=>{
-        throw error
-    })
-    .then(response => response.json())
-    .then(favorites => {
-        console.log('Favorite Added', favorites);
-        dispatch(addFavorites(favorites));
-    })
-    .catch(error => dispatch(favoritesFailed(error.message)));
-}
-
-export const deleteFavorite = (dishId) => (dispatch) => {
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + 'favorites/' + dishId, {
-        method: 'DELETE',
-        headers:{
-            'Authorization': bearer
-        },
-        // credentials: 'same-origin'
-    })
-    .then((response)=>{
-        if(response.ok){
-            return response;
-        }
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.response = response;
-            throw error;
-        }
-    },(error)=>{
-        throw error;
-    })
-    .then(response => response.json())
-    .then(favorites => {
-        console.log('Favorite Deleted', favorites);
-        dispatch(addFavorites(favorites));
-    })
-    .catch((error)=> dispatch(favoritesFailed(error.message)));
-}
 
 // User Authentication
 // Login
@@ -417,7 +201,6 @@ export const logoutUser = () => (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('token');
     localStorage.removeItem('creds');
-    dispatch(favoritesFailed('Error 401: Unauthorized'));
     dispatch(receiveLogout());
 }
 

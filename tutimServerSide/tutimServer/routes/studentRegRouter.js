@@ -17,7 +17,7 @@ studentRegRouter.route('/')
 .options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+.get(cors.cors, (req,res,next)=>{
     StudentReg.find(req.query)
     .then((studentRegs)=>{
         res.statusCode = 200;
