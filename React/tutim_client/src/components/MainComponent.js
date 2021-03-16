@@ -11,6 +11,8 @@ import findClass from './forms/findClass';
 import TeacherRegs from './list/teacherRegs';
 import StudentRegs from './list/studentRegs';
 
+import StudentFilter from './list/studentFilter';
+
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {fetchTeacherReg, fetchStudentReg,
@@ -81,7 +83,9 @@ class Main extends Component{
                 <Route path="/teacherInfo" component={TeacherInfo}/>
                 <Route path='/findTeacher' component={findTeacher}/>
                 <Route path='/findClass' component={findClass}/>
-                {/*  */}
+
+                <Route path='/filter' component={() => <StudentFilter studentRegs={this.props.studentRegs}/>}/>
+
                 {/* <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
                   postFeedback={this.props.postFeedback}/>}/> */}
                 {/* <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites?this.props.favorites:false} deleteFavorite={this.props.deleteFavorite} />} /> */}

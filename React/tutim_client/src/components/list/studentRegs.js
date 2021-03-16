@@ -5,7 +5,6 @@ import {Loading} from '../LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
-
     function RenderStudentCard({student}){
         let subject = student.subject.join(' ');
         let grade = student.grade.join(' ');
@@ -39,6 +38,7 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
     const StudentRegs = (props) =>{
         const studentRegs = props.studentRegs.studentRegs.map((student)=>{
             console.log(student);
+            
             return (                
                 <div key={student.id} className="col-12 col-md-5 m-1">
                   <RenderStudentCard student={student}/>
@@ -46,22 +46,22 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
             );
         });
      
-            return (
-                <div className="container">
-                    <div className="row">
-                        <Breadcrumb>
-                            <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
-                            <BreadcrumbItem active>Lớp học hiện có</BreadcrumbItem>
-                        </Breadcrumb>
-                        <div className="col-12">
-                            <h3>Lớp học hiện có</h3>
-                            <hr/>
-                        </div>
-                    </div>
-                    <div className="row">
-                            {studentRegs}
+        return (
+            <div className="container">
+                <div className="row">
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>Lớp học hiện có</BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className="col-12">
+                        <h3>Lớp học hiện có</h3>
+                        <hr/>
                     </div>
                 </div>
-            );
+                <div className="row">
+                        {studentRegs}
+                </div>
+            </div>
+        );
     }
 export default StudentRegs;
