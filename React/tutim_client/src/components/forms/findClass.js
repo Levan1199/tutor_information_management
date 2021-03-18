@@ -91,6 +91,7 @@ class findClass extends Component {
     multiSelectDropdown({field, form, meta, ...props}){
         const optionName = field.name;
         const options = this.state.options[optionName];
+        console.log(this.state.options);
         return (
             <Multiselect
                 options={options}
