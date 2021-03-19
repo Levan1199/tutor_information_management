@@ -209,9 +209,11 @@ constructor(props){
             grade:[''],
             subject:[''],
         },        
-        // filter:{
-
-        // },
+        filter:{
+            district:[''],
+            grade:[''],
+            subject:['']
+        },
         options:{
             district:[
                 {name: 'Quận 1', id: 1},
@@ -247,13 +249,24 @@ constructor(props){
                 {name: 'Lý', id: 2},
                 {name: 'Hóa', id: 3},
             ]
-        }
+        },
+        cards:[{}]
     }
 }      
 
+componentDidMount(){
+    console.log('z',this.props.studentRegs);
+    this.setState({cards:this.props.studentRegs});
+    console.log('aa',this.state.cards);
+}
+
 handleSubmit(values){
-    console.log('Current State is: ' +JSON.stringify(values));
-    console.log('props: ', this.props.studentRegs);
+    var filterName = {};
+        filterName.district = values.district.map(district=>district.name);
+        filterName.grade = values.grade.map(grade=>grade.name);
+        filterName.subject = values.subject.map(subject=>subject.name);
+    console.log('data', filterName);
+    this.setState({filter:filterName});
 }
 
 multiSelectDropdown({field, form, meta, ...props}){
@@ -273,6 +286,9 @@ multiSelectDropdown({field, form, meta, ...props}){
 
 render(){
     const Rendering = this.props.RenderRegs;
+    const Filtered = this.props.studentRegs.filter((student)=>{
+        return student.district.some(dist => this.state.filter.district.includes(dist));
+    });
     return(
         <>
         <div className="row">
@@ -316,7 +332,7 @@ render(){
             </Formik>
         </div>
         <div className="row">
-            <Rendering regs={this.props.studentRegs}/>
+            <Rendering regs={Filtered}/>
         </div>
         </>
     );
