@@ -11,7 +11,7 @@ import findClass from './forms/findClass';
 import TeacherRegs from './list/teacherRegs';
 import StudentRegs from './list/studentRegs';
 
-import StudentFilter from './list/studentFilter';
+// import StudentFilter from './list/studentFilter';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -78,14 +78,15 @@ class Main extends Component{
               <Switch>
                 <Route path="/home" component={Home}/>
                 <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs}/>}/>
-                <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs}/>}/>
+                <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs.studentRegs}
+                                                                                      isLoading = {this.props.studentRegs.isLoading}/>}/>
 
                 <Route path="/teacherInfo" component={TeacherInfo}/>
                 <Route path='/findTeacher' component={findTeacher}/>
                 <Route path='/findClass' component={findClass}/>
 
-                <Route path='/filter' component={() => <StudentFilter studentRegs={this.props.studentRegs.studentRegs}
-                                                                      isLoading = {this.props.studentRegs.isLoading}/>}/>
+                {/* <Route path='/filter' component={() => <StudentFilter studentRegs={this.props.studentRegs.studentRegs}
+                                                                      isLoading = {this.props.studentRegs.isLoading}/>}/> */}
 
                 {/* <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
                   postFeedback={this.props.postFeedback}/>}/> */}
