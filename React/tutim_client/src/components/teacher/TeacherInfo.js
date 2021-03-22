@@ -12,6 +12,8 @@ import {TEXT} from '../../shared/basicText';
 // import local data
 import './teacherInfo.css';
 
+import { Avatar } from '@material-ui/core';
+
 // export const Timee = new Date().toISOString();
 
 function RenderCard(){
@@ -53,7 +55,7 @@ class CommentForm extends Component {
     render() {
         return(
         <div>
-            <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span> Submit Comment</Button>
+            <Button outline onClick={this.toggleModal}><span className="fa fa-pencil fa-lg"></span></Button>
             <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
             <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
             <ModalBody>
@@ -107,37 +109,47 @@ function RenderUserComment(){
     );
 }
 
+
 function TeacherInfo(){
     return (
         <div className="container">
-            <div className="row">
+            {/* <div className="row">
                 <Breadcrumb>
                     <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
                     <BreadcrumbItem active>Gia sư</BreadcrumbItem>
                 </Breadcrumb>
                 <div className="col-12">
-                    <h2>Gia sư</h2>
+                    <h2>Trang cá nhân</h2>
                     <hr/>
                 </div>
-            </div>
-            <div className="row">
-                <div className="col-sm">
-                    <img src="assets/images/download.png" alt="Teacher's photo" width="70%" height="45%"/>
+            </div> */}
+            <div className="row row-content">
+                <div className="col-md-12 col-lg-3">
+                    <img class="ava" src="assets/images/download.png" alt="Teacher's photo" />
                 </div>
-                <div className="col-12 col-sm-6">
-                <h2>Our History</h2>
-                    <strong>Các lớp: </strong> Lớp 7 8
+                <div className="col-md-12 col-lg-7">
+                <h2>Nguyễn Văn A</h2>
+                <h4>Tốt nghiệp Đại học Sư phạm</h4>
+                    {/* <strong>Các lớp: </strong> Lớp 7 8
                     <br/>
                     <strong>Môn học: </strong> Toán Lý Hóa
                     <br/>
                     <strong>Khu vực quận: </strong> Quận 10, Quận Phú Nhuận
                     <br/>
                     <strong>Học phí: </strong> 2500000
-                    <br/>
-                    <strong>Thông tin khác: </strong> Tốt nghiệp Đại Học Bách Khoa, Ielts 6.5
-                    <CommentForm/>
+                    <br/> */}
+                <hr/>
+                <h6>
+                    <strong>Mô tả: </strong> Tốt nghiệp Đại Học Bách Khoa, Ielts 6.5
+                </h6>
+                 
+                </div>
+                <div className="col-md-12 col-lg-2">
+                       <CommentForm/>
                 </div>
             </div>
+
+
             <hr/>
             <div className="row justify-content-center">
                 <h4 className="font-weight-bold">
