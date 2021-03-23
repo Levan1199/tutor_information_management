@@ -46,9 +46,9 @@ class Header extends Component{
         this.props.logoutUser();
     }
 
-    componentDidMount(){
-        console.log(this.props.auth.isAuthenticated);
-    }
+    // componentDidMount(){
+    //     console.log(this.props.auth.isAuthenticated);
+    // }
 
     render(){
         return( 

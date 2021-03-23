@@ -36,10 +36,6 @@ router.post('/signup', (req,res,next)=>{
       else{
         if(req.body.username)
           user.username = req.body.username;
-        // if (req.body.firstname)
-        //   user.firstname = req.body.firstname;
-        // if (req.body.lastname)
-        //   user.lastname = req.body.lastname;
         user.save((err,user)=>{
           if(err){
             res.statusCode = 500;
@@ -73,10 +69,11 @@ router.post('/login', cors.corsWithOptions,(req,res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.json({success: false, token: token, status:'Login Unsuccessful', err: 'Could not log in user'});
       }
+      // console.log(req.user);
       var token = authenticate.getToken({_id: req.user._id});
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true, token: token, status:'Login Successful', token: token});
+      res.json({success: true, token: token, status:'Login Successful', teacherId: req.user._id});
     })
   }) (req, res, next);
 });
@@ -97,32 +94,32 @@ router.get('/logout',(req,res)=>{
   }
 });
 
-// router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res)=>{
-//   if (req.user){
-//     var token = authenticate.getToken({_id: req.user._id});
-//     res.statusCode = 200;
-//     res.setHeader('Content-Type', 'application/json');
-//     res.json({success: true, token: token, status:'You are sucessfully logged in!'});
-//   }
-// });
+router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res)=>{
+  if (req.user){
+    var token = authenticate.getToken({_id: req.user._id});
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({success: true, token: token, status:'You are sucessfully logged in!', teacherId: req.user._id});
+  }
+});
 
-// router.get('/checkJWTToken', cors.corsWithOptions, (req, res)=>{
-//   passport.authenticate('jwt', {session: false}, (err, user, info)=>{
-//     if(err){
-//       return next(err);
-//     }
-//     if(!user){
-//       res.statusCode = 401;
-//       res.setHeader('Content-type', 'application/json');
-//       return res.json({status:'JWT invalid!', success: false, err: info})
-//     }
-//     else{
-//       res.statusCode = 200;
-//       res.setHeader('Content-type', 'application/json');
-//       return res.json({status:'JWT valid!', success: true, user: user})
-//     }
-//   })(req, res);
-// });
+router.get('/checkJWTToken', cors.corsWithOptions, (req, res)=>{
+  passport.authenticate('jwt', {session: false}, (err, user, info)=>{
+    if(err){
+      return next(err);
+    }
+    if(!user){
+      res.statusCode = 401;
+      res.setHeader('Content-type', 'application/json');
+      return res.json({status:'JWT invalid!', success: false, err: info})
+    }
+    else{
+      res.statusCode = 200;
+      res.setHeader('Content-type', 'application/json');
+      return res.json({status:'JWT valid!', success: true, user: user})
+    }
+  })(req, res);
+});
 
 module.exports = router;
  

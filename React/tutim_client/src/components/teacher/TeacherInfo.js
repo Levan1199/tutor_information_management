@@ -5,7 +5,7 @@ import {Card, CardImg, CardText, CardBody, CardTitle,
     Media,CardSubtitle, UncontrolledCarousel, Jumbotron,
     Label, Modal, ModalHeader, ModalBody, Button, Row, Col} from 'reactstrap';
 import {LocalForm, Control} from 'react-redux-form';
-// import { Loading } from './LoadingComponent';
+import { Loading } from '../LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {FadeTransform} from 'react-animation-components';
 import {TEXT} from '../../shared/basicText';
@@ -91,6 +91,42 @@ class CommentForm extends Component {
 
 }
 
+function RenderWorkSpace({profile}){
+    const grade = profile.grade.join(', ');
+    const subject = profile.subject.join(', ');
+    const district = profile.district.join(', ');
+
+
+    return(
+        <div className="row row-content">
+            <div className="col-md-12 col-lg-5">
+                <h5>
+                    <strong>Các lớp: </strong> {grade}
+                </h5>
+                <h5>
+                    <strong>Môn học: </strong> {subject}
+                </h5>
+                <h5>
+                    <strong>Khu vực: </strong> {district}
+                </h5>
+                <h5>
+                    <strong>Học phí: </strong> {profile.fee}
+                </h5>                
+            </div>
+
+            <div className="col-md-12 col-lg-5">
+                <h5>
+                    <strong>Thời gian: </strong> {profile.time}
+                </h5>                
+            </div>
+
+            <div className="col justify-self-end">
+                    <CommentForm/>
+            </div>
+        </div>
+    );   
+}
+
 function RenderUserComment(){
     return (
         <>
@@ -110,71 +146,74 @@ function RenderUserComment(){
 }
 
 
-function TeacherInfo(){
-    return (
-        <div className="container">
-            {/* <div className="row">
-                <Breadcrumb>
-                    <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
-                    <BreadcrumbItem active>Gia sư</BreadcrumbItem>
-                </Breadcrumb>
-                <div className="col-12">
-                    <h2>Trang cá nhân</h2>
-                    <hr/>
+function TeacherInfo(props){
+    // console.log(prop);
+    if (props.isLoading) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <Loading />
                 </div>
-            </div> */}
-            <div className="row row-content">
-                <div className="col-md-12 col-lg-3">
-                    <img class="ava" src="assets/images/download.png" alt="Teacher's photo" />
+            </div>
+        );
+    }
+    else if (props.errMess) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <h4>{props.errMess}</h4>
                 </div>
-                <div className="col-md-12 col-lg-7">
-                <h2>Nguyễn Văn A</h2>
-                <h4>Tốt nghiệp Đại học Sư phạm</h4>
-                    {/* <strong>Các lớp: </strong> Lớp 7 8
-                    <br/>
-                    <strong>Môn học: </strong> Toán Lý Hóa
-                    <br/>
-                    <strong>Khu vực quận: </strong> Quận 10, Quận Phú Nhuận
-                    <br/>
-                    <strong>Học phí: </strong> 2500000
-                    <br/> */}
+            </div>
+        );
+    }
+    else if (props.profile != null){
+        console.log(props.profile);
+        return (
+            <div className="container">
+                <div className="row row-content">
+                    <div className="col-md-12 col-lg-3">
+                        <img class="ava" src="assets/images/download.png" alt="Teacher's photo" />
+                    </div>
+                    <div className="col-md-12 col-lg-7">
+                        <h2>{props.profile.name}</h2>
+                        <h4>{props.profile.email}</h4>
+                        <hr/>
+                        <h6>
+                            <strong>Mô tả: </strong> {props.profile.description}
+                        </h6>                 
+                    </div>
+                    <div className="col-md-12 col-lg-2">
+                        <CommentForm/>
+                    </div>
+                </div>
+
+                <RenderWorkSpace profile={props.profile}/>
+
+                <div className="row justify-content-center">
+                    <h4 className="font-weight-bold">
+                        Chứng chỉ
+                    </h4>
+                </div>
+                <div className="row align-items-start">
+                    <div className="col-12 col-md m-1">
+                        <RenderCard/>
+                    </div>
+                    <div className="col-12 col-md m-1">
+                        <RenderCard/>
+                    </div>
+                    <div className="col-12 col-md m-1">
+                        <RenderCard/>
+                    </div>            
+                </div>
                 <hr/>
-                <h6>
-                    <strong>Mô tả: </strong> Tốt nghiệp Đại Học Bách Khoa, Ielts 6.5
-                </h6>
-                 
+                <div className="col-12">
+                    <h3>Đánh giá</h3>
                 </div>
-                <div className="col-md-12 col-lg-2">
-                       <CommentForm/>
-                </div>
+                <RenderUserComment/>
+                <RenderUserComment/>
             </div>
-
-
-            <hr/>
-            <div className="row justify-content-center">
-                <h4 className="font-weight-bold">
-                    Chứng chỉ
-                </h4>
-            </div>
-            <div className="row align-items-start">
-                <div className="col-12 col-md m-1">
-                    <RenderCard/>
-                </div>
-                <div className="col-12 col-md m-1">
-                    <RenderCard/>
-                </div>
-                <div className="col-12 col-md m-1">
-                    <RenderCard/>
-                </div>            
-            </div>
-            <hr/>
-            <div className="col-12">
-                <h3>Đánh giá</h3>
-            </div>
-            <RenderUserComment/>
-            <RenderUserComment/>
-        </div>
-    );
+        );
+    }
 }
 
 export default TeacherInfo;

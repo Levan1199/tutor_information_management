@@ -12,7 +12,7 @@ import moment from 'moment';
 
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import * as Yup from "yup";
-class findClass extends Component {
+class FindClass extends Component {
     constructor(props){
         super(props);      
         
@@ -85,20 +85,31 @@ class findClass extends Component {
         
   
     handleSubmit(values){
-        console.log('Current State is: ' +JSON.stringify(values));
+        // console.log('Current State is: ' +JSON.stringify(values));
+        console.log('Current State is: ' ,values.district,values.grade,values.subject);       
+
+        this.props.postTeacherRegs(
+            values.name, values.sex, values.dateOfBirth,values.district,values.identify,values.address, 
+            values.telnum,values.email,values.grade,values.subject,values.students,
+            values.fee,values.periodAWeek, values.time, values.description
+        );
     }
 
     multiSelectDropdown({field, form, meta, ...props}){
         const optionName = field.name;
         const options = this.state.options[optionName];
-        console.log(this.state.options);
         return (
             <Multiselect
                 options={options}
                 displayValue="name" 
                 showCheckbox
                 onSelect={(value)=>{
-                   form.setFieldValue(optionName,value);
+                    const arr = [];
+                    value.map(e=>{
+                        arr.push(e.name);
+                        form.setFieldValue(optionName,arr);
+                    });
+                  
                 }}
             />
         );
@@ -112,7 +123,6 @@ class findClass extends Component {
     //                 format="DD-mm-yyyy"
     //                 onChange={(value) => {
     //                     // form.setFieldValue("date", moment(value).format('dd-mm-yyyy'));
-    //                     console.log(value);
     //                 }}
     //             />
     //         </MuiPickersUtilsProvider>
@@ -130,7 +140,7 @@ class findClass extends Component {
                 // placeholder="Tháng/Ngày/Năm"
                 onChange = {
                         (e) => {
-                            form.setFieldValue("age",moment(e.target.value).format('DD-MM-YYYY'));
+                            form.setFieldValue("dateOfBirth",moment(e.target.value).format('DD-MM-YYYY'));
                         } 
                     }
             />
@@ -346,4 +356,4 @@ class findClass extends Component {
     
 }
 
-export default findClass;
+export default FindClass;

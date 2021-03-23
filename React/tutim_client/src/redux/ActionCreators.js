@@ -7,9 +7,9 @@ export const addComment = (comment) => ({
     payload: comment
 });
 
-export const postComment = (dishId, rating, comment) => (dispatch) =>  {
+export const postComment = (userId, rating, comment) => (dispatch) =>  {
     const newComment = {
-        dish: dishId,
+        user: userId,
         rating: rating,
         comment: comment
     }
@@ -132,7 +132,8 @@ export const requestLogin = (creds) => {
 export const receiveLogin = (response) => {
     return{
         type: ActionTypes.LOGIN_SUCCESS,
-        token: response.token
+        token: response.token,
+        teacherId: response.teacherId
     }
 }
 
@@ -145,7 +146,7 @@ export const loginError = (message) => {
 
 export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
-    dispatch(requestLogin(creds))
+    dispatch(requestLogin(creds));
 
     return fetch(baseUrl + 'users/login',{
         method: 'POST',
@@ -172,6 +173,7 @@ export const loginUser = (creds) => (dispatch) => {
             localStorage.setItem('token', response.token);
             localStorage.setItem('creds', JSON.stringify(creds));
             // dispatch(fetchFavorites());
+            localStorage.setItem('teacherId',response.teacherId);
             dispatch(receiveLogin(response));
         }
         else{
@@ -204,54 +206,67 @@ export const logoutUser = () => (dispatch) => {
     dispatch(receiveLogout());
 }
 
-// export const fetchTeachers = () => (dispatch) => {
-//     return fetch(baseUrl + 'teachers')
-//         .then(response => {
-//             if(response.ok){
-//                 return response;
-//             }
-//             else{
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         .then(response => response.json())
-//         // .then(comments => dispatch(addComments(comments)))
-//         // .catch(error => dispatch(commentsFailed(error.message)));
-// }
 
 
+export const postTeacherReg = (name, sex, dateOfBirth,district,identify,address, 
+    telnum,email,grade,subject,students,
+    fee,periodAWeek, time, description) => (dispatch) =>  {
 
+        const bearer = 'Bearer ' + localStorage.getItem('token');
+    
+    console.log(localStorage.getItem('token'));
+    console.log(name, sex, dateOfBirth,district,identify,address, 
+        telnum,email,grade,subject,students,
+        fee,periodAWeek, time, description);
 
-// export const fetchTeacher = () => (dispatch) => {
-//     dispatch(teacherLoading(true));
+        const teacherRegister = {
+            name: name,
+            sex: sex,
+            dateOfBirth: dateOfBirth,
+            district: district,
+            identify: identify,
+            address: address,
+            telnum: telnum,
+            email: email,
+            grade: grade,
+            name: name,
+            subject: subject,
+            students: students,
+            fee: fee,
+            periodAWeek: periodAWeek,
+            time: time,
+            description:description
+        }
+    
 
-//     return fetch(baseUrl + 'teachers')
-//         .then(response => {
-//             if(response.ok){
-//                 console.log(response.json());
-//                 return response;
-//             }
-//             else{
-//                 console.log('what happened');
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         .then(response => response.json())
-//         .then(teachers => dispatch(addTeacher(teachers)))
-//         .catch(error => dispatch(teacherFailed(error.message)));
-// }
+    return fetch(baseUrl + 'teacherReg', {
+        method: 'POST',
+        body: JSON.stringify(teacherRegister),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if(response.ok){
+                return response;
+            }
+            else{
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(response => dispatch(addTeacherReg(response)))
+        .catch(error => {console.log('Post teacher registrations ', error.message);
+            alert('Your registrations could not be posted\nError: ' + error.message);});
+}
 
 export const fetchTeacherReg = () => (dispatch) => {
     dispatch(teacherRegLoading(true));

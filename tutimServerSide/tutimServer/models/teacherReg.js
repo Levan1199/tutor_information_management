@@ -8,7 +8,7 @@ const teacherRegSchema = new Schema({
     },   
     sex:{
         type:String,
-        required:true
+        default:''
     },
     dateOfBirth:{
         type:Date,
@@ -28,11 +28,11 @@ const teacherRegSchema = new Schema({
     },
     telnum:{
         type: Number,
-        required: true
+        default: ''
     },   
     email:{
         type:String,
-        required:true
+        default: ''
     },
     grade:[{
         type:String,
@@ -48,20 +48,24 @@ const teacherRegSchema = new Schema({
     },
     fee:{
         type:Number,
-        required: true
+        default:''
     },
     periodAWeek:{
         type:Number,
-        required: true
+        default:''
     },
     time:{
         type:String,
-        required: true
+        default:''
     },
     description:{
         type:String,
         default:''
     },
+    teacherId:{
+        type:String,
+        required:true
+    }
 },{
     timestamps: true
 });

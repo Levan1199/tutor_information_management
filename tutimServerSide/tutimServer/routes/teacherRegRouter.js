@@ -29,6 +29,7 @@ teacherRegRouter.route('/')
 })
 
 .post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+    // console.log(req.body);
     TeacherRegs.create(req.body)
     .then((teacher)=>{
         console.log('Teacher Created ', teacher);
@@ -54,21 +55,20 @@ teacherRegRouter.route('/')
     .catch((err)=>next(err));
 });
 
-// // For specific dish Id
-// dishRouter.route('/:dishId')
-// .options( (req,res)=>{
-//     res.sendStatus(200);
-// })
-// .get( (req,res,next)=>{
-//     Dishes.findById(req.params.dishId)
-//     .populate('comments.author')
-//     .then((dish)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(dish);
-//     },(err)=>next(err))
-//     .catch((err)=> next(err));
-// })
+// // For specific Teacher Id
+teacherRegRouter.route('/:teacherId')
+.options(cors.corsWithOptions, (req,res)=>{
+    res.sendStatus(200);
+})
+.get( cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+    TeacherRegs.findById(req.params.teacherId)
+    .then((dish)=>{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(dish);
+    },(err)=>next(err))
+    .catch((err)=> next(err));
+})
 // .post(  (req,res,next)=>{
 //     res.statusCode = 403;
 //     res.end('POST operation not supported on /dishes/'

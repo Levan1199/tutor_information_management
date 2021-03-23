@@ -39,7 +39,7 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
     }
 
     const TeacherRegs = (props) =>{
-        const teacherRegs = props.teacherRegs.teacherRegs.map((teacher)=>{
+        const teacherRegs = props.teacherRegs.map((teacher)=>{
             return (
                 <div key={teacher.id} className="col-12 col-md-5 m-1">
                   <RenderTeacherCard teacher={teacher}/>
