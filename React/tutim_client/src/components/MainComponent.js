@@ -104,7 +104,6 @@ class Main extends Component{
                 <Route path='/findClass' component={() => <FindClass postTeacherRegs={this.props.postTeacherReg}/>}/>
 
 
-                <Route path="/index" component={`/assets/index.html`}/>
 
                 {/* <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
                   postFeedback={this.props.postFeedback}/>}/> */}
