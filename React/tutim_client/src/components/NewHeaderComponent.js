@@ -114,7 +114,7 @@ const NewHeader = props => {
                 variant="contained"
                 onClick={() => handleButtonClick("/")}
               >
-                Trang chu
+                Home Page
               </Button>
               <Button
                 variant="contained"
