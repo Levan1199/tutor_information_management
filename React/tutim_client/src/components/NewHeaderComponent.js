@@ -121,13 +121,13 @@ const NewHeader = props => {
                 variant="contained"
                 onClick={() => handleButtonClick("/contact")}
               >
-                CONTACT
+                PARENT
               </Button>
               <Button
                 variant="contained"
                 onClick={() => handleButtonClick("/about")}
               >
-                ABOUT
+                TEACHER
               </Button>
             </div>
           )}
