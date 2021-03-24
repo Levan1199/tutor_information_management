@@ -115,19 +115,19 @@ const NewHeader = props => {
                 variant="contained"
                 onClick={() => handleButtonClick("/")}
               >
-                HOME
+                Trang chu
               </Button>
               <Button
                 variant="contained"
                 onClick={() => handleButtonClick("/contact")}
               >
-                PARENT
+                Phu huynh
               </Button>
               <Button
                 variant="contained"
                 onClick={() => handleButtonClick("/about")}
               >
-                TEACHER
+                Gia su
               </Button>
             </div>
           )}
