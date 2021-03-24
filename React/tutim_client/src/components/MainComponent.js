@@ -11,7 +11,7 @@ import FindClass from './forms/findClass';
 import TeacherRegs from './list/teacherRegs';
 import StudentRegs from './list/studentRegs';
 
-// import StudentFilter from './list/studentFilter';
+import NewHeader from './NewHeaderComponent';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -103,7 +103,9 @@ class Main extends Component{
                 <Route path='/findTeacher' component={findTeacher}/>
                 <Route path='/findClass' component={() => <FindClass postTeacherRegs={this.props.postTeacherReg}/>}/>
 
-
+                <Route path="/newheader" component={()=> <NewHeader  auth={this.props.auth} 
+                                                                    loginUser={this.props.loginUser} 
+                                                                    logoutUser={this.props.logoutUser}/>}/>
 
                 {/* <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
                   postFeedback={this.props.postFeedback}/>}/> */}

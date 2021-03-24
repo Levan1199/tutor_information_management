@@ -7,6 +7,9 @@ import './App.css';
 import {BrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {ConfigureStore} from './redux/configureStore';
+
+import {ThemeProvider} from '@material-ui/core/styles';
+import theme from './shared/theme';
 //test
 const store = ConfigureStore();  
 
@@ -15,9 +18,11 @@ class App extends Component{
     return (
       <Provider store={store}>
         <BrowserRouter>
-          <div>      
-            <Main/>
-          </div>
+          <ThemeProvider theme={theme}>
+            <div>      
+              <Main/>
+            </div>
+          </ThemeProvider>
         </BrowserRouter>
       </Provider>
     );
