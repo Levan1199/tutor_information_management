@@ -69,11 +69,11 @@ router.post('/login', cors.corsWithOptions,(req,res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.json({success: false, token: token, status:'Login Unsuccessful', err: 'Could not log in user'});
       }
-      // console.log(req.user);
+      // console.log('login ',req.user);
       var token = authenticate.getToken({_id: req.user._id});
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true, token: token, status:'Login Successful', teacherId: req.user._id});
+      res.json({success: true, token: token, status:'Login Successful'});
     })
   }) (req, res, next);
 });

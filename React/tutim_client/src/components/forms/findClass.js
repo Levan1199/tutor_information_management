@@ -2,13 +2,14 @@ import React, {Component, useState} from 'react';
 import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {Multiselect} from 'multiselect-react-dropdown';
-import DatePicker, {DateView} from "react-datepicker";
+// import DatePicker, {DateView} from "react-datepicker";
 import {TextField} from "@material-ui/core";
 // import { DatePicker, KeyboardDatePicker , MuiPickersUtilsProvider } from '@material-ui/pickers'
 // import DateMomentUtils from "@date-io/moment";
 // import DateFnsUtils from '@date-io/date-fns';
-import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+
+// import DateTimePicker from "./Datepicker";
 
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import * as Yup from "yup";
@@ -85,9 +86,7 @@ class FindClass extends Component {
         
   
     handleSubmit(values){
-        // console.log('Current State is: ' +JSON.stringify(values));
-        console.log('Current State is: ' ,values.district,values.grade,values.subject);       
-
+        console.log('Current State is: ' ,values.dateOfBirth); 
         this.props.postTeacherRegs(
             values.name, values.sex, values.dateOfBirth,values.district,values.identify,values.address, 
             values.telnum,values.email,values.grade,values.subject,values.students,
@@ -202,7 +201,8 @@ class FindClass extends Component {
                                             name="dateOfBirth"
                                             id="dateOfBirth"
                                         />
-                                                                             
+                                        {/* <DateTimePicker name="dateOfBirth" label="Date Of Birth"
+                                        />                                                                              */}
                                     <ErrorMessage name="dateOfBirth"/>
                                     </Col>
                                 </Row>                              

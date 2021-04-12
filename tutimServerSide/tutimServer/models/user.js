@@ -8,7 +8,11 @@ var User = new Schema({
     admin:{
         type: Boolean,
         default: false
-    }    
+    },
+    teacherProfile:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'TeacherReg'
+    }
 });
 
 User.plugin(passportLocalMongoose);

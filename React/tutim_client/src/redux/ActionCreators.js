@@ -119,6 +119,54 @@ export const postFeedback = (firstname, lastname, telnum, email, agree, contactT
             alert('Your feedback could not be posted\nError: ' + error.message);});
 }
 
+// fetch Profile
+export const fetchTeacherProfile = () => (dispatch) => {
+    console.log('inside fetching');
+    dispatch(profileLoading(true));
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'teacherProfile', {
+        // method: 'GET',
+        headers: {
+            // 'Content-Type': 'application/json',
+            'Authorization': bearer
+        }
+    })
+    // .then(response => {
+    //     if(response.ok){
+    //         console.log('fetched profile ',response);
+    //         return response;
+    //     }
+    //     else{
+    //         var error = new Error('Error ' + response.status + ': ' + response.statusText);
+    //         error.response = response;
+    //         throw error;
+    //     }
+    // },
+    // error => {
+    //     var errmess = new Error(error.message);
+    //     throw errmess;
+    // })
+    .then(response => response.json())
+    .then(profile => {
+        console.log('profiles: ',profile);
+        return dispatch(addProfile(profile));
+    })
+    .catch(error => dispatch(profileFailed(error.message)));
+}
+
+export const addProfile = (profile)=> ({
+    type: ActionTypes.ADD_PROFILE,
+    payload: profile
+});
+
+export const profileFailed = (errmess)=>({
+    type: ActionTypes.PROFILE_FAILED,
+    payload: errmess
+})
+
+export const profileLoading = () =>({
+    type: ActionTypes.PROFILE_LOADING
+})
 
 // User Authentication
 // Login
@@ -133,7 +181,7 @@ export const receiveLogin = (response) => {
     return{
         type: ActionTypes.LOGIN_SUCCESS,
         token: response.token,
-        teacherId: response.teacherId
+        // teacherId: response.teacherId
     }
 }
 
@@ -172,8 +220,8 @@ export const loginUser = (creds) => (dispatch) => {
         if(response.success){
             localStorage.setItem('token', response.token);
             localStorage.setItem('creds', JSON.stringify(creds));
-            // dispatch(fetchFavorites());
-            localStorage.setItem('teacherId',response.teacherId);
+            console.log('login success fetching');
+            dispatch(fetchTeacherProfile());
             dispatch(receiveLogin(response));
         }
         else{
@@ -203,13 +251,45 @@ export const logoutUser = () => (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('token');
     localStorage.removeItem('creds');
+    // localStorage.removeItem('teacherId');
     dispatch(receiveLogout());
 }
 
+export const updateTeacherReg = (props) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    // const teacherId = localStorage.getItem('teacherId');
+    // console.log(props);
 
+    return fetch(baseUrl + 'teacherProfile/'  ,{
+        method: 'PUT',
+        body: JSON.stringify(props),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+        .then(response => {
+            if(response.ok){
+                return response;
+            }
+            else{
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => {
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+        .then(response => response.json())
+        .then(response => dispatch(addProfile(response)))
+        .catch(error => {console.log('Update teacher registrations ', error.message);
+            alert('Your registrations could not be updated\nError: ' + error.message);});
+}
 
-export const postTeacherReg = (name, sex, dateOfBirth,district,identify,address, 
-    telnum,email,grade,subject,students,
+export const postTeacherReg = (name, sex, dateOfBirth,district,identify,address, telnum,email,grade,subject,students,
     fee,periodAWeek, time, description) => (dispatch) =>  {
 
         const bearer = 'Bearer ' + localStorage.getItem('token');

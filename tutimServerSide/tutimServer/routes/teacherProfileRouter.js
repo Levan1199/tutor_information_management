@@ -1,35 +1,38 @@
 
-// const express = require('express');
-// const bodyParser = require('body-parser');
-// const mongoose = require('mongoose');
-// const authenticate = require('../authenticate');
-// const cors = require('./cors');
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const authenticate = require('../authenticate');
+const cors = require('./cors');
 
-// mongoose.set('useFindAndModify',false);
+mongoose.set('useFindAndModify',false);
 
-// const TeacherRegs = require('../models/teacherReg');
+const TeacherRegs = require('../models/teacherReg');
+const User = require('../models/user');
 
-// const teacherRegRouter = express.Router();
+const teacherProfileRouter = express.Router();
 
-// teacherRegRouter.use(bodyParser.json());
+teacherProfileRouter.use(bodyParser.json());
 
 
-// teacherRegRouter.route('/')
-// .options(cors.corsWithOptions, (req,res)=>{
-//     res.sendStatus(200);
-// })
-// .get(cors.cors, (req,res,next)=>{
-//     TeacherRegs.find(req.query)
-//     .then((teachers)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(teachers);
-//     },(err)=>next(err))
-//     .catch((err)=> next(err));
-// })
+teacherProfileRouter.route('/')
+.options(cors.corsWithOptions, (req,res)=>{
+    res.sendStatus(200);
+})
+.get(cors.cors, authenticate.verifyUser, (req,res,next)=>{
+    User.findOne(req.user._id)
+    .populate('teacherProfile')
+    .then((profile)=>{
+        // console.log('profile ',profile);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(profile);
+    },(err)=>next(err))
+    .catch((err)=> next(err));
+})
 
 // .post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
-//     // console.log(req.body);
+//     User.findOne(req.user._id)
 //     TeacherRegs.create(req.body)
 //     .then((teacher)=>{
 //         console.log('Teacher Created ', teacher);
@@ -40,10 +43,20 @@
 //     .catch((err)=> next(err));
 // })
 
-// .put( cors(), (req,res,next)=>{
-//     res.statusCode = 403;
-//     res.end('PUT operation not supported on /dishes');
-// })
+
+.put( cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+    User.findOneAndUpdate({_id:req.user._id},{
+        $set: req.body
+        }, {new: true})
+    .populate('teacherProfile')
+    .then((profile)=>{
+        console.log('profile ',profile);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(profile);
+    },(err)=>next(err))
+    .catch((err)=> next(err));
+})
 
 // .delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
 //     TeacherRegs.remove({})
@@ -57,5 +70,5 @@
 
 
 
-// module.exports = teacherRegRouter;
+module.exports = teacherProfileRouter;
 

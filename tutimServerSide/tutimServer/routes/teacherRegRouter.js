@@ -8,7 +8,7 @@ const cors = require('./cors');
 mongoose.set('useFindAndModify',false);
 
 const TeacherRegs = require('../models/teacherReg');
-
+const User = require('../models/user');
 const teacherRegRouter = express.Router();
 
 teacherRegRouter.use(bodyParser.json());
@@ -18,8 +18,8 @@ teacherRegRouter.route('/')
 .options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-.get(cors.cors, (req,res,next)=>{
-    TeacherRegs.find(req.query)
+.get(cors.corsWithOptions, (req,res,next)=>{
+    TeacherRegs.find({})
     .then((teachers)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -60,12 +60,14 @@ teacherRegRouter.route('/:teacherId')
 .options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-.get( cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+.get(cors.corsWithOptions, authenticate.verifyUser,(req,res,next)=>{
+    console.log('auth', req.params.teacherId);
     TeacherRegs.findById(req.params.teacherId)
-    .then((dish)=>{
+    .then((teacher)=>{
+        console.log(teacher);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(dish);
+        res.json(teacher);
     },(err)=>next(err))
     .catch((err)=> next(err));
 })
@@ -74,17 +76,31 @@ teacherRegRouter.route('/:teacherId')
 //     res.end('POST operation not supported on /dishes/'
 //     + req.params.dishId);
 // })
-// .put(  (req, res, next) => {
-//     Dishes.findOneAndUpdate(req.params.dishId,{
-//         $set: req.body
-//     },{new:true})
-//     .then((dish)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(dish);
-//     },(err)=>next(err))
-//     .catch((err)=> next(err));
-// })
+.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    // User.findOneAndUpdate(req.params.teacherId,{
+    //     $set:{"username":req.body.name}
+    // })
+    // .then(
+        console.log('b4 ',req.user);
+    TeacherRegs.findOneAndUpdate({teacherId:req.params.teacherId},{
+        $set: req.body
+    },{new:true})
+    .then(TeacherRegs.find({}))
+    .then((teachers)=>{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(teachers);
+    },(err)=>next(err))
+    .catch((err)=> next(err));
+    // )
+    // .then((teacher)=>{
+    //     console.log('update ', teacher);
+    //     res.statusCode = 200;
+    //     res.setHeader('Content-Type', 'application/json');
+    //     res.json(teacher);
+    // },(err)=>next(err))
+    // .catch((err)=> next(err));
+})
 // .delete( (req,res,next)=>{
 //     Dishes.findByIdAndRemove(req.params.dishId)
 //     .then((resp)=>{

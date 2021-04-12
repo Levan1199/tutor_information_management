@@ -3,6 +3,7 @@ import {createForms} from 'react-redux-form';
 import { Comments } from './comments';
 import { TeacherRegs } from './teacherRegs';
 import { StudentRegs } from './studentReg';
+import {Profiles} from './profile';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { InitialFeedback } from './forms';
@@ -15,6 +16,7 @@ export const ConfigureStore = () => {
                 comments: Comments,
                 teacherRegs: TeacherRegs,
                 studentRegs: StudentRegs,
+                profiles: Profiles,
                 auth: Auth,
                 ...createForms({
                     feedback: InitialFeedback

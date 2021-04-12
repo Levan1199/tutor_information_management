@@ -62,10 +62,10 @@ const teacherRegSchema = new Schema({
         type:String,
         default:''
     },
-    teacherId:{
-        type:String,
-        required:true
-    }
+    // teacherId:{
+    //     type:String,
+    //     required:true
+    // }
 },{
     timestamps: true
 });

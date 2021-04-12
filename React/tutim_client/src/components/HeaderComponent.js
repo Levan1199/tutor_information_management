@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Navbar, NavbarBrand, Nav, NavbarToggler, Collapse, NavItem,
-    Jumbotron, Button, Modal, ModalHeader, ModalBody, DropdownMenu, DropdownItem, Dropdown, DropdownToggle, UncontrolledDropdown,
+    Button, Modal, ModalHeader, ModalBody, DropdownMenu, DropdownItem, Dropdown, DropdownToggle, UncontrolledDropdown,
     Form, FormGroup, Input, Label} from 'reactstrap';
 import {NavLink, Link} from 'react-router-dom';
 class Header extends Component{
@@ -45,10 +45,6 @@ class Header extends Component{
     handleLogout(){
         this.props.logoutUser();
     }
-
-    // componentDidMount(){
-    //     console.log(this.props.auth.isAuthenticated);
-    // }
 
     render(){
         return( 
