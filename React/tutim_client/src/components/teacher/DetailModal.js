@@ -31,9 +31,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const initialValues = {
-    name: '',
-    email: '',
-    description: ''
+    grade: '',
+    subject: '',
 }
 
 const validationSchema = Yup.object({
@@ -58,7 +57,7 @@ const handleInput = (values, actions, updateTeacherReg, closeModal)=>{
     return closeModal();
 }
 
-const IntroModal = (props)=>{
+const DetailModal = (props)=>{
     const classes = useStyles();
 
     const inputBar = ({field, form, type, label, ...props}) => {
@@ -85,22 +84,22 @@ const IntroModal = (props)=>{
                     <Typography variant="h5">Chỉnh sửa phần giới thiệu</Typography>
                     <Field 
                         component={inputBar}
-                        name="name"
+                        name="grade"
                         type="text"
-                        label="Họ và tên"
+                        label="Các lớp"
                     />
                     <Field 
                         component={inputBar}
-                        name="email"
+                        name="subject"
                         type="text"
-                        label="Email"
+                        label="Môn học"
                     />
-                    <Field 
+                    {/* <Field 
                         component={inputBar}
                         name="description"
                         type="text"
                         label="Mô tả"
-                    />
+                    /> */}
                     <Grid container direction="row"  justify="space-evenly">
                         <Grid md={4} item>
                             <Button className={classes.btn} type="submit" fullWidth>Lưu lại</Button>
@@ -115,4 +114,4 @@ const IntroModal = (props)=>{
     );
 }
 
-export default IntroModal
+export default DetailModal

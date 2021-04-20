@@ -12,6 +12,16 @@ var User = new Schema({
     teacherProfile:{
         type: mongoose.Schema.Types.ObjectId,
         ref:'TeacherReg'
+    },
+    studentProfile:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'StudentReg'
+    },
+    isTeacher:{
+        type: Boolean,
+    },
+    isStudent:{
+        type: Boolean,
     }
 });
 

@@ -58,7 +58,8 @@ const inputBar = ({field, form, type, ...props}) => {
 
 const handleInput = (values, actions, loginUser, closeModal)=>{    
     loginUser({username: values.username, password: values.password});
-    return closeModal();
+    // return closeModal(false);
+    /////////////////////////
 }
 
 const Login = ({loginUser, closeModal})=>{

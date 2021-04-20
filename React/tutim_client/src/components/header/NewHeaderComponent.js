@@ -9,13 +9,15 @@ import Menu from "@material-ui/core/Menu";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Avatar, Modal, FormControl, InputLabel, Input, FormHelperText, Grid, Typography } from "@material-ui/core";
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 
 import SchoolIcon from '@material-ui/icons/School';
 import HomeIcon from '@material-ui/icons/Home';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 
-import Login from './login';
+// import Login from './login';
+import SignIn from '../entrance/signIn';
+import SignUp from '../entrance/signUp';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,21 +63,20 @@ const useStyles = makeStyles(theme => ({
 
 const NewHeader = (props) => {
   const classes = useStyles();
+  const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-  console.log('sth',props);
+  const [navChanged, setNavChanged] = React.useState(false)
+
+  if (props.isEmpty && !navChanged){
+    setNavChanged(true);
+    history.push('/stepper');
+  }
 
   const [openModal, setOpenModal] = React.useState(false);
-
-  const handleOpen = () => {
-    setOpenModal(true);
-  };
-
-  const handleClose = () => {
-    setOpenModal(false);
-  };
+  const [modalSignUp, setModalSU] = React.useState(false);
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -83,6 +84,17 @@ const NewHeader = (props) => {
 
   const handleLogout = () => {
     props.logoutUser();
+  }
+
+  const switchModal = () => {
+    if (openModal){
+      setModalSU(true);
+      return setOpenModal(false);
+    }
+    else{
+      setOpenModal(true);
+      return setModalSU(false);
+    }
   }
 
   const body = (
@@ -139,32 +151,29 @@ const NewHeader = (props) => {
               }
               {
               !props.auth.isAuthenticated ?
-              <MenuItem onClick={handleOpen} >
-                {/* <Button variant="text" onClick={handleOpen} className={classes.navButton}> */}
+              <MenuItem onClick={()=>setOpenModal(true)} >
                 Dang Nhap
                 {props.auth.isFetching ?
                     <span className="fa fa-spinner fa-pulse fa-fw"></span>
                     : null
                 }
-                {/* </Button> */}
               </MenuItem>
               :
               <>
-              <MenuItem>
-                <Link to="teacherInfo">
-                <Typography variant="body1">
-                  Trang Ca Nhan
-                </Typography>
-                </Link>    
-              </MenuItem>
+              <Link to="newteacherInfo">
+                <MenuItem>
+                  <Typography variant="body1">
+                    Trang Ca Nhan
+                  </Typography>
+                </MenuItem>
+              </Link>    
+
               <MenuItem onClick={handleLogout}>          
-                {/* <Button onClick={handleLogout}> */}
                     Dang Xuat
                     {props.auth.isFetching ?
                         <span className="fa fa-spinner fa-pulse fa-fw"></span>
                         : null
                     }
-                {/* </Button> */}
               </MenuItem>
               </>
             }
@@ -188,7 +197,7 @@ const NewHeader = (props) => {
               </div>
               {
                 !props.auth.isAuthenticated ?
-                <Button variant="contained" onClick={handleOpen} color="secondary" className={classes.navButton}>
+                <Button variant="contained" onClick={()=>setOpenModal(true)} color="secondary" className={classes.navButton}>
                 Dang Nhap
                 {props.auth.isFetching ?
                     <span className="fa fa-spinner fa-pulse fa-fw"></span>
@@ -197,7 +206,7 @@ const NewHeader = (props) => {
                 </Button>
                 :
                 <>
-                <Link to="newteacherInfo">
+                <Link to="newInfo">
                 <Typography variant="h6" className={classes.username}>
                   {props.name?props.name.toUpperCase():null}
                 </Typography>
@@ -218,11 +227,20 @@ const NewHeader = (props) => {
       </AppBar>
       <Modal
         open={openModal}
-        onClose={handleClose}
+        onClose={()=>setOpenModal(false)}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        <Login loginUser={props.loginUser} closeModal={handleClose}/>              
+        <SignIn loginUser={props.loginUser} setOpenModal={()=>setOpenModal()} switchModal={switchModal}/>              
+      </Modal>
+
+      <Modal
+        open={modalSignUp}
+        onClose={()=>{setModalSU(false)}}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <SignUp signUp={props.signUp} setModalSU={()=>setModalSU()} switchModal={switchModal}/>              
       </Modal>
     </div>
   );

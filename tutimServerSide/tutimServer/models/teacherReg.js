@@ -12,7 +12,7 @@ const teacherRegSchema = new Schema({
     },
     dateOfBirth:{
         type:Date,
-        required: true
+        default:''
     },
     district:[{
         type: String,

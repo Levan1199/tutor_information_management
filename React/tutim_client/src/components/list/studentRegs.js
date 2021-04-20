@@ -5,9 +5,8 @@ import {Loading} from '../LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
 import {Multiselect} from 'multiselect-react-dropdown';
-import { Formik, Form, Field, ErrorMessage, FastField, isEmptyArray } from "formik";
+import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import {Card, CardHeader,  CardContent} from '@material-ui/core';
-import { func } from 'prop-types';
 
 
 

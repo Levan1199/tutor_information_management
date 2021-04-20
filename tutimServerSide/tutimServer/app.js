@@ -20,6 +20,7 @@ var usersRouter = require('./routes/users');
 var teacherRegRouter = require('./routes/teacherRegRouter');
 var studentRegRouter = require('./routes/studentRegRouter');
 var teacherProfileRouter = require('./routes/teacherProfileRouter');
+var studentProfileRouter = require('./routes/studentProfileRouter');
 // Mongoose
 const mongoose = require('mongoose');
 
@@ -56,6 +57,7 @@ app.use('/users', usersRouter);
 app.use('/teacherReg', teacherRegRouter);
 app.use('/studentReg', studentRegRouter);
 app.use('/teacherProfile',teacherProfileRouter);
+app.use('/studentProfile',studentProfileRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

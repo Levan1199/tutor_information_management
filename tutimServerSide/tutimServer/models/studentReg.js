@@ -6,6 +6,10 @@ const studentRegSchema = new Schema({
         type: String,
         required: true
     },   
+    email:{
+        type:String,
+        default:''
+    },
     district:[{
         type: String,
         default:''
@@ -16,7 +20,7 @@ const studentRegSchema = new Schema({
     },
     telnum:{
         type: Number,
-        required: true
+        default:''
     },   
     grade:[{
         type:String,
@@ -32,11 +36,11 @@ const studentRegSchema = new Schema({
     },
     periodAWeek:{
         type:Number,
-        required: true
+        default:''
     },
     time:{
         type:String,
-        required: true
+        default:''
     },
     fee:{
         type:Number,

@@ -12,13 +12,17 @@ import StudentRegs from './list/studentRegs';
 
 import NewHeader from './header/NewHeaderComponent';
 import NewTeacherInfo from './teacher/NewTeacherInfo';
+import StudentInfo from './student/StudentInfo';
+import SetupProfile from './profile/SetupProfile';
+
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {fetchTeacherProfile ,fetchTeacherReg, fetchStudentReg, postTeacherReg,
+import { signUp ,fetchTeacherProfile ,fetchTeacherReg, fetchStudentReg, postTeacherProfile, postStudentProfile,fetchStudentProfile,
       loginUser, logoutUser, updateTeacherReg} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
+import DetailModal from './teacher/DetailModal';
 
 const mapStatetoProps = state =>{
   return{
@@ -37,27 +41,28 @@ const mapDispatchToProps = dispatch => ({
   // resetFeedbackForm: ()=>{
   //   dispatch(actions.reset('feedback'))
   // },
-  fetchTeacherProfile: ()=>{dispatch(fetchTeacherProfile)},
+  signUp:(creds)=>dispatch(signUp(creds)),
+  fetchTeacherProfile: ()=>{dispatch(fetchTeacherProfile())},
   fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
   updateTeacherReg: (props)=>{dispatch(updateTeacherReg(props))},
   fetchStudentReg: ()=>{dispatch(fetchStudentReg())},
-  postTeacherReg: (name, sex, dateOfBirth,district,identify,address, 
-    telnum,email,grade,subject,students,
-    fee,periodAWeek, time, description)=>dispatch(postTeacherReg(name, sex, dateOfBirth,district,identify,address, 
-      telnum,email,grade,subject,students,
-      fee,periodAWeek, time, description)),
+  postTeacherProfile: (props)=>{dispatch(postTeacherProfile(props))},
+
+  postStudentProfile: (props)=>{dispatch(postStudentProfile(props))},
+  fetchStudentProfile: ()=>{dispatch(fetchStudentProfile())},
   //Log in/out
   loginUser: (creds) => dispatch(loginUser(creds)),
   logoutUser: () => dispatch(logoutUser())
 })
 
 class Main extends Component{
-  
-  componentDidMount(){
+    componentDidMount(){
     this.props.fetchTeacherReg();
     this.props.fetchStudentReg();
     this.props.fetchTeacherProfile();
+    this.props.fetchStudentProfile();
   }
+
 
   render(){
     
@@ -84,15 +89,18 @@ class Main extends Component{
         <Redirect to="/home"/>
       );
     }
-  
 
     return (
       <div>      
         <NewHeader
         name={this.props.profiles.profiles.teacherProfile?this.props.profiles.profiles.teacherProfile.name:false}
+        // name={this.props.profiles.profiles.teacherProfile?(this.props.profiles.profiles.teacherProfile?this.props.profiles.profiles.teacherProfile.name:false):(this.props.profiles.profiles.studentProfile?this.props.profiles.profiles.studentProfile.name:false)}
         auth={this.props.auth} 
         loginUser={this.props.loginUser} 
-        logoutUser={this.props.logoutUser}  />
+        logoutUser={this.props.logoutUser} 
+        signUp={this.props.signUp}
+        isEmpty={this.props.profiles.isEmpty}
+        />
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
@@ -103,25 +111,46 @@ class Main extends Component{
 
                 <Route path="/teacherInfo" component={RenderProfile}/>
                 <Route path='/findTeacher' component={findTeacher}/>
-                <Route path='/findClass' component={() => <FindClass postTeacherRegs={this.props.postTeacherReg}/>}/>
+                <Route path='/findClass' component={() => <FindClass/>}/>
+                
+                <PrivateRoute path="/newInfo" component={()=>{
+                if(this.props.profiles.profiles.teacherProfile){
+                  return <NewTeacherInfo 
+                        profile={this.props.profiles.profiles}
+                        isLoading={this.props.profiles.isLoading}
+                        errMess={this.props.profiles.errMess}
+                  updateTeacherReg={this.props.updateTeacherReg}
+                  />
+                }
+                else {
+                  return <StudentInfo 
+                  profile={this.props.profiles.profiles}
+                  isLoading={this.props.profiles.isLoading}
+                  errMess={this.props.profiles.errMess}
+                  />
+                }}}/>
 
-                <Route path="/newheader" component={()=> <Header  auth={this.props.auth} 
-                                                                    loginUser={this.props.loginUser} 
-                                                                    logoutUser={this.props.logoutUser}/>}/>
-                {/* <Route path="/newteacherInfo" component={()=> <NewTeacherInfo  profile={this.props.teacherRegs.teacherRegs.filter((teacher)=>teacher.teacherId == this.props.auth.teacherId)[0]}
-                      isLoading={this.props.teacherRegs.isLoading}
-                      errMess={this.props.teacherRegs.errMess}
-                updateTeacherReg={this.props.updateTeacherReg} */}
-                <PrivateRoute path="/newteacherInfo" component={()=> <NewTeacherInfo 
+                <Route path="/stepper" component={()=>{
+                if(this.props.auth.isAuthenticated){
+                  return <SetupProfile setupTeacherProfile={this.props.postTeacherProfile} setupStudentProfile={this.props.postStudentProfile}/>
+                }
+                else {
+                  return <Redirect to="/home"/>
+                }}}/>
+
+                <PrivateRoute path="/newteacherInfo" component={()=> <StudentInfo 
                       profile={this.props.profiles.profiles}
                       isLoading={this.props.profiles.isLoading}
                       errMess={this.props.profiles.errMess}
-                updateTeacherReg={this.props.updateTeacherReg}
-        />}/>
+                />}/>
+
+                {/* <SetupRoute path="/stepper" component={()=><SetupProfile setupProfile={this.props.postTeacherProfile}/>}/> */}
 
                 {/* <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
                   postFeedback={this.props.postFeedback}/>}/> */}
                 {/* <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites?this.props.favorites:false} deleteFavorite={this.props.deleteFavorite} />} /> */}
+
+                <Route path="/detailmodal" component={() => <DetailModal/>}/>
                 <Redirect to="/home"/>
                
               </Switch>

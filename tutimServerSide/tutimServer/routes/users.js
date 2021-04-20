@@ -14,9 +14,10 @@ router.options('*', cors.corsWithOptions, (req,res)=>{
   res.sendStatus(200);
 });
 
-router.get('/',  (req, res, next) => {
+router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
   // res.send('respond with a resource');
   User.find({})
+  .populate('teacherProfile')
   .then((users)=>{
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
@@ -25,7 +26,7 @@ router.get('/',  (req, res, next) => {
   .catch((err)=> next(err));
 });
 
-router.post('/signup', (req,res,next)=>{
+router.post('/signup', cors.corsWithOptions, (req,res,next)=>{
   User.register(new User({username: req.body.username}),
     req.body.password, (err,user)=>{
       if(err){
@@ -34,8 +35,6 @@ router.post('/signup', (req,res,next)=>{
         res.json({err:err});
       }
       else{
-        if(req.body.username)
-          user.username = req.body.username;
         user.save((err,user)=>{
           if(err){
             res.statusCode = 500;
@@ -73,7 +72,7 @@ router.post('/login', cors.corsWithOptions,(req,res, next) => {
       var token = authenticate.getToken({_id: req.user._id});
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true, token: token, status:'Login Successful'});
+      res.json({success: true, token: token, status:'Login Successful',isTeacher:req.user.isTeacher, isStudent: req.user.isStudent});
     })
   }) (req, res, next);
 });
