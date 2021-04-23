@@ -7,6 +7,8 @@ const cors = require('./cors');
 
 mongoose.set('useFindAndModify',false);
 
+
+const StudentRegs = require('../models/studentReg');
 const TeacherRegs = require('../models/teacherReg');
 const User = require('../models/user');
 

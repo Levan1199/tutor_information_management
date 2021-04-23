@@ -18,7 +18,7 @@ import SetupProfile from './profile/SetupProfile';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import { signUp ,fetchTeacherProfile ,fetchTeacherReg, fetchStudentReg, postTeacherProfile, postStudentProfile,fetchStudentProfile,
+import { fetchProfile ,signUp ,fetchTeacherProfile ,fetchTeacherReg, fetchStudentReg, postTeacherProfile, postStudentProfile,fetchStudentProfile,
       loginUser, logoutUser, updateTeacherReg} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
@@ -31,7 +31,7 @@ const mapStatetoProps = state =>{
     profiles: state.profiles,
     // comments: state.comments,
     // favorites: state.favorites,
-    auth: state.auth
+    auth: state.auth,
   }   
 }
 
@@ -50,19 +50,29 @@ const mapDispatchToProps = dispatch => ({
 
   postStudentProfile: (props)=>{dispatch(postStudentProfile(props))},
   fetchStudentProfile: ()=>{dispatch(fetchStudentProfile())},
+///////////
+  fetchProfile: ()=>{dispatch(fetchProfile())},
   //Log in/out
   loginUser: (creds) => dispatch(loginUser(creds)),
   logoutUser: () => dispatch(logoutUser())
 })
 
+
 class Main extends Component{
     componentDidMount(){
     this.props.fetchTeacherReg();
     this.props.fetchStudentReg();
-    this.props.fetchTeacherProfile();
-    this.props.fetchStudentProfile();
+    // this.props.fetchTeacherProfile();
+    // this.props.fetchStudentProfile();
+    this.props.fetchProfile();
   }
 
+  // checkStepper = () => {
+  //   console.log('stp');
+  //   if (this.props.profiles.isEmpty){
+  //     this.props.history.push('/stepper')
+  //   }
+  // }
 
   render(){
     
@@ -77,86 +87,109 @@ class Main extends Component{
       )} />
     );
 
-    const RenderProfile = () => {
-      return(
-        this.props.auth.isAuthenticated
-        ?
-        <TeacherInfo  profile={this.props.teacherRegs.teacherRegs.filter((teacher)=>teacher.teacherId == this.props.auth.teacherId)[0]}
-                      isLoading={this.props.teacherRegs.isLoading}
-                      errMess={this.props.teacherRegs.errMess}
+    const RenderProfile = (props) => {
+      if(props.profile.isTeacher && !props.profile.isStudent){
+        return <NewTeacherInfo
+        profile={props.profile}
+        isLoading={props.isLoading}
+        errMess={props.errMess}
+      />}
+      else if (!props.profile.isTeacher && props.profile.isStudent){
+        console.log('inside else');
+        return <StudentInfo
+        profile={props.profile}
+        isLoading={props.isLoading}
+        errMess={props.errMess}
         />
-        :
-        <Redirect to="/home"/>
-      );
+      }
+      else {
+        return <div></div>
+      }
     }
+
+    const RenderHeader = (props) => {
+      const {profile} = props;
+      console.log('render header ', props)
+      var name="";
+      if (profile.isTeacher && !profile.isStudent){
+        name = profile.teacherProfile.name;
+      }
+      else if (!profile.isTeacher && profile.isStudent){
+        name = profile.studentProfile.name;
+        console.log('name: ',name);
+      }
+      return <NewHeader
+        name = {name}
+        {...props}
+      />
+    }
+
+    const CheckStepper = () => {
+      if (this.props.profiles.isEmpty && this.props.location.pathname != '/stepper'){
+         this.props.history.push('/stepper');
+         return <div></div>;
+      }
+      else{
+        return <div></div>;
+      }
+    }
+    
 
     return (
       <div>      
-        <NewHeader
-        name={this.props.profiles.profiles.teacherProfile?this.props.profiles.profiles.teacherProfile.name:false}
-        // name={this.props.profiles.profiles.teacherProfile?(this.props.profiles.profiles.teacherProfile?this.props.profiles.profiles.teacherProfile.name:false):(this.props.profiles.profiles.studentProfile?this.props.profiles.profiles.studentProfile.name:false)}
-        auth={this.props.auth} 
-        loginUser={this.props.loginUser} 
-        logoutUser={this.props.logoutUser} 
-        signUp={this.props.signUp}
-        isEmpty={this.props.profiles.isEmpty}
-        />
-        <TransitionGroup>
-          <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
-              <Switch>
-                <Route path="/home" component={Home}/>
-                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs}/>}/>
-                <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs.studentRegs}
-                                                                                      isLoading = {this.props.studentRegs.isLoading}/>}/>
+        {/* {
+          this.props.profiles.isEmpty?
+          <SetupProfile setupProfile={this.props.postStudentProfile}/>
+          :
+          <> */}
+            <CheckStepper/>
+            <RenderHeader
+            profile={this.props.profiles.profiles}
+            auth={this.props.auth}
+            loginUser={this.props.loginUser}
+            logoutUser={this.props.logoutUser}
+            signUp={this.props.signUp}
+            isEmpty={this.props.profiles.isEmpty}
+            />
+            <TransitionGroup>
+              <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
+                  <Switch>
+                    <Route path="/home" component={Home}/>
+                    <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs}/>}/>
+                    <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs.studentRegs}
+                    isLoading = {this.props.studentRegs.isLoading}/>}/>
 
-                <Route path="/teacherInfo" component={RenderProfile}/>
-                <Route path='/findTeacher' component={findTeacher}/>
-                <Route path='/findClass' component={() => <FindClass/>}/>
+                  
+                    <Route path='/findTeacher' component={findTeacher}/>
+                    <Route path='/findClass' component={() => <FindClass/>}/>
+                    
                 
-                <PrivateRoute path="/newInfo" component={()=>{
-                if(this.props.profiles.profiles.teacherProfile){
-                  return <NewTeacherInfo 
-                        profile={this.props.profiles.profiles}
-                        isLoading={this.props.profiles.isLoading}
-                        errMess={this.props.profiles.errMess}
-                  updateTeacherReg={this.props.updateTeacherReg}
-                  />
-                }
-                else {
-                  return <StudentInfo 
-                  profile={this.props.profiles.profiles}
-                  isLoading={this.props.profiles.isLoading}
-                  errMess={this.props.profiles.errMess}
-                  />
-                }}}/>
 
-                <Route path="/stepper" component={()=>{
-                if(this.props.auth.isAuthenticated){
-                  return <SetupProfile setupTeacherProfile={this.props.postTeacherProfile} setupStudentProfile={this.props.postStudentProfile}/>
-                }
-                else {
-                  return <Redirect to="/home"/>
-                }}}/>
-
-                <PrivateRoute path="/newteacherInfo" component={()=> <StudentInfo 
+                    <Route path="/newInfo" component={()=><RenderProfile
                       profile={this.props.profiles.profiles}
                       isLoading={this.props.profiles.isLoading}
                       errMess={this.props.profiles.errMess}
-                />}/>
+                    />}/>
 
-                {/* <SetupRoute path="/stepper" component={()=><SetupProfile setupProfile={this.props.postTeacherProfile}/>}/> */}
+                    <PrivateRoute path="/newteacherInfo" component={()=> <StudentInfo 
+                          profile={this.props.profiles.profiles}
+                          isLoading={this.props.profiles.isLoading}
+                          errMess={this.props.profiles.errMess}
+                    />}/>
 
-                {/* <Route exact path="/contactus" component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}
-                  postFeedback={this.props.postFeedback}/>}/> */}
-                {/* <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites?this.props.favorites:false} deleteFavorite={this.props.deleteFavorite} />} /> */}
+                      
 
-                <Route path="/detailmodal" component={() => <DetailModal/>}/>
-                <Redirect to="/home"/>
-               
-              </Switch>
-            </CSSTransition>
-        </TransitionGroup>  
-        <Footer/>
+                    <Route path="/detailmodal" component={() => <DetailModal/>}/>
+                    <Route path="/stepper" component={()=><SetupProfile setupTeacherProfile={this.props.postTeacherProfile}
+                    setupStudentProfile={this.props.postStudentProfile}/>}/>
+                    <Redirect to="/home"/>
+                  
+                  </Switch>
+                </CSSTransition>
+            </TransitionGroup>  
+          <Footer/>          
+          {/* </>
+        } */}
       </div>
     );
   }

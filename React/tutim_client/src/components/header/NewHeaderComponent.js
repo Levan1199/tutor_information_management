@@ -68,12 +68,13 @@ const NewHeader = (props) => {
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-  const [navChanged, setNavChanged] = React.useState(false)
 
-  if (props.isEmpty && !navChanged){
-    setNavChanged(true);
-    history.push('/stepper');
-  }
+  // const [navChanged, setNavChanged] = React.useState(false)
+
+  // if (props.isEmpty && !navChanged){
+  //   setNavChanged(true);
+  //   history.push('/stepper');
+  // }
 
   const [openModal, setOpenModal] = React.useState(false);
   const [modalSignUp, setModalSU] = React.useState(false);
@@ -84,9 +85,11 @@ const NewHeader = (props) => {
 
   const handleLogout = () => {
     props.logoutUser();
+    return history.push('/home');
   }
 
   const switchModal = () => {
+    console.log('switch s');
     if (openModal){
       setModalSU(true);
       return setOpenModal(false);
@@ -160,7 +163,7 @@ const NewHeader = (props) => {
               </MenuItem>
               :
               <>
-              <Link to="newteacherInfo">
+              <Link to="newInfo">
                 <MenuItem>
                   <Typography variant="body1">
                     Trang Ca Nhan

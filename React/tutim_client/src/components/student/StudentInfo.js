@@ -65,10 +65,11 @@ const StudentInfo = (props) => {
         );
     }
     else if (props.profile) {  
-        console.log('connect ',props.profile);
+        console.log('connect, inside student',props.profile);
     const {studentProfile} = props.profile;
     return (
         <div className={classes.root}>
+            <Typography variant="h4">Student Profile</Typography>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
                     <Avatar className={classes.profileImg} src="/assets/images/download.png" alt="Student Avatar"/>                   

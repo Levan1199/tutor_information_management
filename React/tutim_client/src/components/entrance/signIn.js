@@ -120,7 +120,7 @@ function SignIn(props){
                     </Link>
                     </Grid>
                     <Grid item>
-                    <Link href="#" variant="body2" onClick={()=>{props.switchModal();}}>
+                    <Link  variant="body2" onClick={()=>{props.switchModal();}}>
                         {"Don't have an account? Sign Up"}
                     </Link>
                     </Grid>

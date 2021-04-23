@@ -81,7 +81,7 @@ const textField = ({field, form, type}) => {
 
 export default function SignUp(props) {
   const classes = useStyles();
-
+  console.log('inside signup');
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

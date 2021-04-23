@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function SetupProfile(props) {
+  console.log('inside setup profile');
   const classes = useStyles();
   const steps = ['Bạn là', 'Thông tin', 'Xác nhận'];
   const [activeStep, setActiveStep] = useState(0);

@@ -199,43 +199,6 @@ export const postStudentProfile  = (props) => (dispatch) =>  {
             alert('Your registrations could not be posted\nError: ' + error.message);});
 }
 
-// export const fetchStudentProfile = () => (dispatch) => {
-//     console.log('inside fetching');
-//     dispatch(profileLoading(true));
-//     const bearer = 'Bearer ' + localStorage.getItem('token');
-//     return fetch(baseUrl + 'studentProfile', {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': bearer
-//         }
-//     })
-//     .then(response => {
-//         if(response.status === 200){
-//             console.log('fetched profile ',response.status);
-//             return response;
-//         }
-//         else if (response.status === 204){
-//             dispatch(emptyProfile());
-//             return response;
-//         }
-//         else{
-//             console.log('fetch failedd');
-//             var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//             error.response = response;
-//             throw error;
-//         }
-//     },
-//     error => {
-//         var errmess = new Error(error.message);
-//         throw errmess;
-//     })
-//     .then(response => response.json())
-//     .then(profile => {
-//         console.log('profiles: ',profile);
-//         return dispatch(addProfile(profile));
-//     })
-//     .catch(error => dispatch(profileFailed(error.message)));
-// }
 
 
 export const fetchTeacherProfile = () => (dispatch) => {
@@ -317,6 +280,47 @@ export const postTeacherProfile = (props) => (dispatch) =>  {
         .catch(error => {console.log('Post teacher registrations ', error.message);
             alert('Your registrations could not be posted\nError: ' + error.message);});
 }
+////////////////////////
+export const fetchProfile = () => (dispatch) => {
+    console.log('inside fetching');
+    dispatch(profileLoading(true));
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'profile', {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        }
+    })
+    .then(response => {
+        if(response.status === 200){
+            console.log('fetched profile ',response.status);
+            return response;
+        }
+        else if (response.status === 204){
+            console.log('inside empty');
+            dispatch(emptyProfile());
+            console.log('inside empty 2');
+            return response;
+        }
+        else{
+            console.log('fetch failedd');
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },
+    error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
+    .then(response => response.json())
+    .then(profile => {
+        console.log('profiles: ',profile);
+        return dispatch(addProfile(profile));
+    })
+    .catch(error => dispatch(profileFailed(error.message)));
+}
+
 
 export const emptyProfile = () => ({
     type: ActionTypes.EMPTY_PROFILE
@@ -418,12 +422,13 @@ export const loginUser = (creds) => (dispatch) => {
             localStorage.setItem('token', response.token);
             localStorage.setItem('creds', JSON.stringify(creds));
             console.log('login success fetching');
-            if(response.isTeacher){
-                dispatch(fetchTeacherProfile());
-            }
-            else if(response.isStudent){
-                dispatch(fetchStudentProfile());
-            }
+            // if(response.isTeacher){
+            //     dispatch(fetchTeacherProfile());
+            // }
+            // else if(response.isStudent){
+            //     dispatch(fetchStudentProfile());
+            // }
+            dispatch(fetchProfile());
             dispatch(receiveLogin(response));
         }
         else{
