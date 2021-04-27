@@ -66,6 +66,10 @@ const teacherRegSchema = new Schema({
     //     type:String,
     //     required:true
     // }
+    imgPath:{
+        type:String,
+        default:''
+    }
 },{
     timestamps: true
 });

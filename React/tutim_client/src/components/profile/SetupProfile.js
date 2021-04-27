@@ -81,7 +81,7 @@ export default function SetupProfile(props) {
       case 1:
         return <Information {...formValues} handleBack={handleBack} handleNext={handleNext} />;
       case 2:
-        return <Review review={formValues} handleBack={handleBack} handleNext={handleNext} setupTeacherProfile={props.setupTeacherProfile} setupStudentProfile={props.setupStudentProfile}/>;
+        return <Review review={formValues} handleBack={handleBack} handleNext={handleNext} {...props}/>;
       default:
         throw new Error('Unknown step');
     }

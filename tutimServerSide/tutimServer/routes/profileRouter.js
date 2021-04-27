@@ -11,16 +11,20 @@ const User = require('../models/user');
 const StudentRegs = require('../models/studentReg');
 const TeacherRegs = require('../models/teacherReg');
 
+const upload = require('./uploadRouter');
+const { urlencoded } = require('express');
+
 const profileRouter = express.Router();
 
 profileRouter.use(bodyParser.json());
+// profileRouter.use(urlencoded());
 
 
 profileRouter.route('/')
-.options(cors.corsWithOptions, (req,res)=>{
+.options(cors.cors, (req,res)=>{
     res.sendStatus(200);
 })
-.get(cors.cors, authenticate.verifyUser, (req,res,next)=>{
+.get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     User.findOne(req.user._id)
     .then((user)=>{
         if(user.teacherProfile == null && user.studentProfile == null){
@@ -32,7 +36,6 @@ profileRouter.route('/')
             User.findOne(req.user._id)
             .populate('teacherProfile')
             .then((profile)=>{
-                console.log('profiles: ', profile);
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json(profile);   
@@ -80,7 +83,7 @@ profileRouter.route('/')
             "isStudent":req.body.isStudent}
         },{new: true})
         .populate('studentProfile')
-        .then(()=>{
+        .then((profile)=>{
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(profile);
@@ -91,21 +94,27 @@ profileRouter.route('/')
 })
 
 
-.put( cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+.put(cors.corsWithOptions, authenticate.verifyUser
+    ,upload.single('avatar'), (req,res,next)=>{
+    console.log('inside put', req.body);
+    if(req.file){
+        console.log('des',req.file.filename);
+        req.body.imgPath = req.file.filename;
+    }
     User.findOne({_id:req.user._id})
-    .then((user)=>{
+    .then((user)=>{      
         if(user.isTeacher && !user.isStudent){
             User.findOne({_id:req.user._id})
             .populate('teacherProfile')
-            .then((profile)=>{
-                console.log('profile ',profile);
-                profile.teacherProfile.update({
+            .then((profile)=>{      
+                profile.teacherProfile.updateOne({
                     $set: req.body
                 }, {new: true})
                 .then(
                     User.findOne({_id:req.user._id})
                     .populate('teacherProfile')
                     .then((profile)=>{
+                        console.log('profile after update img',profile.teacherProfile.imgPath);
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
                         res.json(profile);
@@ -118,7 +127,7 @@ profileRouter.route('/')
             .populate('studentProfile')
             .then((profile)=>{
                 console.log('profile ',profile);
-                profile.studentProfile.update({
+                profile.studentProfile.updateOne({
                     $set: req.body
                 }, {new: true})
                 .then(

@@ -96,7 +96,7 @@ const StudentInfo = (props) => {
                     md={12} lg={1}
                     display={{ md: "none", lg: "block" }}
                 >
-                    {/* <Button onClick={openIntro}><EditIcon/></Button>     */}
+                    <Button onClick={openIntro}><EditIcon/></Button>    
                 </Box>
                 <Grid item md={12}>
                 <Typography><hr/></Typography>
@@ -110,7 +110,7 @@ const StudentInfo = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <IntroModal closeModal={closeIntro}/>              
+                <IntroModal closeModal={closeIntro} updateProfile={props.updateProfile}/>              
             </Modal>    
             <Modal
             open={modalDetail}

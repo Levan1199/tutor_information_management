@@ -5,7 +5,7 @@ import {Button} from '@material-ui/core';
 
 
 export default function Review(props) {
-  const {review, handleBack, handleNext, setupTeacherProfile, setupStudentProfile } = props;
+  const {review, handleBack, handleNext, setupProfile } = props;
   const {role, name, email} = review;
   return (
     <React.Fragment>
@@ -31,12 +31,13 @@ export default function Review(props) {
         <Button variant="contained" color="primary" 
           onClick={()=> {
             // console.log('ss', setupProfile,' ',typeof(setupProfile));
-            if(role==='isTeacher'){
-              setupTeacherProfile({name,email,role});
-            }
-            else if(role==='isStudent'){
-              setupStudentProfile({name,email,role});
-            }
+            // if(role==='isTeacher'){
+            //   setupTeacherProfile({name,email,role});
+            // }
+            // else if(role==='isStudent'){
+            //   setupStudentProfile({name,email,role});
+            // }
+            setupProfile({name,email,role});
             return handleNext();
           }}
         >

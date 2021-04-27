@@ -52,9 +52,9 @@ const validationSchema = Yup.object({
 
 
 
-const handleInput = (values, actions, updateTeacherReg, closeModal)=>{   
-    console.log('inside update reg: ',values);
-    updateTeacherReg(values);
+const handleInput = (values, actions, updateProfile, closeModal)=>{   
+    console.log('inside update student reg: ',values);
+    updateProfile(values);
     return closeModal();
 }
 
@@ -79,7 +79,7 @@ const IntroModal = (props)=>{
         <Paper elevation={10} className={classes.paperStyle}>
             <Formik 
             initialValues={initialValues}
-            onSubmit={ (values, actions) => handleInput(values, actions, props.updateTeacherReg, props.closeModal) }
+            onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
             >               
                 <Form >
                     <Typography variant="h5">Chỉnh sửa phần giới thiệu</Typography>

@@ -1,5 +1,6 @@
 import React from "react";
-import { Avatar, Grid, Typography, Button, Box, Modal } from "@material-ui/core";
+import {avatarUrl} from "../../shared/baseUrl";
+import { Avatar, Grid, Typography, Button, Box, Modal , Divider} from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
@@ -77,7 +78,9 @@ const NewTeacherInfo = (props) => {
         <div className={classes.root}>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
-                    <Avatar className={classes.profileImg} src="/assets/images/profile.jpg" alt="Teacher Avatar"/>                   
+                    <Avatar className={classes.profileImg} src=
+                    {avatarUrl+teacherProfile.imgPath}
+                    alt="Teacher Avatar"/>                   
                 </Grid>
 
                 <Grid item md={12} lg={8}>
@@ -86,7 +89,7 @@ const NewTeacherInfo = (props) => {
                     </Typography>
                     <Typography variant="h4">
                             {teacherProfile.email}
-                            <hr/>
+                    <Divider light/>
                     </Typography>   
                     
                     <Typography variant="h6">
@@ -104,7 +107,7 @@ const NewTeacherInfo = (props) => {
                     <Button onClick={openIntro}><EditIcon/></Button>    
                 </Box>
                 <Grid item md={12}>
-                <Typography><hr/></Typography>
+                <Divider light/>
                 </Grid>
             </Grid>
             
@@ -147,7 +150,7 @@ const NewTeacherInfo = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <IntroModal closeModal={closeIntro} updateTeacherReg={props.updateTeacherReg}/>              
+                <IntroModal closeModal={closeIntro} updateProfile={props.updateProfile} {...teacherProfile}/>              
             </Modal>    
             <Modal
             open={modalDetail}
