@@ -7,7 +7,8 @@ const cors = require('./cors');
 
 mongoose.set('useFindAndModify',false);
 
-const TeacherRegs = require('../models/teacherReg');
+const StudentReg = require('../models/studentReg');
+const TeacherReg = require('../models/teacherReg');
 const User = require('../models/user');
 const teacherRegRouter = express.Router();
 
@@ -19,7 +20,7 @@ teacherRegRouter.route('/')
     res.sendStatus(200);
 })
 .get(cors.corsWithOptions, (req,res,next)=>{
-    TeacherRegs.find({})
+    TeacherReg.find({})
     .then((teachers)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -30,7 +31,7 @@ teacherRegRouter.route('/')
 
 .post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     // console.log(req.body);
-    TeacherRegs.create(req.body)
+    TeacherReg.create(req.body)
     .then((teacher)=>{
         console.log('Teacher Created ', teacher);
         res.statusCode = 200;
@@ -46,7 +47,7 @@ teacherRegRouter.route('/')
 // })
 
 .delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
-    TeacherRegs.remove({})
+    TeacherReg.remove({})
     .then((resp)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -62,7 +63,7 @@ teacherRegRouter.route('/:teacherId')
 })
 .get(cors.corsWithOptions, authenticate.verifyUser,(req,res,next)=>{
     console.log('auth', req.params.teacherId);
-    TeacherRegs.findById(req.params.teacherId)
+    TeacherReg.findById(req.params.teacherId)
     .then((teacher)=>{
         console.log(teacher);
         res.statusCode = 200;
@@ -77,15 +78,12 @@ teacherRegRouter.route('/:teacherId')
 //     + req.params.dishId);
 // })
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-    // User.findOneAndUpdate(req.params.teacherId,{
-    //     $set:{"username":req.body.name}
-    // })
-    // .then(
+  
         console.log('b4 ',req.user);
-    TeacherRegs.findOneAndUpdate({teacherId:req.params.teacherId},{
+        TeacherReg.findOneAndUpdate({teacherId:req.params.teacherId},{
         $set: req.body
     },{new:true})
-    .then(TeacherRegs.find({}))
+    .then(TeacherReg.find({}))
     .then((teachers)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -111,11 +109,60 @@ teacherRegRouter.route('/:teacherId')
 //     .catch((err)=>next(err));
 // });
 
-// Comments inside a specific dish
+//////
+teacherRegRouter.route('/add/:studentId')
+.options(cors.cors, (req,res)=>{
+    res.sendStatus(200);
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+    if (!req.user.isTeacher){
+        err = new Error('Only teacher can register');
+        err.status = 404;
+        return next(err); 
+    }
+    StudentReg.findByIdAndUpdate({_id: req.params.studentId},{
+        $push:{teacherReg:req.user.teacherProfile}
+    })
+    .then(()=>{
+        TeacherReg.findOneAndUpdate({_id: req.user.teacherProfile},{
+            $push:{studentReg:req.params.studentId}
+        }, {new:true})
+        .then((teacher)=>{    
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(teacher);
+        },(err)=>next(err))
+    },(err)=>next(err))
+    .catch((err)=>next(err));
+})
 
+////////////////////////////// add - remove with idy, find1ar push req param
+teacherRegRouter.route('/remove/:studentId')
+.options(cors.cors, (req,res)=>{
+    res.sendStatus(200);
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
+    if (!req.user.isTeacher){
+        err = new Error('Only teacher can register');
+        err.status = 404;
+        return next(err); 
+    }
+    StudentReg.findByIdAndUpdate({_id: req.params.studentId},{
+        $pull:{teacherReg:req.user.teacherProfile}
+    })
+    .then(()=>{
+        TeacherReg.findOneAndUpdate({_id: req.user.teacherProfile},{
+            $pull:{studentReg:req.params.studentId}
+        }, {new:true})
+        .then((teacher)=>{    
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(teacher);
+        },(err)=>next(err))
+    },(err)=>next(err))
+    .catch((err)=>next(err));
+})
 
-
-// For specific comment inside a dish
 
 
 module.exports = teacherRegRouter;

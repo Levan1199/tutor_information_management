@@ -50,13 +50,21 @@ const teacherRegSchema = new Schema({
         type:Number,
         default:''
     },
-    periodAWeek:{
+    // periodAWeek:{
+    //     type:Number,
+    //     default:''
+    // },
+    // time:{
+    //     type:String,
+    //     default:''
+    // },
+    weekly:[{
         type:Number,
         default:''
-    },
-    time:{
-        type:String,
-        default:''
+    }],
+    available:{
+        type:Boolean,
+        default:false
     },
     description:{
         type:String,
@@ -69,7 +77,13 @@ const teacherRegSchema = new Schema({
     imgPath:{
         type:String,
         default:''
-    }
+    },
+    studentReg:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'StudentReg'
+        }
+    ]
 },{
     timestamps: true
 });

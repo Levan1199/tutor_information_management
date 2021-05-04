@@ -49,7 +49,17 @@ const studentRegSchema = new Schema({
     description:{
         type:String,
         default:''
-    }  
+    },
+    imgPath:{
+        type:String,
+        default:''
+    },
+    teacherReg:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'TeacherReg'
+        }
+    ]
 },{
     timestamps: true
 });

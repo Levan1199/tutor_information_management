@@ -102,9 +102,11 @@ multiSelectDropdown({field, form, meta, ...props}){
 }
 
 filterProps(student){
-    const dist = this.state.filter.district.every((e=>{
-        return student.district.includes(e);
-    }));
+    const distEve = (element) => {
+        return student.district.includes(element);
+    }
+////
+    const dist = this.state.filter.district.every(distEve);
 
     const grade = this.state.filter.grade.every((e=>{
         return student.grade.includes(e);
@@ -115,7 +117,6 @@ filterProps(student){
     }));
 
     const result = dist && grade && subject;
-    console.log('res ',result);
     return result;
 
 }
@@ -169,29 +170,46 @@ render(){
             </Formik>
         </div>
         <div className="row">
-            <Rendering regs={Filtered}/>
+            <Rendering regs={Filtered} auth={this.props.auth}
+                                profile={this.props.profile}
+                                register={this.props.register}/>
         </div>
         </>
     );
 }
 }
 
+const handleRegister = (register, studentId, auth, isTeacher) =>{
+    if (!auth){
+        alert("You need to login to register");
+    }
+    else if(!isTeacher){
+        alert("Only teacher can register");
+    }
+    else {
+        register(studentId);
+        alert('register successfully');
+    }
+}
 
-
-function RenderStudentCard({student}){
-    let subject = student.subject.join(' ');
-    let grade = student.grade.join(' ');
+function RenderStudentCard({student, auth, profile,register}){
+    let subject = student.subject.join(', ');
+    let grade = student.grade.join(', ');
     let dist = student.district.join(',');
+    // console.log('check',student, profile);
     return(
         <Card className="border">
             <CardHeader 
-                title={"Lớp dạy: " + grade}
+                title={"Lớp: " + grade}
                 subheader={"Môn học: " + subject}
                 titleTypographyProps={{variant:'h5' }}
                 action={
-                    <Link to={`/findClass`} className="align-self-center">
-                        <Button color="primary">Đăng ký</Button>
-                    </Link>
+                    (
+                    student.teacherReg.includes((profile.teacherProfile)?profile.teacherProfile._id:null))?
+                    <Button color="secondary" variant="contained">Đã Đăng ký</Button>
+                    :<Button color="secondary" variant="contained" onClick={()=>
+                        handleRegister(register,student._id,auth, profile.isTeacher)
+                    }>Đăng ký</Button>
                 }
             />
             <CardContent>
@@ -205,7 +223,7 @@ function RenderStudentCard({student}){
                 <br/>
                 <strong>Quận: </strong>{dist}
                 <br/>
-                <strong>Thông tin khác: </strong>{student.description}
+                <strong>Yêu cầu khác: </strong>{student.description}
                 
             </CardContent> 
         </Card>
@@ -213,11 +231,12 @@ function RenderStudentCard({student}){
 }
 
 
-function RenderRegs({regs}) {
+const RenderRegs = ({regs, auth, profile, register}) => {
     const Regs = regs.map((student)=>{
         return (                
             <div key={student.id} className="col-12 col-md-5 m-1">
-                <RenderStudentCard student={student}/>
+                <RenderStudentCard student={student} auth={auth}
+                profile={profile} register={register}/>
             </div>
         );
     });
@@ -229,7 +248,8 @@ function RenderRegs({regs}) {
     );
 }
 
-const StudentRegs = (props) =>{       
+const StudentRegs = (props) =>{      
+    console.log('check', props);
     if (props.isLoading) {
         console.log("Loadingggg");
         return(
@@ -246,15 +266,18 @@ const StudentRegs = (props) =>{
                 <div className="row">
                     <Breadcrumb>
                         <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>Lớp học hiện có</BreadcrumbItem>
+                        <BreadcrumbItem active>Student</BreadcrumbItem>
                     </Breadcrumb>
                     <div className="col-12">
-                        <h3>Lớp học hiện có</h3>
+                        <h3>Các lớp học cần tìm gia sư</h3>
                         <hr/>
                     </div>
                 </div>
                     <FilterRegs studentRegs={props.studentRegs}
                                 RenderRegs = {RenderRegs}
+                                register={props.register}
+                                auth={props.auth}
+                                profile={props.profile}
                     />
                 </div>
         );

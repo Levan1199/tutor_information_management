@@ -1,5 +1,6 @@
 import React from "react";
 import { Avatar, Grid, Typography, Button, Box, Modal } from "@material-ui/core";
+import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
@@ -26,7 +27,6 @@ const useStyles = makeStyles(theme => ({
 
 
 const StudentInfo = (props) => {
-    console.log('check loading: ',props.isLoading);
     const classes = useStyles();
     const [modalIntro, setModalIntro] = React.useState(false);
     const [modalDetail, setModalDetail] = React.useState(false);
@@ -65,14 +65,14 @@ const StudentInfo = (props) => {
         );
     }
     else if (props.profile) {  
-        console.log('connect, inside student',props.profile);
     const {studentProfile} = props.profile;
     return (
         <div className={classes.root}>
-            <Typography variant="h4">Student Profile</Typography>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
-                    <Avatar className={classes.profileImg} src="/assets/images/download.png" alt="Student Avatar"/>                   
+                <Avatar className={classes.profileImg} src=
+                    {avatarUrl+studentProfile.imgPath}
+                    alt="Student Avatar"/>                      
                 </Grid>
 
                 <Grid item md={12} lg={8}>
@@ -110,7 +110,7 @@ const StudentInfo = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <IntroModal closeModal={closeIntro} updateProfile={props.updateProfile}/>              
+                <IntroModal closeModal={closeIntro} updateProfile={props.updateProfile} {...studentProfile}/>              
             </Modal>    
             <Modal
             open={modalDetail}

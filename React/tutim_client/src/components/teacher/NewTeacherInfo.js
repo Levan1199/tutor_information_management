@@ -1,6 +1,6 @@
 import React from "react";
 import {avatarUrl} from "../../shared/baseUrl";
-import { Avatar, Grid, Typography, Button, Box, Modal , Divider} from "@material-ui/core";
+import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup} from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
@@ -25,30 +25,42 @@ const useStyles = makeStyles(theme => ({
         width:280, 
         margin:"20px auto",
     },
+    modal:{
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center'
+    }
   }));
 
+const checkBoxValues = [
+    {label:'Mon', value:2},
+    {label:'Tue', value:3},
+    {label:'Wed', value:4},
+    {label:'Thu', value:5},
+    {label:'Fri', value:6},
+    {label:'Sat', value:7},
+    {label:'Sun', value:8},
+]
+
+const RenderCheckBox = (props) => {
+    const {value, label, weekly} = props;
+    return (
+        <FormControlLabel
+        control={<Checkbox value={value}
+        checked={weekly.includes(value)}
+        />}
+        label={label}
+        labelPlacement="top"
+        />
+    );
+}
 
 const NewTeacherInfo = (props) => {
-    console.log('check loading: ',props.isLoading);
     const classes = useStyles();
     const [modalIntro, setModalIntro] = React.useState(false);
     const [modalDetail, setModalDetail] = React.useState(false);
 
-    const openIntro = () => {
-        setModalIntro(true);
-    };
 
-    const closeIntro = () => {
-        setModalIntro(false);
-    };
-
-    const openDetail = () => {
-        setModalDetail(true);
-    };
-
-    const closeDetail = () => {
-        setModalDetail(false);
-    };
     if (props.isLoading) {
         return(
             <div className="container">
@@ -68,9 +80,7 @@ const NewTeacherInfo = (props) => {
         );
     }
     else if (props.profile) {  
-        console.log('connect ',props.profile);
     const {teacherProfile} = props.profile;
-    console.log('type ',teacherProfile);
     const grade = teacherProfile.grade?teacherProfile.grade.join(', '):"";
     const subject = teacherProfile.subject?teacherProfile.subject.join(', '):"";
     const district = teacherProfile.district?teacherProfile.district.join(', '):"";
@@ -104,7 +114,7 @@ const NewTeacherInfo = (props) => {
                     md={12} lg={1}
                     display={{ md: "none", lg: "block" }}
                 >
-                    <Button onClick={openIntro}><EditIcon/></Button>    
+                    <Button onClick={()=>setModalIntro(true)}><EditIcon/></Button>    
                 </Box>
                 <Grid item md={12}>
                 <Divider light/>
@@ -113,6 +123,7 @@ const NewTeacherInfo = (props) => {
             
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={6}>
+                    <Typography variant="h6">Class information</Typography>
                     <Typography variant="body1">
                         Các Lớp: {grade}
                     </Typography>        
@@ -129,11 +140,32 @@ const NewTeacherInfo = (props) => {
 
                 <Grid item md={12} lg={5}>
                     <Typography variant="h6">
-                        Đang hoạt động 
-                    </Typography>        
+                        Schedule 
+                    </Typography>           
+                    {checkBoxValues.map(obj => (
+                        <RenderCheckBox label={obj.label}
+                        value={obj.value}
+                        weekly = {teacherProfile.weekly}/>
+                    ))}   
                     <Typography variant="body1">
-                        Thời gian: {teacherProfile.time}
-                    </Typography>     
+                        Available: 
+                        <RadioGroup row aria-label="position" name="available" defaultValue="top"
+                            defaultChecked={teacherProfile.available}
+                        >
+                            <FormControlLabel
+                                value='true'
+                                control={<Radio name="available" checked={teacherProfile.available==true}/>}
+                                label="Yes"
+                                labelPlacement="top"
+                            />
+                            <FormControlLabel
+                                value='false'
+                                control={<Radio name="available" checked={teacherProfile.available==false} />}
+                                label="No"
+                                labelPlacement="top"
+                            />
+                        </RadioGroup>
+                    </Typography> 
                 </Grid>
                 <Box
                     component={Grid}
@@ -141,25 +173,28 @@ const NewTeacherInfo = (props) => {
                     md={12} lg={1}
                     display={{ md: "none", lg: "block" }}
                 >
-                    <Button onClick={openDetail}><EditIcon/></Button>    
+                    <Button onClick={()=>setModalDetail(true)}><EditIcon/></Button>    
                 </Box>
             </Grid>         
+
             <Modal
+            className={classes.modal}
             open={modalIntro}
-            onClose={closeIntro}
+            onClose={()=>setModalIntro(false)}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <IntroModal closeModal={closeIntro} updateProfile={props.updateProfile} {...teacherProfile}/>              
+                <IntroModal closeModal={()=>setModalIntro(false)} updateProfile={props.updateProfile} {...teacherProfile}/>              
             </Modal>    
+
             <Modal
-            open={modalDetail}
-            onClose={closeDetail}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            >
-                {/* <DetailModal/>    */}
-            <div>detail</div>
+                className={classes.modal}
+                open={modalDetail}
+                onClose={()=>setModalDetail(false)}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+                >
+                    <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...teacherProfile}/>   
             </Modal>    
         </div>  
     );

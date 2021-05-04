@@ -2,25 +2,40 @@ import React from 'react';
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import {Link} from 'react-router-dom';
 import {Loading} from '../LoadingComponent';
-// import {baseUrl} from '../shared/baseUrl';
+import {avatarUrl} from '../../shared/baseUrl';
 import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
+    const handleRegister = (register, teacherId, auth, isStudent) =>{
+        if (!auth){
+            alert("You need to login to register");
+        }
+        else if(!isStudent){
+            alert("Only student can register");
+        }
+        else {
+            register(teacherId);
+            alert('register successfully');
+        }
+    }
 
-    function RenderTeacherCard({teacher}){
-        let subject = teacher.subject.join(' ');
-        let grade = teacher.grade.join(' ');
-        let district = teacher.district.join(' ');
+
+    function RenderTeacherCard({teacher, register, auth, profile}){
+        console.log('tea ',teacher.studentReg, profile);
+        let subject = teacher.subject.join(', ');
+        let grade = teacher.grade.join(', ');
+        let district = teacher.district.join(', ');
         return(
        
         <Card className="border">
-            <CardHeader avatar={<Avatar alt="avatar" src="/assets/images/download.png" />}
+            <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
                         title={<Link to={`/home`}>{teacher.name}</Link>}
                         subheader={'Email: '+ teacher.email}
                         titleTypographyProps={{variant:'h6' }}
-                        action={
-                            <Link to={`/findTeacher`} className="align-self-center">
-                                <Button color="primary">Đăng ký</Button>
-                            </Link>
+                        action= {(teacher.studentReg.includes(profile.studentProfile._id))?
+                            <Button color="secondary" variant="contained">Đã Đăng ký</Button>
+                            :<Button color="secondary" variant="contained" onClick={()=>
+                                        handleRegister(register,teacher._id,auth, profile.isStudent)
+                                     }>Đăng ký</Button>
                         }
             />
             <CardContent>
@@ -40,11 +55,13 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
     const TeacherRegs = (props) =>{
         const teacherRegs = props.teacherRegs.map((teacher)=>{
+            if(teacher.available){
             return (
                 <div key={teacher.id} className="col-12 col-md-5 m-1">
-                  <RenderTeacherCard teacher={teacher}/>
+                  <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile}/>
                 </div>
             );
+            }
         });
       
             return (

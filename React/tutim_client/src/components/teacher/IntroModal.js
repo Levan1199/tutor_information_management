@@ -56,8 +56,6 @@ const validationSchema = Yup.object({
 
 
 const handleInput = (values, actions, updateProfile, closeModal)=>{   
-    console.log('inside update reg: ',values);
-    console.log('inside update re2g: ',typeof(values.avatar));
     updateProfile(values);
     return closeModal();
 }
@@ -104,9 +102,7 @@ const IntroModal = (props)=>{
                 maxFileSize={1048576}
                 fileSizeError=" file size is too big"
           />
-        // <TextField  type='file' name={name}  fullWidth margin="normal"
-        
-        // onChange = {(evt)=>form.setFieldValue(name, evt.target.files[0])}/>
+       
         );
     }
 

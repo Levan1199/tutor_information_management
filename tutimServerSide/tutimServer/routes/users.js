@@ -18,6 +18,7 @@ router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.veri
   // res.send('respond with a resource');
   User.find({})
   .populate('teacherProfile')
+  .populate('studentProfile')
   .then((users)=>{
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');

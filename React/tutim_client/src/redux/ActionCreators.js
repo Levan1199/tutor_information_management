@@ -119,98 +119,71 @@ export const postFeedback = (firstname, lastname, telnum, email, agree, contactT
         .catch(error => {console.log('Post Feedback ', error.message);
             alert('Your feedback could not be posted\nError: ' + error.message);});
 }
+////////////////////// register 
+export const studentRegTeacher = (teacherId) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'studentReg/add/' + teacherId, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        }
+    })
+    .then(response => {
+        if(response.status === 200){
+            console.log('sRegt ',response);
+            return response;
+        }
+        else{
+            // console.log('fetch failedd');
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },
+    error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
+    .then(response => response.json())
+    .then(profile => {
+        return dispatch(addProfile(profile));
+    })
+    .catch(error => dispatch(profileFailed(error.message)));
+}
 
-// fetch Profile
-
-
-// export const postStudentProfile  = (props) => (dispatch) =>  {
-//     console.log('inside post ',props);
-//     if (props.role === 'isTeacher'){
-//         props.isTeacher = true;
-//         props.isStudent = false;
-//     }
-//     else {
-//         props.isTeacher = false;
-//         props.isStudent = true;
-//     }
-//     const bearer = 'Bearer ' + localStorage.getItem('token');
-
-//     return fetch(baseUrl + 'studentProfile', {
-//         method: 'POST',
-//         body: JSON.stringify(props),
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': bearer
-//         },
-//         credentials: 'same-origin'
-//     })
-//         .then(response => {
-//             if(response.ok){
-//                 return response;
-//             }
-//             else{
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         .then(dispatch(fetchStudentProfile()))
-//         .catch(error => {console.log('Post teacher registrations ', error.message);
-//             alert('Your registrations could not be posted\nError: ' + error.message);});
-// }
-
-
-
-
-
-// export const postTeacherProfile = (props) => (dispatch) =>  {
-//     console.log('inside post ',props);
-//     if (props.role === 'isTeacher'){
-//         props.isTeacher = true;
-//         props.isStudent = false;
-//     }
-//     else {
-//         props.isTeacher = false;
-//         props.isStudent = true;
-//     }
-//     const bearer = 'Bearer ' + localStorage.getItem('token');
-
-//     return fetch(baseUrl + 'teacherProfile', {
-//         method: 'POST',
-//         body: JSON.stringify(props),
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': bearer
-//         },
-//         credentials: 'same-origin'
-//     })
-//         .then(response => {
-//             if(response.ok){
-//                 return response;
-//             }
-//             else{
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         // .then(response => response.json())
-//         .then(dispatch(fetchTeacherProfile()))
-//         // .then(response => dispatch(addProfile(response)))
-//         .catch(error => {console.log('Post teacher registrations ', error.message);
-//             alert('Your registrations could not be posted\nError: ' + error.message);});
-// }
-////////////////////////
+export const teacherRegStudent = (studentId) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'teacherReg/add/' + studentId, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        }
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            // console.log('fetch failedd');
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },
+    error => {
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
+    .then(response => response.json())
+    .then(profile => {
+        return dispatch(addProfile(profile));
+    })
+    .catch(error => dispatch(profileFailed(error.message)));
+}
+// profile
 export const fetchProfile = () => (dispatch) => {
-    console.log('inside fetching');
     dispatch(profileLoading(true));
     const bearer = 'Bearer ' + localStorage.getItem('token');
     return fetch(baseUrl + 'profile', {
@@ -221,7 +194,6 @@ export const fetchProfile = () => (dispatch) => {
     })
     .then(response => {
         if(response.status === 200){
-            console.log('fetched profile ',response.status);
             return response;
         }
         else if (response.status === 204){
@@ -243,7 +215,6 @@ export const fetchProfile = () => (dispatch) => {
     })
     .then(response => response.json())
     .then(profile => {
-        console.log('profiles: ',profile);
         return dispatch(addProfile(profile));
     })
     .catch(error => dispatch(profileFailed(error.message)));
@@ -285,9 +256,7 @@ export const postProfile = (props) => (dispatch) =>  {
             var errmess = new Error(error.message);
             throw errmess;
         })
-        // .then(response => response.json())
         .then(dispatch(fetchProfile()))
-        // .then(response => dispatch(addProfile(response)))
         .catch(error => {console.log('Post profile ', error.message);
             alert('Your registrations could not be posted\nError: ' + error.message);});
 }
@@ -296,17 +265,16 @@ export const updateProfile = (props) => (dispatch) => {
     const bearer = 'Bearer ' + localStorage.getItem('token');
     var formdata = new FormData();
     for ( var key in props ) {
-        formdata.append(key, props[key]);
+        if (key=='avatar'){
+            formdata.append(key, props[key]);
+            continue;
+        }
+        formdata.append(key, JSON.stringify(props[key]));
     }
-    console.log('formdata ',formdata.getAll('avatar','name','email','description'));
-    
     return fetch(baseUrl + 'profile',
     {
-        method: 'PUT',
-       
+        method: 'PUT',       
         headers: {
-            // 'Content-Type': 'multipart/form-data; boundary=----aaa----',
-            // 'Accept-Encoding': 'multipart/form-data',
             'Authorization': bearer
         },
         body: formdata,
@@ -327,43 +295,12 @@ export const updateProfile = (props) => (dispatch) => {
             throw errmess;
         })
         .then(response => response.json())
-        .then(response => dispatch(addProfile(response)))
+        .then(response =>{
+            dispatch(addProfile(response));
+        })
         .catch(error => {console.log('Update profile ', error.message);
             alert('Your profile could not be updated\nError: ' + error.message);});
 }
-//////////////////////////
-// export const uploadFile = (props) => (dispatch) => {
-//     const bearer = 'Bearer ' + localStorage.getItem('token');
-
-//     return fetch(baseUrl + 'imageUpload'  ,{
-//         method: 'PUT',
-//         body: JSON.stringify(props),
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': bearer
-//         },
-//         credentials: 'same-origin'
-//     })
-//         .then(response => {
-//             if(response.ok){
-//                 return response;
-//             }
-//             else{
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         .then(response => response.json())
-//         .then(response => dispatch(addProfile(response)))
-//         .catch(error => {console.log('Update profile ', error.message);
-//             alert('Your profile could not be updated\nError: ' + error.message);});
-// }
-
 
 export const emptyProfile = () => ({
     type: ActionTypes.EMPTY_PROFILE
@@ -505,39 +442,6 @@ export const logoutUser = () => (dispatch) => {
     dispatch(receiveLogout());
 }
 
-// export const updateTeacherReg = (props) => (dispatch) => {
-//     const bearer = 'Bearer ' + localStorage.getItem('token');
-//     // const teacherId = localStorage.getItem('teacherId');
-//     // console.log(props);
-
-//     return fetch(baseUrl + 'teacherProfile/'  ,{
-//         method: 'PUT',
-//         body: JSON.stringify(props),
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': bearer
-//         },
-//         credentials: 'same-origin'
-//     })
-//         .then(response => {
-//             if(response.ok){
-//                 return response;
-//             }
-//             else{
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         .then(response => response.json())
-//         .then(response => dispatch(addProfile(response)))
-//         .catch(error => {console.log('Update teacher registrations ', error.message);
-//             alert('Your registrations could not be updated\nError: ' + error.message);});
-// }
 
 
 

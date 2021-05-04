@@ -19,7 +19,7 @@ import Upload from './teacher/Upload';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import { updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
+import { teacherRegStudent, studentRegTeacher, updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
       loginUser, logoutUser} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
@@ -43,14 +43,11 @@ const mapDispatchToProps = dispatch => ({
   //   dispatch(actions.reset('feedback'))
   // },
   signUp:(creds)=>dispatch(signUp(creds)),
-  // fetchTeacherProfile: ()=>{dispatch(fetchTeacherProfile())},
   fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
-  // updateTeacherReg: (props)=>{dispatch(updateTeacherReg(props))},
   fetchStudentReg: ()=>{dispatch(fetchStudentReg())},
-  // postTeacherProfile: (props)=>{dispatch(postTeacherProfile(props))},
 
-  // postStudentProfile: (props)=>{dispatch(postStudentProfile(props))},
-  // fetchStudentProfile: ()=>{dispatch(fetchStudentProfile())},
+  studentRegTeacher: (teacherId)=>{dispatch(studentRegTeacher(teacherId))},
+  teacherRegStudent: (studentId)=>{dispatch(teacherRegStudent(studentId))},
 ///////////
   fetchProfile: ()=>{dispatch(fetchProfile())},
   postProfile: (props)=>{dispatch(postProfile(props))},
@@ -90,7 +87,6 @@ class Main extends Component{
           {...props}
       />}
       else if (!props.profile.isTeacher && props.profile.isStudent){
-        console.log('inside else');
         return <StudentInfo
           {...props}
         />
@@ -102,14 +98,12 @@ class Main extends Component{
 
     const RenderHeader = (props) => {
       const {profile} = props;
-      console.log('render header ', props)
       var name="";
       if (profile.isTeacher && !profile.isStudent){
         name = profile.teacherProfile.name;
       }
       else if (!profile.isTeacher && profile.isStudent){
         name = profile.studentProfile.name;
-        console.log('name: ',name);
       }
       return <NewHeader
         name = {name}
@@ -144,9 +138,18 @@ class Main extends Component{
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
                 <Route path="/home" component={Home}/>
-                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs}/>}/>
+                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs}
+                register={this.props.studentRegTeacher}
+                auth={this.props.auth.isAuthenticated}
+                profile={this.props.profiles.profiles}
+                
+                />}/>
                 <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs.studentRegs}
-                isLoading = {this.props.studentRegs.isLoading}/>}/>
+                register={this.props.teacherRegStudent}
+                isLoading = {this.props.studentRegs.isLoading}
+                auth={this.props.auth.isAuthenticated}
+                profile={this.props.profiles.profiles}
+                />}/>
 
               
                 <Route path='/findTeacher' component={findTeacher}/>

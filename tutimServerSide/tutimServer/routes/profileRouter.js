@@ -46,7 +46,7 @@ profileRouter.route('/')
             User.findOne(req.user._id)
             .populate('studentProfile')
             .then((profile)=>{
-                console.log('profiles: ',profile);
+                // console.log('profiles: ',profile);
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json(profile);                   
@@ -96,11 +96,16 @@ profileRouter.route('/')
 
 .put(cors.corsWithOptions, authenticate.verifyUser
     ,upload.single('avatar'), (req,res,next)=>{
-    console.log('inside put', req.body);
     if(req.file){
-        console.log('des',req.file.filename);
         req.body.imgPath = req.file.filename;
     }
+    for (const ele in req.body){        
+        if(ele == 'imgPath' || ele=='avatar'){
+            continue;
+        }
+        req.body[ele] = JSON.parse(req.body[ele]);
+    }
+
     User.findOne({_id:req.user._id})
     .then((user)=>{      
         if(user.isTeacher && !user.isStudent){
@@ -114,7 +119,6 @@ profileRouter.route('/')
                     User.findOne({_id:req.user._id})
                     .populate('teacherProfile')
                     .then((profile)=>{
-                        console.log('profile after update img',profile.teacherProfile.imgPath);
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
                         res.json(profile);
@@ -126,7 +130,6 @@ profileRouter.route('/')
             User.findOne({_id:req.user._id})
             .populate('studentProfile')
             .then((profile)=>{
-                console.log('profile ',profile);
                 profile.studentProfile.updateOne({
                     $set: req.body
                 }, {new: true})

@@ -64,7 +64,7 @@ function Home(props){
                     </div>
                 </div>
             </Jumbotron>
-            <hr/>
+            {/* <hr/> */}
             <div className="container">
                 <div className="row justify-content-center">
                     <h4 className="font-weight-bold">
@@ -83,7 +83,7 @@ function Home(props){
                     </div>            
                 </div>
             </div>
-            <hr/>
+            {/* <hr/> */}
             <div className="container">
                 <div className="row justify-content-center">
                     <h4 className="font-weight-bold">

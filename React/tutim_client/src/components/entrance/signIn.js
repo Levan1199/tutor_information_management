@@ -62,7 +62,7 @@ const textField = ({field, form, type}) => {
         name={name}
         type={type}
         autoComplete={type}
-        autoFocus
+        
         onChange= {(e) => form.setFieldValue(name, e.target.value)}
     />
     <ErrorMessage name={name}/>

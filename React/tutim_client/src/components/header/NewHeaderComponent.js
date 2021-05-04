@@ -118,7 +118,7 @@ const NewHeader = (props) => {
     },
     {
       link: '/studentList',
-      nameLink: 'Phu Huynh',
+      nameLink: 'Hoc sinh',
       icon: <PermIdentityIcon/>
     },
     {
@@ -132,7 +132,7 @@ const NewHeader = (props) => {
     <div className={classes.root}>
       <AppBar position="fixed" >
         <Toolbar className={classes.title}>
-          <Avatar alt="logo" src="/assets/images/download.png" variant="square" />
+          {/* <Avatar alt="logo" src="/assets/images/download.png" variant="square" /> */}
         {isMobile ? 
          (
             <>
