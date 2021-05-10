@@ -183,6 +183,43 @@ export const teacherRegStudent = (studentId) => (dispatch) => {
     .catch(error => dispatch(profileFailed(error.message)));
 }
 // profile
+// export const fetchProfileInfo = () => (dispatch) => {
+//     dispatch(profileLoading(true));
+//     const bearer = 'Bearer ' + localStorage.getItem('token');
+//     return fetch(baseUrl + 'profile', {
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': bearer
+//         }
+//     })
+//     .then(response => {
+//         if(response.status === 200){
+//             return response;
+//         }
+//         else if (response.status === 204){
+//             console.log('inside empty');
+//             dispatch(emptyProfile());
+//             console.log('inside empty 2');
+//             return response;
+//         }
+//         else{
+//             console.log('fetch failedd');
+//             var error = new Error('Error ' + response.status + ': ' + response.statusText);
+//             error.response = response;
+//             throw error;
+//         }
+//     },
+//     error => {
+//         var errmess = new Error(error.message);
+//         throw errmess;
+//     })
+//     .then(response => response.json())
+//     .then(profile => {
+//         return dispatch(addProfile(profile));
+//     })
+//     .catch(error => dispatch(profileFailed(error.message)));
+// }
+
 export const fetchProfile = () => (dispatch) => {
     dispatch(profileLoading(true));
     const bearer = 'Bearer ' + localStorage.getItem('token');
@@ -468,6 +505,7 @@ export const teacherRegLoading = () =>({
 })
 //////////////////////////////
 export const fetchStudentReg = () => (dispatch) => {
+    console.log('inside fetch stu');
     dispatch(studentRegLoading(true));
 
     return fetch(baseUrl + 'studentReg')

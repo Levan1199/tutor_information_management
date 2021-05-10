@@ -8,90 +8,53 @@ import {Multiselect} from 'multiselect-react-dropdown';
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import {Card, CardHeader,  CardContent} from '@material-ui/core';
 
+const initialValues = {
+    district:[],
+    grade:[],
+    subject:[]
+};
 
+const distOption = [  
+    {name: 'Quận 1'},
+    {name: 'Quận 2'},
+    {name: 'Quận 3'},
+    {name: 'Quận 4'},
+    {name: 'Quận 5'},
+    {name: 'Quận 6'},
+    {name: 'Quận 7'},
+    {name: 'Quận 8'},
+    {name: 'Quận 9'},
+    {name: 'Quận 10'},
+    {name: 'Quận 11'},
+    {name: 'Quận 12'},
+    {name: 'Quận Thủ Đức'},
+    {name: 'Quận Bình Thạnh'},
+    {name: 'Quận Tân Bình'},
+    {name: 'Quận Phú Nhuận'},
+    {name: 'Quận Tân Phú'},
+    {name: 'Quận Bình Tân'},
+    {name: 'Quận Gò Vấp'}
+];
 
-class FilterRegs extends Component {
-constructor(props){
-    super(props);      
+const gradOption = [
+    {name: 'Lớp 1'},
+    {name: 'Lớp 2'},
+    {name: 'Lớp 3'},
+    {name: 'Lớp 4'},
+    {name: 'Lớp 5'},
     
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.multiSelectDropdown = this.multiSelectDropdown.bind(this);
-    this.filterProps = this.filterProps.bind(this);
+];
+const subjOption = [
+    {name: 'Toán'},
+    {name: 'Lý'},
+    {name: 'Hóa'},
+];
 
-    this.state = {
-        initialValues: {
-            district: [],
-            grade:[],
-            subject:[],
-        },        
-        filter:{
-            district:[],
-            grade:[],
-            subject:[]
-        },
-        options:{
-            district:[
-                {name: 'Quận 1', id: 1},
-                {name: 'Quận 2', id: 2},
-                {name: 'Quận 3', id: 3},
-                {name: 'Quận 4', id: 4},
-                {name: 'Quận 5', id: 5},
-                {name: 'Quận 6', id: 6},
-                {name: 'Quận 7', id: 7},
-                {name: 'Quận 8', id: 8},
-                {name: 'Quận 9', id: 9},
-                {name: 'Quận 10', id: 10},
-                {name: 'Quận 11', id: 11},
-                {name: 'Quận 12', id: 12},
-                {name: 'Quận Thủ Đức', id: 13},
-                {name: 'Quận Bình Thạnh', id: 14},
-                {name: 'Quận Tân Bình', id: 15},
-                {name: 'Quận Phú Nhuận', id: 16},
-                {name: 'Quận Tân Phú', id: 17},
-                {name: 'Quận Bình Tân', id: 18},
-                {name: 'Quận Gò Vấp', id: 19}
-            ],
-            grade:[
-                {name: 'Lớp 1', id: 1},
-                {name: 'Lớp 2', id: 2},
-                {name: 'Lớp 3', id: 3},
-                {name: 'Lớp 4', id: 4},
-                {name: 'Lớp 5', id: 5},
-                {name: 'Lớp 6', id: 6},
-                {name: 'Lớp 7', id: 7},
-                {name: 'Lớp 8', id: 8},
-                {name: 'Lớp 9', id: 9},
-                {name: 'Lớp 10', id: 10},
-                {name: 'Lớp 11', id: 11},
-                {name: 'Lớp 12', id: 12},
-                
-            ],
-            subject:[
-                {name: 'Toán', id: 1},
-                {name: 'Lý', id: 2},
-                {name: 'Hóa', id: 3},
-                {name: 'Sinh', id: 4},
-                {name: 'Anh', id: 5},
-            ]
-        },
-    }
-}      
-
-handleSubmit(values){
-    console.log(values);
-    var filterName = {};
-        filterName.district = values.district.map(district=>district.name);
-        filterName.grade = values.grade.map(grade=>grade.name);
-        filterName.subject = values.subject.map(subject=>subject.name);
-    this.setState({filter:filterName});
-}
-
-multiSelectDropdown({field, form, meta, ...props}){
+const multiSelectDropdown = ({field, form, meta, option, ...props})=>{
     const optionName = field.name;
-    const options = this.state.options[optionName];
     return (
         <Multiselect
-            options={options}
+            options={option}
             displayValue="name" 
             showCheckbox
             onSelect={(value)=>{
@@ -101,18 +64,16 @@ multiSelectDropdown({field, form, meta, ...props}){
     );
 }
 
-filterProps(student){
-    const distEve = (element) => {
-        return student.district.includes(element);
-    }
-////
-    const dist = this.state.filter.district.every(distEve);
+const filterProps = (filterVals,student) => {
+    const dist = filterVals.district.every((e=>{
+        return student.district.includes(e);
+    }));
 
-    const grade = this.state.filter.grade.every((e=>{
+    const grade = filterVals.grade.every((e=>{
         return student.grade.includes(e);
     }));
 
-    const subject = this.state.filter.subject.every((e=>{
+    const subject = filterVals.subject.every((e=>{
         return student.subject.includes(e);
     }));
 
@@ -121,18 +82,48 @@ filterProps(student){
 
 }
 
-render(){
-    const Rendering = this.props.RenderRegs;
-    let Filtered = this.props.studentRegs.filter((student)=>{
-        return this.filterProps(student);
+const handleSubmit = (values,actions, setFilterVals) => {
+    var filterName = {};
+        filterName.district = values.district.map(district=>district.name);
+        filterName.grade = values.grade.map(grade=>grade.name);
+        filterName.subject = values.subject.map(subject=>subject.name);
+    setFilterVals(filterName);
+}
+
+
+const RenderRegs = ({regs, auth, profile, register}) => {
+    const Regs = regs.map((student)=>{      
+        return (                
+            <div key={student.id} className="col-12 col-md-5 m-1">
+                <RenderStudentCard student={student} auth={auth}
+                profile={profile} register={register}/>
+            </div>
+        );
+    });
+
+    return (
+        <>
+            {Regs}
+        </>
+    );
+}
+
+
+
+const RenderFilter = (props) => {
+    const [filterVals, setFilterVals] = React.useState({ district:[],
+        grade:[],
+        subject:[]})
+    let Filtered = props.studentRegs.filter((student)=>{
+        return filterProps(filterVals, student);
     });
     return(
         <>
         <div className="row">
             <Formik 
                 className="row"
-                initialValues={this.state.initialValues}
-                onSubmit={this.handleSubmit}
+                initialValues={initialValues}
+                onSubmit={(values, action)=>handleSubmit(values, action, setFilterVals)}
             >
                 <Form className="col-12 col-md-9">                          
                     <Row className="form-group justify-content-center">
@@ -141,14 +132,16 @@ render(){
                             <FastField
                                 id="district"
                                 name="district"
-                                component={this.multiSelectDropdown}
+                                component={multiSelectDropdown}
+                                option={distOption}
                             />                                        
                         </Col>
                         <Label htmlFor="grade" md={1}>Lớp:</Label>
                         <Col md={2}>
                             <FastField id="grade" name="grade" 
                             className="form-control"    
-                            component={this.multiSelectDropdown}                                    
+                            component={multiSelectDropdown}      
+                            option={gradOption}                              
                             />
                         <ErrorMessage name="grade"/>
                         </Col>
@@ -156,7 +149,8 @@ render(){
                         <Col md={2}>
                             <FastField id="subject" name="subject" 
                             className="form-control"    
-                            component={this.multiSelectDropdown}                                    
+                            component={multiSelectDropdown}                                    
+                            option={subjOption}
                             />
                         <ErrorMessage name="subject"/>
                         </Col>
@@ -170,14 +164,14 @@ render(){
             </Formik>
         </div>
         <div className="row">
-            <Rendering regs={Filtered} auth={this.props.auth}
-                                profile={this.props.profile}
-                                register={this.props.register}/>
+            <RenderRegs regs={Filtered} auth={props.auth}
+                                profile={props.profile}
+                                register={props.register}/>
         </div>
         </>
     );
 }
-}
+
 
 const handleRegister = (register, studentId, auth, isTeacher) =>{
     if (!auth){
@@ -196,7 +190,6 @@ function RenderStudentCard({student, auth, profile,register}){
     let subject = student.subject.join(', ');
     let grade = student.grade.join(', ');
     let dist = student.district.join(',');
-    // console.log('check',student, profile);
     return(
         <Card className="border">
             <CardHeader 
@@ -231,28 +224,10 @@ function RenderStudentCard({student, auth, profile,register}){
 }
 
 
-const RenderRegs = ({regs, auth, profile, register}) => {
-    console.log('stustu ', regs);
-    const Regs = regs.map((student)=>{
-      
-        return (                
-            <div key={student.id} className="col-12 col-md-5 m-1">
-                <RenderStudentCard student={student} auth={auth}
-                profile={profile} register={register}/>
-            </div>
-        );
-    });
 
-    return (
-        <>
-            {Regs}
-        </>
-    );
-}
 
-const StudentRegs = (props) =>{      
+const NewStudentRegs = (props) =>{      
     if (props.isLoading) {
-        console.log("Loadingggg");
         return(
             <div className="container">
                 <div className="row">
@@ -262,8 +237,6 @@ const StudentRegs = (props) =>{
         );
     }
     else if (props.studentRegs != null){
-    console.log('check', props.studentRegs);
-
         return (
             <div className="container">
                 <div className="row">
@@ -276,15 +249,16 @@ const StudentRegs = (props) =>{
                         <hr/>
                     </div>
                 </div>
-                    <FilterRegs studentRegs={props.studentRegs}
-                                RenderRegs = {RenderRegs}
-                                register={props.register}
-                                auth={props.auth}
-                                profile={props.profile}
+                    <RenderFilter
+                        studentRegs={props.studentRegs}
+                        RenderRegs = {RenderRegs}
+                        register={props.register}
+                        auth={props.auth}
+                        profile={props.profile}
                     />
                 </div>
         );
     }
 }
 
-export default StudentRegs;
+export default NewStudentRegs;

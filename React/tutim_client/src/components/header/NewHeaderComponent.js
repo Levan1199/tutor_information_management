@@ -163,7 +163,7 @@ const NewHeader = (props) => {
               </MenuItem>
               :
               <>
-              <Link to="newInfo">
+              <Link to="/newInfo">
                 <MenuItem>
                   <Typography variant="body1">
                     Trang Ca Nhan
@@ -209,7 +209,7 @@ const NewHeader = (props) => {
                 </Button>
                 :
                 <>
-                <Link to="newInfo">
+                <Link to="/newInfo">
                 <Typography variant="h6" className={classes.username}>
                   {props.name?props.name.toUpperCase():null}
                 </Typography>

@@ -20,8 +20,11 @@ teacherRegRouter.route('/')
     res.sendStatus(200);
 })
 .get(cors.corsWithOptions, (req,res,next)=>{
-    TeacherReg.find({})
+    User.find({"isTeacher":true})
+    .populate('teacherProfile')
+    .populate('studentProfile')
     .then((teachers)=>{
+        console.log('ss ',teachers);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(teachers);

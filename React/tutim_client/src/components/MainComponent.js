@@ -9,6 +9,7 @@ import findTeacher from './forms/findTeacher';
 import FindClass from './forms/findClass';
 import TeacherRegs from './list/teacherRegs';
 import StudentRegs from './list/studentRegs';
+import NewStudentRegs from './list/newStudentRegs'
 
 import NewHeader from './header/NewHeaderComponent';
 import NewTeacherInfo from './teacher/NewTeacherInfo';
@@ -82,7 +83,9 @@ class Main extends Component{
     );
 
     const RenderProfile = (props) => {
+      console.log('inside render', props.profile);
       if(props.profile.isTeacher && !props.profile.isStudent){
+        console.log('inside render profile tea');
         return <NewTeacherInfo
           {...props}
       />}
@@ -122,6 +125,25 @@ class Main extends Component{
       }
     }
     
+    const RenderViewProfile = ({match}) => {
+      console.log('x',match.params.profileId);
+      // console.log(this.props.teacherRegs.teacherRegs.filter((teacher)=>console.log(teacher)));
+      const teaProfile = this.props.teacherRegs.teacherRegs.filter((teacher)=>teacher.teacherProfile._id===match.params.profileId)[0];
+      console.log(teaProfile);
+      const stuProfile = this.props.studentRegs.studentRegs.filter((student)=>student.studentProfile._id===match.params.profileId)[0];
+
+      if(teaProfile){
+        console.log('inside 1', teaProfile);
+        return <RenderProfile
+        profile={teaProfile}
+      />
+      }
+      else if(stuProfile){
+        console.log('inside 2');
+        return <RenderProfile
+        profile={stuProfile}/>
+      }
+    }
 
     return (
       <div>      
@@ -138,13 +160,14 @@ class Main extends Component{
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
                 <Route path="/home" component={Home}/>
-                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs}
+                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
                 register={this.props.studentRegTeacher}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
                 
                 />}/>
-                <Route path="/studentList" component={() => <StudentRegs studentRegs={this.props.studentRegs.studentRegs}
+                <Route path="/studentList" component={() => <StudentRegs 
+                studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
                 register={this.props.teacherRegStudent}
                 isLoading = {this.props.studentRegs.isLoading}
                 auth={this.props.auth.isAuthenticated}
@@ -157,12 +180,14 @@ class Main extends Component{
                 
             
 
-                <Route path="/newInfo" component={()=><RenderProfile
+                <Route exact path="/newInfo" component={()=><RenderProfile
                   profile={this.props.profiles.profiles}
                   isLoading={this.props.profiles.isLoading}
                   errMess={this.props.profiles.errMess}
                   updateProfile={this.props.updateProfile}
                 />}/>
+
+                <Route path="/newInfo/:profileId" component={RenderViewProfile}/>
 
                 <Route path='/upload' component={()=><Upload/> }/>
 
@@ -172,7 +197,13 @@ class Main extends Component{
                       errMess={this.props.profiles.errMess}
                 />}/>
 
-                  
+                <Route path="/newstudentList" component={() => <NewStudentRegs 
+                studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
+                register={this.props.teacherRegStudent}
+                isLoading = {this.props.studentRegs.isLoading}
+                auth={this.props.auth.isAuthenticated}
+                profile={this.props.profiles.profiles}
+                />}/>
 
                 <Route path="/detailmodal" component={() => <DetailModal/>}/>
                 <Route path="/stepper" component={()=><SetupProfile 

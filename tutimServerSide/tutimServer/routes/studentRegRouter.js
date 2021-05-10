@@ -8,7 +8,7 @@ mongoose.set('useFindAndModify',false);
 
 const StudentReg = require('../models/studentReg');
 const TeacherReg = require('../models/teacherReg');
-
+const User = require('../models/user');
 const studentRegRouter = express.Router();
 
 studentRegRouter.use(bodyParser.json());
@@ -19,8 +19,11 @@ studentRegRouter.route('/')
     res.sendStatus(200);
 })
 .get(cors.cors, (req,res,next)=>{
-    StudentReg.find(req.query)
+    User.find({"isStudent":true})
+    .populate('teacherProfile')
+    .populate('studentProfile')
     .then((studentRegs)=>{
+        console.log('ss ',studentRegs);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(studentRegs);

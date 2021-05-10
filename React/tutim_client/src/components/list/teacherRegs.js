@@ -20,7 +20,6 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
 
 
     function RenderTeacherCard({teacher, register, auth, profile}){
-        console.log('tea ',teacher.studentReg, profile);
         let subject = teacher.subject.join(', ');
         let grade = teacher.grade.join(', ');
         let district = teacher.district.join(', ');
@@ -28,10 +27,12 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
        
         <Card className="border">
             <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
-                        title={<Link to={`/home`}>{teacher.name}</Link>}
+                        title={<Link to={`/newInfo/${teacher._id}`}>{teacher.name}</Link>}
                         subheader={'Email: '+ teacher.email}
                         titleTypographyProps={{variant:'h6' }}
-                        action= {(teacher.studentReg.includes(profile.studentProfile._id))?
+                        action= {(                           
+                            teacher.studentReg.includes((profile.studentProfile)?profile.studentProfile._id:null))
+                            ?
                             <Button color="secondary" variant="contained">Đã Đăng ký</Button>
                             :<Button color="secondary" variant="contained" onClick={()=>
                                         handleRegister(register,teacher._id,auth, profile.isStudent)
@@ -54,15 +55,19 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
     }
 
     const TeacherRegs = (props) =>{
-        const teacherRegs = props.teacherRegs.map((teacher)=>{
-            if(teacher.available){
-            return (
-                <div key={teacher.id} className="col-12 col-md-5 m-1">
-                  <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile}/>
-                </div>
-            );
-            }
-        });
+        // console.log('tea ',props.teacherRegs);
+    //     var teacherRegs;
+    //     if(props.teacherRegs!=null){
+    //     teacherRegs = props.teacherRegs.map((teacher)=>{
+    //         if(teacher.available){
+    //         return (
+    //             <div key={teacher.id} className="col-12 col-md-5 m-1">
+    //               <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile}/>
+    //             </div>
+    //         );
+    //         }
+    //     });
+    // }
       
             return (
                 <div className="container">
@@ -77,7 +82,19 @@ import {Card, CardHeader, Avatar, CardContent, Button} from '@material-ui/core';
                         </div>
                     </div>
                     <div className="row">
-                            {teacherRegs}
+                        {(()=>{
+                            if(props.teacherRegs!=null){
+                                return props.teacherRegs.map((teacher)=>{
+                                    if(teacher.available){
+                                    return (
+                                            <div key={teacher.id} className="col-12 col-md-5 m-1">
+                                            <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile}/>
+                                            </div>
+                                        );
+                                    }
+                                });
+                            }
+                        })()}
                     </div>
                 </div>
             );
