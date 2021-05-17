@@ -1,12 +1,32 @@
 import React from 'react';
-import {Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, UncontrolledCarousel, Jumbotron} from 'reactstrap';
+// import {Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, UncontrolledCarousel, Jumbotron} from 'reactstrap';
 // import { Loading } from './LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {FadeTransform} from 'react-animation-components';
+import {Jumbotron, UncontrolledCarousel} from 'reactstrap';
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import {Grid} from '@material-ui/core';
 
 // import local data
 import './homepage.css';
 import {TEXT} from '../../shared/basicText';
+
+const useStyles = makeStyles({
+    root: {
+      maxWidth: 345,
+    },
+    media: {
+      height: 140,
+    },
+  });
+
 const picture = {
     chemical:'/assets/images/chemical.png',
     math:'/assets/images/math.png',
@@ -37,19 +57,36 @@ const items = [
     }
 ];
 
-function RenderCard(props){
-        return(
-            <Card>
-                <CardImg  src={props.picture} alt={props.text}/>
-                <CardBody>
-                    <CardTitle>
-                        {props.text}
-                    </CardTitle>
-                    {/* {TEXT[0].designation ? <CardSubtitle>{TEXT[0].designation}</CardSubtitle>:null} */}
-                    {/* <CardText>{TEXT[0].description}</CardText> */}
-                </CardBody>
-            </Card>
-        );
+const TopCourses = (props) => {
+    const classes = useStyles();
+
+    return (
+        <Card className={classes.root}>
+          <CardActionArea>
+            <CardMedia
+              className={classes.media}
+              image="/static/images/cards/contemplative-reptile.jpg"
+              title="Top Course"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                Course Name
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Course description
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          <CardActions>
+            <Button size="small" color="primary">
+              Share
+            </Button>
+            <Button size="small" color="primary">
+              Learn More
+            </Button>
+          </CardActions>
+        </Card>
+      );
 }
 
 function Home(props){
@@ -70,18 +107,18 @@ function Home(props){
                     <h4 className="font-weight-bold">
                         Khóa học nổi bật
                     </h4>
-                </div>
-                <div className="row align-items-start">
-                    <div className="col-12 col-md m-1">
-                        <RenderCard picture={picture.chemical} text={"Hóa"}/>
-                    </div>
-                    <div className="col-12 col-md m-1">
-                        <RenderCard picture={picture.math} text={"Toán"}/>
-                    </div>
-                    <div className="col-12 col-md m-1">
-                        <RenderCard picture={picture.physic} text={"Lý"}/>
-                    </div>            
-                </div>
+                </div>             
+                
+                <Grid container spacing={2} justify="center">
+                    <Grid item md={3}>
+                        <TopCourses picture={picture.math} text={"Toán"}/>
+                    </Grid>
+                    <Grid item md={3}>
+                        <TopCourses picture={picture.math} text={"Toán"}/>
+                    </Grid>
+                    <Grid item md={3}>
+                    </Grid>
+                </Grid>
             </div>
             {/* <hr/> */}
             <div className="container">

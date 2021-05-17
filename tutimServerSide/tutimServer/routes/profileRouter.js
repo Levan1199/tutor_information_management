@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const authenticate = require('../authenticate');
 const cors = require('./cors');
+const fs = require('fs');
 
 mongoose.set('useFindAndModify',false);
 
@@ -96,9 +97,9 @@ profileRouter.route('/')
 
 .put(cors.corsWithOptions, authenticate.verifyUser
     ,upload.single('avatar'), (req,res,next)=>{
-    console.log('inside put 99');
+    let isImg;
     if(req.file){
-        console.log('inside put 99');
+        isImg = true;
         req.body.imgPath = req.file.filename;
     }
     for (const ele in req.body){        
@@ -107,14 +108,19 @@ profileRouter.route('/')
         }
         req.body[ele] = JSON.parse(req.body[ele]);
     }
-    console.log('inside put1 99');
     User.findOne({_id:req.user._id})
     .then((user)=>{      
-        console.log('us 111', user);
         if(user.isTeacher && !user.isStudent){
             User.findOne({_id:req.user._id})
             .populate('teacherProfile')
             .then((profile)=>{      
+                if(isImg && profile.teacherProfile.imgPath){
+                    fs.unlink(__dirname+'/../public/images/'+profile.teacherProfile.imgPath, (err)=>{
+                        if(err){
+                            next(err);
+                        }
+                    });
+                }
                 profile.teacherProfile.updateOne({
                     $set: req.body
                 }, {new: true})
@@ -134,7 +140,13 @@ profileRouter.route('/')
             User.findOne({_id:req.user._id})
             .populate('studentProfile')
             .then((profile)=>{
-                console.log('zz', profile);
+                if(isImg && profile.studentProfile.imgPath){
+                    fs.unlink(__dirname+'/../public/images/'+profile.studentProfile.imgPath, (err)=>{
+                        if(err){
+                            next(err);
+                        }
+                    });
+                }
                 profile.studentProfile.updateOne({
                     $set: req.body
                 }, {new: true})
