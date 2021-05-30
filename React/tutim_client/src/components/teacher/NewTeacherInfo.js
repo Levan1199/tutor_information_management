@@ -1,12 +1,9 @@
 import React from "react";
 import {avatarUrl} from "../../shared/baseUrl";
 import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup} from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
-import { Paper,  TextField, Link } from '@material-ui/core'
-import { Formik, Form, ErrorMessage, Field } from "formik";
-import * as Yup from "yup"; 
 import IntroModal from "./IntroModal";
 import DetailModal from "./DetailModal";
 
@@ -154,13 +151,13 @@ const NewTeacherInfo = (props) => {
                         >
                             <FormControlLabel
                                 value='true'
-                                control={<Radio name="available" checked={teacherProfile.available==true}/>}
+                                control={<Radio name="available" checked={teacherProfile.available===true}/>}
                                 label="Yes"
                                 labelPlacement="top"
                             />
                             <FormControlLabel
                                 value='false'
-                                control={<Radio name="available" checked={teacherProfile.available==false} />}
+                                control={<Radio name="available" checked={teacherProfile.available===false} />}
                                 label="No"
                                 labelPlacement="top"
                             />

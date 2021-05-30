@@ -1,8 +1,5 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
-import { Redirect, useHistory } from 'react-router-dom';
-import { actionTypes } from 'react-redux-form';
-import * as imgToB64 from 'image-to-base64';
 export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
     payload: comment
@@ -307,6 +304,8 @@ export const updateProfile = (props) => (dispatch) => {
             continue;
         }
         formdata.append(key, JSON.stringify(props[key]));
+        for(var val of formdata.values() )
+        console.log('form', val);
     }
     return fetch(baseUrl + 'profile',
     {
@@ -526,3 +525,27 @@ export const studentRegFailed = (errmess)=>({
 export const studentRegLoading = () =>({
     type: ActionTypes.STUDENTREG_LOADING
 })
+
+
+///Course Action
+export const addCourseInfo = (course)=> ({
+    type: ActionTypes.ADD_COURSEINFO,
+    payload: course
+});
+
+export const courseInfoFailed = (errmess)=>({
+    type: ActionTypes.COURSEINFO_FAILED,
+    payload: errmess
+})
+
+export const courseInfoLoading = () =>({
+    type: ActionTypes.COURSEINFO_LOADING
+})
+
+export const fetchCourseInfo = () => (dispatch) => {
+    dispatch(courseInfoLoading());
+    console.log('inside fetch course');
+    return fetch(baseUrl + 'course')
+        .then(response => response.json())
+        .then(course => dispatch(addCourseInfo(course)));
+}

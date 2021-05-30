@@ -4,9 +4,6 @@ import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
-import { Paper,  TextField, Link } from '@material-ui/core'
-import { Formik, Form, ErrorMessage, Field } from "formik";
-import * as Yup from "yup"; 
 import IntroModal from "./IntroModal";
 const useStyles = makeStyles(theme => ({
     root: {

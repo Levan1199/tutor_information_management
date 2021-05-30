@@ -6,7 +6,12 @@ const cors = require('./cors');
 
 const storage = multer.diskStorage({    
     destination:(req,file,cb)=>{
-        cb(null, 'public/images');
+        if(file.fieldname==='avatar'){
+            cb(null, 'public/images');
+        }
+        else if(file.fieldname==='courseImg'){
+            cb(null, 'public/coursesImg');
+        }
     },
     filename: (req, file, cb)=>{
         cb(null,  Date.now()+'_'+file.originalname)
@@ -20,7 +25,7 @@ const imageFileFilter = (req, file, cb)=>{
     cb(null, true);
 };
 
-const upload = multer({ storage: storage});
+const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 
 // const uploadRouter = express.Router();
 

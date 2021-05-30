@@ -7,11 +7,11 @@ import {Multiselect} from 'multiselect-react-dropdown';
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import * as Yup from "yup";
 
-const required = (val) => val && val.length;
-const maxLength = (len) => (val) => !(val) || (val.length <= len);
-const minLength = (len) => (val) => (val) && (val.length >= len);
-const isNumber = (val) => !isNaN(Number(val));
-const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val)
+// const required = (val) => val && val.length;
+// const maxLength = (len) => (val) => !(val) || (val.length <= len);
+// const minLength = (len) => (val) => (val) && (val.length >= len);
+// const isNumber = (val) => !isNaN(Number(val));
+// const validEmail = (val) => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val)
 
 class findTeacher extends Component {
     constructor(props){

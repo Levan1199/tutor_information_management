@@ -89,7 +89,6 @@ const NewHeader = (props) => {
   }
 
   const switchModal = () => {
-    console.log('switch s');
     if (openModal){
       setModalSU(true);
       return setOpenModal(false);

@@ -23,7 +23,6 @@ studentRegRouter.route('/')
     .populate('teacherProfile')
     .populate('studentProfile')
     .then((studentRegs)=>{
-        console.log('ss ',studentRegs);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(studentRegs);
@@ -34,7 +33,6 @@ studentRegRouter.route('/')
 .post(cors.corsWithOptions, authenticate.verifyUser,(req,res,next)=>{
     StudentReg.create(req.body)
     .then((studentRegs)=>{
-        console.log('Teacher Created ', studentRegs);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(studentRegs);

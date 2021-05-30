@@ -1,18 +1,15 @@
 
-import React, { useState } from 'react'
+import React from 'react';
 import { Grid,Paper, TextField, Button, Typography, InputLabel } from '@material-ui/core';
 import FormLabel from '@material-ui/core/FormLabel';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { CheckboxWithLabel } from 'formik-material-ui';
 import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as Yup from "yup"; 
-import { boolean } from 'yup/lib/locale';
 
 const useStyles = makeStyles(theme => ({
     paperStyle:{
@@ -128,17 +125,17 @@ const DetailModal = (props)=>{
 
     const preGrade = [];
     grade.map((e)=>{
-        preGrade.push({name:e});
+        return preGrade.push({name:e});
     });
 
     const preSubject = [];
     subject.map((e)=>{
-        preSubject.push({name:e});
+        return preSubject.push({name:e});
     });
 
     const preDistrict = [];
     district.map((e)=>{
-        preDistrict.push({name:e});
+        return preDistrict.push({name:e});
     });
     // console.log('ggg ', weekly, typeof(preDistrict[0]), preSubject, preDistrict);
     const initialValues = {
@@ -234,13 +231,13 @@ const DetailModal = (props)=>{
         onChange={(evt)=>form.setFieldValue("available", (evt.target.value === 'true'))}>
             <FormControlLabel
                 value='true'
-                control={<Radio name="available" checked={form.values.available==true}/>}
+                control={<Radio name="available" checked={form.values.available===true}/>}
                 label="Yes"
                 labelPlacement="top"
             />
             <FormControlLabel
                 value='false'
-                control={<Radio name="available" checked={form.values.available==false} />}
+                control={<Radio name="available" checked={form.values.available===false} />}
                 label="No"
                 labelPlacement="top"
             />

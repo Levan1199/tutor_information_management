@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router-dom';
-// import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
-import {Card, CardImg,  CardBody, CardTitle, 
+import {Card, CardImg, CardTitle, 
     Media, Label, Modal, ModalHeader, ModalBody, Button, Row, Col} from 'reactstrap';
 import {LocalForm, Control} from 'react-redux-form';
 import { Loading } from '../LoadingComponent';
-// import {baseUrl} from '../shared/baseUrl';
-// import {FadeTransform} from 'react-animation-components';
 import {TEXT} from '../../shared/basicText';
 // import local data
 import './teacherInfo.css';

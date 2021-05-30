@@ -3,52 +3,31 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {Loading} from '../LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
-import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
+import {BreadcrumbItem, Breadcrumb, Label, Col, Row} from 'reactstrap';
+import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider} from '@material-ui/core';
 import {Multiselect} from 'multiselect-react-dropdown';
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
-import {Card, CardHeader,  CardContent} from '@material-ui/core';
-
-const initialValues = {
-    district:[],
-    grade:[],
-    subject:[]
-};
-
-const distOption = [  
-    {name: 'Quận 1'},
-    {name: 'Quận 2'},
-    {name: 'Quận 3'},
-    {name: 'Quận 4'},
-    {name: 'Quận 5'},
-    {name: 'Quận 6'},
-    {name: 'Quận 7'},
-    {name: 'Quận 8'},
-    {name: 'Quận 9'},
-    {name: 'Quận 10'},
-    {name: 'Quận 11'},
-    {name: 'Quận 12'},
-    {name: 'Quận Thủ Đức'},
-    {name: 'Quận Bình Thạnh'},
-    {name: 'Quận Tân Bình'},
-    {name: 'Quận Phú Nhuận'},
-    {name: 'Quận Tân Phú'},
-    {name: 'Quận Bình Tân'},
-    {name: 'Quận Gò Vấp'}
-];
-
-const gradOption = [
-    {name: 'Lớp 1'},
-    {name: 'Lớp 2'},
-    {name: 'Lớp 3'},
-    {name: 'Lớp 4'},
-    {name: 'Lớp 5'},
+import * as FilterField from './constValues';
+import { makeStyles } from '@material-ui/core/styles';
+import "./teacher.css";
+const useStyles = makeStyles((theme)=>({
+    text:{
+        fontWeight: "bold",
+        fontSize: "30px",
+        color: theme.palette.primary.dark
+    },
+    container:{
+        padding:"20px 0px"
+    },
+    header:{
+        paddingBottom: "10px"
+    },
+    button:{
+        height:"50px",
+        width:"75px"
+    }
     
-];
-const subjOption = [
-    {name: 'Toán'},
-    {name: 'Lý'},
-    {name: 'Hóa'},
-];
+}));
 
 const multiSelectDropdown = ({field, form, meta, option, ...props})=>{
     const optionName = field.name;
@@ -80,96 +59,6 @@ const filterProps = (filterVals,student) => {
     const result = dist && grade && subject;
     return result;
 
-}
-
-const handleSubmit = (values,actions, setFilterVals) => {
-    var filterName = {};
-        filterName.district = values.district.map(district=>district.name);
-        filterName.grade = values.grade.map(grade=>grade.name);
-        filterName.subject = values.subject.map(subject=>subject.name);
-    setFilterVals(filterName);
-}
-
-
-const RenderRegs = ({regs, auth, profile, register}) => {
-    const Regs = regs.map((student)=>{      
-        return (                
-            <div key={student.id} className="col-12 col-md-5 m-1">
-                <RenderStudentCard student={student} auth={auth}
-                profile={profile} register={register}/>
-            </div>
-        );
-    });
-
-    return (
-        <>
-            {Regs}
-        </>
-    );
-}
-
-
-
-const RenderFilter = (props) => {
-    const [filterVals, setFilterVals] = React.useState({ district:[],
-        grade:[],
-        subject:[]})
-    let Filtered = props.studentRegs.filter((student)=>{
-        return filterProps(filterVals, student);
-    });
-    return(
-        <>
-        <div className="row">
-            <Formik 
-                className="row"
-                initialValues={initialValues}
-                onSubmit={(values, action)=>handleSubmit(values, action, setFilterVals)}
-            >
-                <Form className="col-12 col-md-9">                          
-                    <Row className="form-group justify-content-center">
-                        <Label htmlFor="district" md={1}>Quận:</Label>
-                        <Col md={2}>
-                            <FastField
-                                id="district"
-                                name="district"
-                                component={multiSelectDropdown}
-                                option={distOption}
-                            />                                        
-                        </Col>
-                        <Label htmlFor="grade" md={1}>Lớp:</Label>
-                        <Col md={2}>
-                            <FastField id="grade" name="grade" 
-                            className="form-control"    
-                            component={multiSelectDropdown}      
-                            option={gradOption}                              
-                            />
-                        <ErrorMessage name="grade"/>
-                        </Col>
-                        <Label htmlFor="subject" md={2}>Môn học:</Label>
-                        <Col md={2}>
-                            <FastField id="subject" name="subject" 
-                            className="form-control"    
-                            component={multiSelectDropdown}                                    
-                            option={subjOption}
-                            />
-                        <ErrorMessage name="subject"/>
-                        </Col>
-                        <Col md={2}>
-                        <Button type="submit" color="primary">
-                            Xác nhận
-                        </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </Formik>
-        </div>
-        <div className="row">
-            <RenderRegs regs={Filtered} auth={props.auth}
-                                profile={props.profile}
-                                register={props.register}/>
-        </div>
-        </>
-    );
 }
 
 
@@ -227,38 +116,96 @@ function RenderStudentCard({student, auth, profile,register}){
 
 
 const NewStudentRegs = (props) =>{      
-    if (props.isLoading) {
-        return(
-            <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
-            </div>
-        );
-    }
-    else if (props.studentRegs != null){
-        return (
-            <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>Student</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>Các lớp học cần tìm gia sư</h3>
-                        <hr/>
-                    </div>
-                </div>
-                    <RenderFilter
-                        studentRegs={props.studentRegs}
-                        RenderRegs = {RenderRegs}
-                        register={props.register}
-                        auth={props.auth}
-                        profile={props.profile}
-                    />
-                </div>
-        );
-    }
+    const classes = useStyles();
+        const [filterVals, setFilterVals] = React.useState({ district:[],
+            grade:[],
+            subject:[]})
+
+        let foundStudents = props.studentRegs.filter((student)=>{
+            return filterProps(filterVals, student);
+        });
+
+        const handleSubmit = (values) => {
+            var filterName = {};
+                filterName.district = values.district.map(district=>district.name);
+                filterName.grade = values.grade.map(grade=>grade.name);
+                filterName.subject = values.subject.map(subject=>subject.name);
+            setFilterVals(filterName);
+        }
+            return (
+                <Container maxWidth="lg" className={classes.container}>
+                    <Grid container spacing={1}>
+                       <Grid item xs={12} className={classes.header}>
+                            <Grid container spacing={1} className={classes.header}>
+                                <Grid item xs={12} sm={3}>
+                                    <Typography variant="h6" className={classes.text} >Current Class</Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={9}>
+                                    <Formik initialValues={FilterField.stuInit}
+                                    onSubmit = {handleSubmit}
+                                    >
+                                        <Form>
+                                            <Grid container spacing={1} className={classes.multiSelect}>
+                                                <Grid item xs={12} sm={3}>
+                                                    <FastField
+                                                        id="district"
+                                                        name="district"
+                                                        component={multiSelectDropdown}
+                                                        option={FilterField.distOption}
+                                                        placeholder="District"
+                                                    />  
+                                                </Grid>
+                                                <Grid item xs={12} sm={3}>
+                                                    <FastField
+                                                        id="grade"
+                                                        name="grade"
+                                                        component={multiSelectDropdown}
+                                                        option={FilterField.gradOption}
+                                                        placeholder="Grade"
+                                                    />  
+                                                </Grid>
+                                                <Grid item xs={12} sm={3}>
+                                                    <FastField
+                                                        id="subject"
+                                                        name="subject"
+                                                        component={multiSelectDropdown}
+                                                        option={FilterField.subjOption}
+                                                        placeholder="Subject"
+                                                    />  
+                                                </Grid>
+                                                <Grid item xs={12} sm={2}>
+                                                    <Button 
+                                                    className={classes.button}
+                                                    color="secondary" type="submit" variant="contained"
+                                                    >Find</Button>  
+                                                </Grid>                                            
+                                            </Grid>
+                                        </Form>
+                                    </Formik>
+                                </Grid>
+                            </Grid>
+                            <Divider gutterBottom/>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container direction="row" spacing={2} justify="center">
+                            {(()=>{
+                                if(foundStudents!=null){
+                                    return foundStudents.map((student)=>{
+                                       
+                                        return (
+                                                <Grid item xs={12} md={5}>
+                                                <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile}/>
+                                                </Grid>
+                                            );
+                                       
+                                    });
+                                }
+                            })()}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Container>
+            );
 }
 
 export default NewStudentRegs;

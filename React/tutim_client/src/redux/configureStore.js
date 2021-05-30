@@ -4,8 +4,9 @@ import { Comments } from './comments';
 import { TeacherRegs } from './teacherRegs';
 import { StudentRegs } from './studentReg';
 import {Profiles} from './profile';
+import {CourseInfo} from './courseInfo';
 import thunk from 'redux-thunk';
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 import { InitialFeedback } from './forms';
 
 import {Auth} from './auth';
@@ -17,6 +18,7 @@ export const ConfigureStore = () => {
                 teacherRegs: TeacherRegs,
                 studentRegs: StudentRegs,
                 profiles: Profiles,
+                courseInfo: CourseInfo,
                 auth: Auth,
                 ...createForms({
                     feedback: InitialFeedback

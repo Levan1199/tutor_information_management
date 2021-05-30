@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Home from './homepage/HomeComponent';
 import Header from './HeaderComponent';
-import Footer from './FooterComponent';
-
+import Footer from '../footer/FooterComponent';
+import StickyFooter from './StickyFooterComponent';
 // import HomePageComponent from './homepage/HomePageComponent';
 import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
@@ -20,7 +20,7 @@ import Upload from './teacher/Upload';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import { teacherRegStudent, studentRegTeacher, updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
+import {fetchCourseInfo ,teacherRegStudent, studentRegTeacher, updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
       loginUser, logoutUser} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
@@ -31,6 +31,7 @@ const mapStatetoProps = state =>{
     teacherRegs: state.teacherRegs,
     studentRegs: state.studentRegs,
     profiles: state.profiles,
+    courseInfo: state.courseInfo,
     // comments: state.comments,
     // favorites: state.favorites,
     auth: state.auth,
@@ -49,6 +50,8 @@ const mapDispatchToProps = dispatch => ({
 
   studentRegTeacher: (teacherId)=>{dispatch(studentRegTeacher(teacherId))},
   teacherRegStudent: (studentId)=>{dispatch(teacherRegStudent(studentId))},
+
+  fetchCourseInfo:()=>{dispatch(fetchCourseInfo())},
 ///////////
   fetchProfile: ()=>{dispatch(fetchProfile())},
   postProfile: (props)=>{dispatch(postProfile(props))},
@@ -66,6 +69,7 @@ class Main extends Component{
     // this.props.fetchTeacherProfile();
     // this.props.fetchStudentProfile();
     this.props.fetchProfile();
+    this.props.fetchCourseInfo();
   }
 
 
@@ -116,7 +120,6 @@ class Main extends Component{
 
     const CheckStepper = () => {
       if (this.props.profiles.isEmpty && this.props.location.pathname != '/stepper'){
-        console.log('inside stepper');
          this.props.history.push('/stepper');
          return <div></div>;
       }
@@ -126,20 +129,15 @@ class Main extends Component{
     }
     
     const RenderViewProfile = ({match}) => {
-      console.log('x',match.params.profileId);
-      // console.log(this.props.teacherRegs.teacherRegs.filter((teacher)=>console.log(teacher)));
       const teaProfile = this.props.teacherRegs.teacherRegs.filter((teacher)=>teacher.teacherProfile._id===match.params.profileId)[0];
-      console.log(teaProfile);
       const stuProfile = this.props.studentRegs.studentRegs.filter((student)=>student.studentProfile._id===match.params.profileId)[0];
 
       if(teaProfile){
-        console.log('inside 1', teaProfile);
         return <RenderProfile
         profile={teaProfile}
       />
       }
       else if(stuProfile){
-        console.log('inside 2');
         return <RenderProfile
         profile={stuProfile}/>
       }
@@ -159,14 +157,24 @@ class Main extends Component{
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
               <Switch>
-                <Route path="/home" component={Home}/>
-                <Route path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
+                <Route path="/home" component={()=><Home courseInfo={this.props.courseInfo.courseInfo}
+                isLoadingCourse = {this.props.courseInfo.isLoading}
+                teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
+                isLoadingTech = {this.props.teacherRegs.isLoading}
+                />}/>
+                <Route exact path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
                 register={this.props.studentRegTeacher}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
-                
                 />}/>
-                <Route path="/studentList" component={() => <StudentRegs 
+                <Route path="/teacherList/:subjectName" component={({match}) => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
+                register={this.props.studentRegTeacher}
+                auth={this.props.auth.isAuthenticated}
+                profile={this.props.profiles.profiles}
+                subjectName={match.params.subjectName}
+                />}/>
+
+                <Route path="/studentList" component={() => <NewStudentRegs 
                 studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
                 register={this.props.teacherRegStudent}
                 isLoading = {this.props.studentRegs.isLoading}
@@ -197,13 +205,13 @@ class Main extends Component{
                       errMess={this.props.profiles.errMess}
                 />}/>
 
-                <Route path="/newstudentList" component={() => <NewStudentRegs 
+                {/* <Route path="/newstudentList" component={() => <NewStudentRegs 
                 studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
                 register={this.props.teacherRegStudent}
                 isLoading = {this.props.studentRegs.isLoading}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
-                />}/>
+                />}/> */}
 
                 <Route path="/detailmodal" component={() => <DetailModal/>}/>
                 <Route path="/stepper" component={()=><SetupProfile 

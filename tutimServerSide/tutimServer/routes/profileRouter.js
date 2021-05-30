@@ -98,7 +98,9 @@ profileRouter.route('/')
 .put(cors.corsWithOptions, authenticate.verifyUser
     ,upload.single('avatar'), (req,res,next)=>{
     let isImg;
+    console.log('inside put', req.body);
     if(req.file){
+        console.log('req file', req.file);
         isImg = true;
         req.body.imgPath = req.file.filename;
     }

@@ -24,7 +24,6 @@ teacherRegRouter.route('/')
     .populate('teacherProfile')
     .populate('studentProfile')
     .then((teachers)=>{
-        console.log('ss ',teachers);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(teachers);
@@ -33,10 +32,8 @@ teacherRegRouter.route('/')
 })
 
 .post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
-    // console.log(req.body);
     TeacherReg.create(req.body)
     .then((teacher)=>{
-        console.log('Teacher Created ', teacher);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(teacher);
@@ -65,10 +62,8 @@ teacherRegRouter.route('/:teacherId')
     res.sendStatus(200);
 })
 .get(cors.corsWithOptions, authenticate.verifyUser,(req,res,next)=>{
-    console.log('auth', req.params.teacherId);
     TeacherReg.findById(req.params.teacherId)
     .then((teacher)=>{
-        console.log(teacher);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(teacher);
@@ -82,7 +77,6 @@ teacherRegRouter.route('/:teacherId')
 // })
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
   
-        console.log('b4 ',req.user);
         TeacherReg.findOneAndUpdate({teacherId:req.params.teacherId},{
         $set: req.body
     },{new:true})
