@@ -8,7 +8,7 @@ import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import {Label, Col, Row} from 'reactstrap';
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as FilterField from './constValues';
-import "./teacher.css";
+import "./findBar.css";
     const useStyles = makeStyles((theme)=>({
         text:{
             fontWeight: "bold",
@@ -27,7 +27,8 @@ import "./teacher.css";
         },
         main:{
             backgroundColor:"#f5f5f5",
-            padding:0
+            padding:0,
+            minHeight:"100vh"
         },
         box:{
             width:"100%",
@@ -46,7 +47,7 @@ import "./teacher.css";
                 <Multiselect
                     options={option}
                     showArrow
-                    placeholder	={placeholder}
+                    placeholder={placeholder}
                     displayValue="name" 
                     showCheckbox
                     onSelect={(value)=>{
@@ -172,19 +173,19 @@ import "./teacher.css";
                 <Container maxWidth="false" className={classes.main}>
                 <Box className={classes.box}>
                     <Typography variant="h4" align="center" className={classes.normalText}>
-                        Lastest Courses
+                        Current teachers
                     </Typography>
                     <Typography variant="body1" align="center" className={classes.normalText}>
-                        Discover courses for all ages and exciting subjects
+                        Current teachers that are available for various type of subjects
                     </Typography>
                 </Box>
                 <Container maxWidth="lg" className={classes.container} id="a22">
                     <Grid container spacing={1}>
                        <Grid item xs={12} className={classes.header}>
                             <Grid container spacing={1} className={classes.header}>
-                                <Grid item xs={12} sm={3}>
+                                {/* <Grid item xs={12} sm={3}>
                                     <Typography variant="h6" className={classes.text} >Current Teacher</Typography>
-                                </Grid>
+                                </Grid> */}
                                 <Grid item xs={12} sm={9}>
                                     <Formik initialValues={FilterField.teachInit}
                                     onSubmit = {handleSubmit}

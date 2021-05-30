@@ -69,12 +69,6 @@ const NewHeader = (props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
-  // const [navChanged, setNavChanged] = React.useState(false)
-
-  // if (props.isEmpty && !navChanged){
-  //   setNavChanged(true);
-  //   history.push('/stepper');
-  // }
 
   const [openModal, setOpenModal] = React.useState(false);
   const [modalSignUp, setModalSU] = React.useState(false);
@@ -112,17 +106,17 @@ const NewHeader = (props) => {
   const navRoute =[
     {
       link: '/home',
-      nameLink: 'Trang chu',
+      nameLink: 'Home',
       icon: <HomeIcon/>
     },
     {
       link: '/studentList',
-      nameLink: 'Hoc sinh',
+      nameLink: 'Student',
       icon: <PermIdentityIcon/>
     },
     {
       link: '/teacherList',
-      nameLink: 'Gia Su',
+      nameLink: 'Teacher',
       icon: <SchoolIcon/>
     }
   ]
@@ -154,7 +148,7 @@ const NewHeader = (props) => {
               {
               !props.auth.isAuthenticated ?
               <MenuItem onClick={()=>setOpenModal(true)} >
-                Dang Nhap
+                Sign In
                 {props.auth.isFetching ?
                     <span className="fa fa-spinner fa-pulse fa-fw"></span>
                     : null
@@ -165,13 +159,13 @@ const NewHeader = (props) => {
               <Link to="/newInfo">
                 <MenuItem>
                   <Typography variant="body1">
-                    Trang Ca Nhan
+                    Your Profile
                   </Typography>
                 </MenuItem>
               </Link>    
 
               <MenuItem onClick={handleLogout}>          
-                    Dang Xuat
+                  Sign Out
                     {props.auth.isFetching ?
                         <span className="fa fa-spinner fa-pulse fa-fw"></span>
                         : null
@@ -200,7 +194,7 @@ const NewHeader = (props) => {
               {
                 !props.auth.isAuthenticated ?
                 <Button variant="contained" onClick={()=>setOpenModal(true)} color="secondary" className={classes.navButton}>
-                Dang Nhap
+                Sign In
                 {props.auth.isFetching ?
                     <span className="fa fa-spinner fa-pulse fa-fw"></span>
                     : null
@@ -214,7 +208,7 @@ const NewHeader = (props) => {
                 </Typography>
                 </Link>              
                 <Button onClick={handleLogout} variant="contained" color="secondary" >
-                    Dang Xuat
+                    Sign Out
                     {props.auth.isFetching ?
                         <span className="fa fa-spinner fa-pulse fa-fw"></span>
                         : null

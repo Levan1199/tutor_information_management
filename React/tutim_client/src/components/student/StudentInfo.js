@@ -1,11 +1,19 @@
-import React from "react";
-import { Avatar, Grid, Typography, Button, Box, Modal } from "@material-ui/core";
+import React, {useEffect} from "react";
+import { Avatar, Grid, Typography, Button, Box, Modal, Container} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
 import IntroModal from "./IntroModal";
+import DetailModal from "./DetailModal";
 const useStyles = makeStyles(theme => ({
+    main:{
+        backgroundColor:"#f5f5f5",
+        minHeight:"100vh"
+    },
+    container:{
+        padding:"20px 0px"
+    },
     root: {
       flexGrow: 1,
       padding: '20px 100px'
@@ -20,29 +28,135 @@ const useStyles = makeStyles(theme => ({
         width:280, 
         margin:"20px auto",
     },
-  }));
+    modal:{
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    normalText:{
+      fontFamily:"Segoe UI",
+      fontWeight:"medium",
+      fontSize:"1.5rem"
+    },
+    headerText:{
+    fontWeight: "bold",
+    fontFamily:"Roboto"
+  },
+}));
 
-
-const StudentInfo = (props) => {
+const RenderUI = (props) => {
     const classes = useStyles();
     const [modalIntro, setModalIntro] = React.useState(false);
     const [modalDetail, setModalDetail] = React.useState(false);
+    const {studentProfile} = props.profile;
 
-    const openIntro = () => {
-        setModalIntro(true);
-    };
+    const grade = studentProfile.grade?studentProfile.grade.join(', '):"";
+    const subject = studentProfile.subject?studentProfile.subject.join(', '):"";
+    const district = studentProfile.district?studentProfile.district.join(', '):"";
 
-    const closeIntro = () => {
-        setModalIntro(false);
-    };
+    return (
+        <Container maxWidth="false" className={classes.main}>
+            <Container maxWidth="lg" className={classes.container}>
+            <Grid container direction="row" spacing={2} >
+                <Grid item md={12} lg={3}>
+                <Avatar className={classes.profileImg} src=
+                    {avatarUrl+studentProfile.imgPath}
+                    alt="Student Avatar"/>                      
+                </Grid>
 
-    const openDetail = () => {
-        setModalDetail(true);
-    };
+                <Grid item md={12} lg={8}>
+                    <Typography variant="h2" className={classes.headerText}>
+                            {studentProfile.name}
+                    </Typography>
+                    <Typography variant="h4" className={classes.normalText}>
+                            {studentProfile.email}
+                            <hr/>
+                    </Typography>   
+                    
+                    <Typography variant="h6" className={classes.normalText}>
+                            Description: {studentProfile.description}
+                    </Typography>     
+                  
+                </Grid>
 
-    const closeDetail = () => {
-        setModalDetail(false);
-    };
+                <Box
+                    component={Grid}
+                    item
+                    md={12} lg={1}
+                    display={{ md: "none", lg: "block" }}
+                >
+                    <Button onClick={()=>setModalIntro(true)}><EditIcon/></Button>    
+                </Box>
+                <Grid item md={12}>
+                <Typography><hr/></Typography>
+                </Grid>
+            </Grid>
+            
+            <Grid container direction="row" spacing={2} >
+                <Grid item md={10}>
+                    <Typography variant="h4" className={classes.headerText} color="secondary">Class information</Typography>
+                    <Typography variant="body1" className={classes.normalText}>
+                        Grade: {grade}
+                    </Typography>        
+                    <Typography variant="body1" className={classes.normalText}>
+                        Subject: {subject}
+                    </Typography>  
+                    <Typography variant="body1" className={classes.normalText}>
+                        District: {district}
+                    </Typography>  
+                    <Typography variant="body1" className={classes.normalText}>
+                        Tuition Fee: {studentProfile.fee}
+                    </Typography>  
+                    <Typography variant="body1" className={classes.normalText}>
+                        Address: {studentProfile.address}
+                    </Typography>
+                </Grid>
+
+                
+                <Box
+                    component={Grid}
+                    item
+                    md={2}
+                    display={{ md: "none", lg: "block" }}
+                >
+                    <Button onClick={()=>setModalDetail(true)}><EditIcon/></Button>    
+                </Box>
+            </Grid>        
+           
+    
+            <Modal
+            className={classes.modal}
+            open={modalIntro}
+            onClose={()=>setModalIntro(false)}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            >
+                <IntroModal closeModal={()=>setModalIntro(false)} updateProfile={props.updateProfile} {...studentProfile}/>              
+            </Modal>    
+
+            <Modal
+                className={classes.modal}
+                open={modalDetail}
+                onClose={()=>setModalDetail(false)}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+                >
+                    <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...studentProfile}/>   
+            </Modal>    
+        </Container>
+        </Container>
+    );
+}
+
+const StudentInfo = (props) => {
+    useEffect(()=>{
+        if(props.profile){
+            return (
+                <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+            );
+        }
+    },[props.profile]);
+    
     if (props.isLoading) {
         return(
             <div className="container">
@@ -61,65 +175,10 @@ const StudentInfo = (props) => {
             </div>
         );
     }
-    else if (props.profile) {  
-    const {studentProfile} = props.profile;
-    return (
-        <div className={classes.root}>
-            <Grid container direction="row" spacing={2} >
-                <Grid item md={12} lg={3}>
-                <Avatar className={classes.profileImg} src=
-                    {avatarUrl+studentProfile.imgPath}
-                    alt="Student Avatar"/>                      
-                </Grid>
-
-                <Grid item md={12} lg={8}>
-                    <Typography variant="h2">
-                            {studentProfile.name}
-                    </Typography>
-                    <Typography variant="h4">
-                            {studentProfile.email}
-                            <hr/>
-                    </Typography>   
-                    
-                    <Typography variant="h6">
-                            Mô tả: {studentProfile.description}
-                    </Typography>     
-                  
-                </Grid>
-
-                <Box
-                    component={Grid}
-                    item
-                    md={12} lg={1}
-                    display={{ md: "none", lg: "block" }}
-                >
-                    <Button onClick={openIntro}><EditIcon/></Button>    
-                </Box>
-                <Grid item md={12}>
-                <Typography><hr/></Typography>
-                </Grid>
-            </Grid>
-            
-           
-            <Modal
-            open={modalIntro}
-            onClose={closeIntro}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            >
-                <IntroModal closeModal={closeIntro} updateProfile={props.updateProfile} {...studentProfile}/>              
-            </Modal>    
-            <Modal
-            open={modalDetail}
-            onClose={closeDetail}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            >
-                
-            <div>detail</div>
-            </Modal>    
-        </div>  
-    );
+    else if (props.profile) {         
+        return (
+            <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+        );
     }
 }
 

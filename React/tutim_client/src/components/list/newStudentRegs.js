@@ -4,12 +4,13 @@ import {Link} from 'react-router-dom';
 import {Loading} from '../LoadingComponent';
 // import {baseUrl} from '../shared/baseUrl';
 import {BreadcrumbItem, Breadcrumb, Label, Col, Row} from 'reactstrap';
-import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider} from '@material-ui/core';
+import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import {Multiselect} from 'multiselect-react-dropdown';
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import * as FilterField from './constValues';
 import { makeStyles } from '@material-ui/core/styles';
-import "./teacher.css";
+import "./findBar.css";
+import { SubjectTwoTone } from '@material-ui/icons';
 const useStyles = makeStyles((theme)=>({
     text:{
         fontWeight: "bold",
@@ -25,16 +26,44 @@ const useStyles = makeStyles((theme)=>({
     button:{
         height:"50px",
         width:"75px"
+    } ,
+    main:{
+        backgroundColor:"#f5f5f5",
+        padding:0,
+        minHeight:"100vh"
+    },
+    box:{
+        width:"100%",
+        padding:"20px 0",
+        backgroundColor:theme.palette.secondary.light
+    },
+    normalText:{
+      fontFamily:"Segoe UI",
+      fontWeight:"medium",
+      fontSize:"1.5rem"
+    },
+    headerText:{
+        fontWeight: "bold",
+        fontFamily:"Roboto",
+        color: theme.palette.primary.dark
+  },
+ 
+  cardcontent: {
+    "&:last-child": {
+      paddingTop: 0
     }
+  }
+
     
 }));
 
-const multiSelectDropdown = ({field, form, meta, option, ...props})=>{
+const multiSelectDropdown = ({field,placeholder, form, meta, option, ...props})=>{
     const optionName = field.name;
     return (
         <Multiselect
             options={option}
             displayValue="name" 
+            placeholder={placeholder}
             showCheckbox
             onSelect={(value)=>{
                 form.setFieldValue(optionName,value);
@@ -76,36 +105,37 @@ const handleRegister = (register, studentId, auth, isTeacher) =>{
 }
 
 function RenderStudentCard({student, auth, profile,register}){
+    const editStyle = useStyles();
     let subject = student.subject.join(', ');
     let grade = student.grade.join(', ');
     let dist = student.district.join(',');
     return(
-        <Card className="border">
+        <Card>
             <CardHeader 
-                title={"Lớp: " + grade}
-                subheader={"Môn học: " + subject}
-                titleTypographyProps={{variant:'h5' }}
+                title={"Class SubJect: " + subject}
+                subheader={"Student Name: " + student.name}
+                // titleTypographyProps={{variant:'h5', fontFamily:'Roboto',color:'#FF0000' }}
+                classes={{
+                    title: editStyle.headerText,
+                    subheader: editStyle.normalText
+                }}
                 action={
                     (
                     student.teacherReg.includes((profile.teacherProfile)?profile.teacherProfile._id:null))?
-                    <Button color="secondary" variant="contained">Đã Đăng ký</Button>
+                    <Button color="secondary" variant="contained">Registered</Button>
                     :<Button color="secondary" variant="contained" onClick={()=>
                         handleRegister(register,student._id,auth, profile.isTeacher)
-                    }>Đăng ký</Button>
+                    }>Register</Button>
                 }
             />
-            <CardContent>
-                <strong>Số buổi trong tuần: </strong>{student.periodAWeek}
+            <CardContent className={editStyle.cardcontent}>              
+                <strong>Address: </strong>{student.address}
                 <br/>
-                <strong>Thời gian: </strong>{student.time}
+                <strong>Recommend Tuition Fee: </strong>{student.fee}
                 <br/>
-                <strong>Địa chỉ: </strong>{student.address}
+                <strong>District: </strong>{dist}
                 <br/>
-                <strong>Học phí: </strong>{student.fee}
-                <br/>
-                <strong>Quận: </strong>{dist}
-                <br/>
-                <strong>Yêu cầu khác: </strong>{student.description}
+                <strong>Description: </strong>{student.description}
                 
             </CardContent> 
         </Card>
@@ -133,13 +163,19 @@ const NewStudentRegs = (props) =>{
             setFilterVals(filterName);
         }
             return (
+                <Container maxWidth="false" className={classes.main}>
+                <Box className={classes.box}>
+                    <Typography variant="h4" align="center" className={classes.normalText}>
+                        Current classes
+                    </Typography>
+                    <Typography variant="body1" align="center" className={classes.normalText}>
+                        Current classes that is in need of teachers requested by students 
+                    </Typography>
+                </Box>
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={1}>
                        <Grid item xs={12} className={classes.header}>
                             <Grid container spacing={1} className={classes.header}>
-                                <Grid item xs={12} sm={3}>
-                                    <Typography variant="h6" className={classes.text} >Current Class</Typography>
-                                </Grid>
                                 <Grid item xs={12} sm={9}>
                                     <Formik initialValues={FilterField.stuInit}
                                     onSubmit = {handleSubmit}
@@ -204,6 +240,7 @@ const NewStudentRegs = (props) =>{
                             </Grid>
                         </Grid>
                     </Grid>
+                </Container>
                 </Container>
             );
 }

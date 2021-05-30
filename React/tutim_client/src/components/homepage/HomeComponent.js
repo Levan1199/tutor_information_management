@@ -140,7 +140,7 @@ const TopCourses = (props) => {
           </CardActionArea>
           <CardActions>
             <Link to={`/teacherList/${props.name}`}>
-            <Button size="small" color="primary">
+            <Button variant="contained" color="primary">
               Register Now
             </Button>
             </Link>

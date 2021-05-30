@@ -1,6 +1,6 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {avatarUrl} from "../../shared/baseUrl";
-import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup} from "@material-ui/core";
+import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
@@ -8,6 +8,13 @@ import IntroModal from "./IntroModal";
 import DetailModal from "./DetailModal";
 
 const useStyles = makeStyles(theme => ({
+    main:{
+        backgroundColor:"#f5f5f5",
+        minHeight:"100vh"
+    },
+    container:{
+        padding:"20px 0px"
+    },
     root: {
       flexGrow: 1,
       padding: '20px 100px'
@@ -26,8 +33,17 @@ const useStyles = makeStyles(theme => ({
         display:'flex',
         alignItems:'center',
         justifyContent:'center'
-    }
-  }));
+    },
+    normalText:{
+      fontFamily:"Segoe UI",
+      fontWeight:"medium",
+      fontSize:"1.5rem"
+    },
+    headerText:{
+    fontWeight: "bold",
+    fontFamily:"Roboto"
+  },
+}));
 
 const checkBoxValues = [
     {label:'Mon', value:2},
@@ -52,37 +68,19 @@ const RenderCheckBox = (props) => {
     );
 }
 
-const NewTeacherInfo = (props) => {
+const RenderUI = (props) => {
     const classes = useStyles();
     const [modalIntro, setModalIntro] = React.useState(false);
     const [modalDetail, setModalDetail] = React.useState(false);
 
-
-    if (props.isLoading) {
-        return(
-            <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
-            </div>
-        );
-    }
-    else if (props.errMess) {
-        return(
-            <div className="container">
-                <div className="row">
-                    <h4>{props.errMess}</h4>
-                </div>
-            </div>
-        );
-    }
-    else if (props.profile) {  
     const {teacherProfile} = props.profile;
     const grade = teacherProfile.grade?teacherProfile.grade.join(', '):"";
     const subject = teacherProfile.subject?teacherProfile.subject.join(', '):"";
     const district = teacherProfile.district?teacherProfile.district.join(', '):"";
+
     return (
-        <div className={classes.root}>
+        <Container maxWidth="false" className={classes.main}>
+            <Container maxWidth="lg" className={classes.container}>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
                     <Avatar className={classes.profileImg} src=
@@ -91,16 +89,16 @@ const NewTeacherInfo = (props) => {
                 </Grid>
 
                 <Grid item md={12} lg={8}>
-                    <Typography variant="h2">
+                    <Typography variant="h2" className={classes.headerText}>
                             {teacherProfile.name}
                     </Typography>
-                    <Typography variant="h4">
+                    <Typography variant="h4" className={classes.normalText}>
                             {teacherProfile.email}
                     <Divider light/>
                     </Typography>   
                     
-                    <Typography variant="h6">
-                            Mo ta: {teacherProfile.description}
+                    <Typography variant="h6" className={classes.normalText}>
+                            Description: {teacherProfile.description}
                     </Typography>     
                   
                 </Grid>
@@ -120,23 +118,23 @@ const NewTeacherInfo = (props) => {
             
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={6}>
-                    <Typography variant="h6">Class information</Typography>
-                    <Typography variant="body1">
+                    <Typography variant="h4" className={classes.headerText} color="secondary">Class information</Typography>
+                    <Typography variant="body1" className={classes.normalText}>
                         Các Lớp: {grade}
                     </Typography>        
-                    <Typography variant="body1">
+                    <Typography variant="body1" className={classes.normalText}>
                         Môn học: {subject}
                     </Typography>  
-                    <Typography variant="body1">
+                    <Typography variant="body1" className={classes.normalText}>
                         Khu vực: {district}
                     </Typography>  
-                    <Typography variant="body1">
+                    <Typography variant="body1" className={classes.normalText}>
                         Học phí: {teacherProfile.fee}
                     </Typography>  
                 </Grid>
 
                 <Grid item md={12} lg={5}>
-                    <Typography variant="h6">
+                    <Typography variant="h4" className={classes.headerText} color="secondary">
                         Schedule 
                     </Typography>           
                     {checkBoxValues.map(obj => (
@@ -193,8 +191,44 @@ const NewTeacherInfo = (props) => {
                 >
                     <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...teacherProfile}/>   
             </Modal>    
-        </div>  
+            </Container>
+        </Container>
     );
+}
+
+const NewTeacherInfo = (props) => {
+   
+
+    useEffect(()=>{
+        if(props.profile){
+            return (
+                <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+            );
+        }
+    },[props.profile]);
+
+    if (props.isLoading) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <Loading />
+                </div>
+            </div>
+        );
+    }
+    else if (props.errMess) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <h4>{props.errMess}</h4>
+                </div>
+            </div>
+        );
+    }
+    else if (props.profile) {  
+        return (
+            <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+        );   
     }
 }
 

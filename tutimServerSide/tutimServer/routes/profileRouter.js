@@ -110,6 +110,7 @@ profileRouter.route('/')
         }
         req.body[ele] = JSON.parse(req.body[ele]);
     }
+    console.log('inside put again', req.body);
     User.findOne({_id:req.user._id})
     .then((user)=>{      
         if(user.isTeacher && !user.isStudent){
