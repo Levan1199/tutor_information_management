@@ -3,6 +3,6 @@ module.exports = {
     'mongoUrl': 'mongodb://localhost:27017/tutim',
     'facebook':{
         clientId:'131650262166906',
-        clientSecret:'d1e81dbe53d5c6583675a366aaea8bd9'
+        clientSecret:'3248a92acc9f18fbad65faad9ff13014'
     }
 }
