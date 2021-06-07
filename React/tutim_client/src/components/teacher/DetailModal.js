@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as Yup from "yup"; 
+import * as FilterField from '../../shared/constValues';
 
 const useStyles = makeStyles(theme => ({
     paperStyle:{
@@ -30,8 +31,8 @@ const useStyles = makeStyles(theme => ({
         marginBottom:'10px'
     },
     label:{
-        fontWeight: 'medium',
-        color: theme.palette.primary.main
+        fontWeight: 'bold',
+        color: theme.palette.primary.dark
     },
     outerColumn:{
         borderRight: "1px solid grey",
@@ -45,56 +46,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-
 const validationSchema = Yup.object({
-    name: Yup.string()
-        .required('Bạn cần điền mục này')
-        .min(4,'Cần nhiều hơn 4 chữ cái')
-        .max(36,'Ít hơn 36 chữ cái'),
-
-    password: Yup.string()
-        .required('Bạn cần điền mục này')
-        .min(4,'Cần nhiều hơn 4 chữ cái')
-        .max(36,'Ít hơn 36 chữ cái'),
+    fee: Yup.number()
+        .typeError('you must specify a number')
+        .positive('The number must be positive')
 });
-
-const options={
-    district:[
-        {name: 'Quận 1'},
-        {name: 'Quận 2'},
-        {name: 'Quận 3'},
-        {name: 'Quận 4'},
-        {name: 'Quận 5'},
-        {name: 'Quận 6'},
-        {name: 'Quận 7'},
-        {name: 'Quận 8'},
-        {name: 'Quận 9'},
-        {name: 'Quận 10'},
-        {name: 'Quận 11'},
-        {name: 'Quận 12'},
-        {name: 'Quận Thủ Đức'},
-        {name: 'Quận Bình Thạnh'},
-        {name: 'Quận Tân Bình'},
-        {name: 'Quận Phú Nhuận'},
-        {name: 'Quận Tân Phú'},
-        {name: 'Quận Bình Tân'},
-        {name: 'Quận Gò Vấp'}
-    ],
-    grade:[
-        {name: 'Lớp 1'},
-        {name: 'Lớp 2'},
-        {name: 'Lớp 3'},
-        {name: 'Lớp 4'},
-        {name: 'Lớp 5'},
-        
-    ],
-    subject:[
-        {name: 'Toán'},
-        {name: 'Lý'},
-        {name: 'Hóa'},
-    ]
-
-}
 
 const checkBoxValues = [
     {label:'Mon', value:2},
@@ -104,14 +60,10 @@ const checkBoxValues = [
     {label:'Fri', value:6},
     {label:'Sat', value:7},
     {label:'Sun', value:8},
-    
 ]
 
 
-
-
 const handleInput = (values, actions, updateProfile, closeModal)=>{   
-    console.log('inside update reg: ',values);
     updateProfile(values);
     return closeModal();
 }
@@ -137,7 +89,6 @@ const DetailModal = (props)=>{
     district.map((e)=>{
         return preDistrict.push({name:e});
     });
-    // console.log('ggg ', weekly, typeof(preDistrict[0]), preSubject, preDistrict);
     const initialValues = {
         grade:grade,
         subject:subject,
@@ -150,7 +101,6 @@ const DetailModal = (props)=>{
 
     const checkBox = ({field, form, label, value}) => {
         const {name} = field;
-        console.log('ggg', form.values.weekly);
         return (
             <FormControlLabel
             control={<Checkbox value={value} name={name} 
@@ -174,25 +124,25 @@ const DetailModal = (props)=>{
         );
     }
 
-    const inputBar = ({field, form, type, label, ...props}) => {
+    const inputBar = ({field, form, type, label, errors, touched}) => {
         const {name} = field;
-        const helpText = "Nhập " + label;
+        const helpText = "Input " + label;
         return (
             <>
             <InputLabel className={classes.label} htmlFor={name}>{label}</InputLabel>
             <TextField type={type} name={name} placeholder={helpText} className={classes.inputBar} fullWidth margin="normal"
             defaultValue={fee}
             onChange = {(evt)=>form.setFieldValue(name, evt.target.value)}
+            error={touched[name] && Boolean(errors[name])}
+            helperText={errors[name]}
             />
-            <ErrorMessage name={name}/>
             </>
         );
     }
 
-    const multiSelectDropdown = ({field, form, meta,label, ...props}) => {
+    const multiSelectDropdown = ({field, form, meta,label, option}) => {
      
         const optionName = field.name;
-        const option = options[optionName];
         var preValue;
         if (optionName === 'district'){
             preValue = preDistrict;
@@ -251,39 +201,45 @@ const DetailModal = (props)=>{
                 <Formik 
                 initialValues={initialValues}
                 onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
-                >               
+                >         
+                  {({ errors, touched}) => (        
                     <Form>
-                    <Grid container>
+                    <Grid container spacing={2}>
                         <Grid item sm={12} md={6} className={classes.outerColumn}>
-                        <Typography variant="h5">Chỉnh sửa phần giới thiệu</Typography>
+                        <Typography variant="h5" color="primary">Edit requirement for the class</Typography>
                         <Field 
                             component={multiSelectDropdown}
                             name="grade"
                             type="text"
-                            label="Các lớp"
+                            label="Grade"
+                            option={FilterField.gradOption}
                         />
                         <Field 
                             component={multiSelectDropdown}
                             name="subject"
                             type="text"
-                            label="Môn học"
+                            label="Subject"
+                            option={FilterField.subjOption}
                         />
                         <Field 
-                        component={multiSelectDropdown}
-                        name="district"
-                        type="text"
-                        label="District"
+                            component={multiSelectDropdown}
+                            name="district"
+                            type="text"
+                            label="District"
+                            option={FilterField.distOption}
                         />
                         <Field 
-                        component={inputBar}
-                        name="fee"
-                        type="text"
-                        label="học phí"
+                            component={inputBar}
+                            name="fee"
+                            type="text"
+                            label="Tuition Fee"
+                            errors={errors}
+                            touched={touched}
                         />
                 </Grid>
 
                 <Grid item sm={12} md={6}>
-                    <Typography variant="h5"> Available Schedule</Typography>
+                    <Typography variant="h5" color="primary"> Available Schedule</Typography>
                     <Grid>
                     
                     <Typography className={classes.label}>Workday</Typography>
@@ -308,15 +264,16 @@ const DetailModal = (props)=>{
                     <Grid container direction="row"  justify="flex-end" spacing={1}
 >
                         <Grid item md={2}>
-                            <Button className={classes.btn} type="submit" fullWidth>Lưu lại</Button>
+                            <Button className={classes.btn} type="submit" fullWidth>Save</Button>
                         </Grid>
                         <Grid item md={2}>
-                            <Button className={classes.btn} fullWidth onClick={props.closeModal}>Hủy bỏ</Button>
+                            <Button className={classes.btn} fullWidth onClick={props.closeModal}>Cancel</Button>
                         </Grid>
                     </Grid>             
                 </Grid>
             </Grid>
             </Form>
+            )}
                 </Formik>
         </Paper>           
     );

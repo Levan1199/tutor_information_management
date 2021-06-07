@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
 import {Label, Col, Row} from 'reactstrap';
 import {Multiselect} from 'multiselect-react-dropdown';
-import * as FilterField from './constValues';
+import * as FilterField from '../../shared/constValues';
 import "./findBar.css";
     const useStyles = makeStyles((theme)=>({
         text:{
@@ -34,7 +34,17 @@ import "./findBar.css";
             width:"100%",
             padding:"20px 0",
             backgroundColor:theme.palette.secondary.light
-        }
+        },
+        normalText:{
+          fontFamily:"Segoe UI",
+          fontWeight:"medium",
+          fontSize:"1.5rem"
+        },
+        headerText:{
+            fontWeight: "bold",
+            fontFamily:"Roboto",
+            color: theme.palette.primary.dark
+      },
     }));
 
     
@@ -146,7 +156,7 @@ import "./findBar.css";
         const classes = useStyles();
         const [filterVals, setFilterVals] = React.useState({ district:[],
             grade:[],
-            subject:[]})
+            subject:[]});
 
         useEffect(()=>{
             if(props.subjectName!=null){
@@ -155,12 +165,10 @@ import "./findBar.css";
                 });
             }
         },[]);
-
-        let foundTeachers = props.teacherRegs.filter((teacher)=>{
+ 
+        let foundTeachers = props.teacherRegs.filter((teacher)=>{           
             return filterProps(filterVals, teacher);
         });
-
-        console.log('found', foundTeachers);
 
         const handleSubmit = (values) => {
             var filterName = {};
@@ -172,7 +180,7 @@ import "./findBar.css";
             return (
                 <Container maxWidth="false" className={classes.main}>
                 <Box className={classes.box}>
-                    <Typography variant="h4" align="center" className={classes.normalText}>
+                    <Typography variant="h4" align="center" className={classes.headerText}>
                         Current teachers
                     </Typography>
                     <Typography variant="body1" align="center" className={classes.normalText}>
@@ -183,9 +191,6 @@ import "./findBar.css";
                     <Grid container spacing={1}>
                        <Grid item xs={12} className={classes.header}>
                             <Grid container spacing={1} className={classes.header}>
-                                {/* <Grid item xs={12} sm={3}>
-                                    <Typography variant="h6" className={classes.text} >Current Teacher</Typography>
-                                </Grid> */}
                                 <Grid item xs={12} sm={9}>
                                     <Formik initialValues={FilterField.teachInit}
                                     onSubmit = {handleSubmit}

@@ -56,9 +56,7 @@ courseRouter.route('/:courseId')
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin
     ,upload.single('courseImg'), (req,res,next)=>{
     let isImg;
-    console.log('inside put', req.body);
     if(req.file){
-        console.log('req file', req.file);
         isImg = true;
         req.body.imgPath = req.file.filename;
     }

@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as Yup from "yup"; 
+import * as FilterField from '../../shared/constValues';
 
 const useStyles = makeStyles(theme => ({
     paperStyle:{
@@ -46,15 +47,9 @@ const useStyles = makeStyles(theme => ({
 
 
 const validationSchema = Yup.object({
-    name: Yup.string()
-        .required('Bạn cần điền mục này')
-        .min(4,'Cần nhiều hơn 4 chữ cái')
-        .max(36,'Ít hơn 36 chữ cái'),
-
-    password: Yup.string()
-        .required('Bạn cần điền mục này')
-        .min(4,'Cần nhiều hơn 4 chữ cái')
-        .max(36,'Ít hơn 36 chữ cái'),
+    fee: Yup.number()
+        .typeError('you must specify a number')
+        .positive('The number must be positive')
 });
 
 const options={
@@ -104,7 +99,7 @@ const handleInput = (values, actions, updateProfile, closeModal)=>{
 
 const DetailModal = (props)=>{
     const classes = useStyles();
-    const {grade, subject, district, fee, address} = props;
+    const {grade, subject, district, fee, address, available} = props;
 
    
 
@@ -128,11 +123,12 @@ const DetailModal = (props)=>{
         subject:subject,
         district:district,
         fee:fee,
-        address:address
+        address:address,
+        available:available
     }
 
 
-    const inputBar = ({field, form, type, label, ...props}) => {
+    const inputBar = ({field, form, type, label, errors, touched}) => {
         const {name} = field;
         const dfVals = (name==="fee")?fee:address;
         return (
@@ -141,16 +137,16 @@ const DetailModal = (props)=>{
             <TextField type={type} name={name} className={classes.inputBar} fullWidth margin="normal"
             defaultValue={dfVals}
             onChange = {(evt)=>form.setFieldValue(name, evt.target.value)}
+            error={touched[name] && Boolean(errors[name])}
+            helperText={errors[name]}
             />
-            <ErrorMessage name={name}/>
             </>
         );
     }
 
-    const multiSelectDropdown = ({field, form, meta,label, ...props}) => {
+    const multiSelectDropdown = ({field, form, meta,label, option}) => {
      
         const optionName = field.name;
-        const option = options[optionName];
         var preValue;
         if (optionName === 'district'){
             preValue = preDistrict;
@@ -179,24 +175,50 @@ const DetailModal = (props)=>{
             />
         );
     }
+    const renderRadio = ({form}) => {
+        // const {touched, errors} = form;
+        return ( 
+        <>
+        <RadioGroup row aria-label="position" name="available" defaultValue="top"
+        defaultChecked={available}
+        onChange={(evt)=>form.setFieldValue("available", (evt.target.value === 'true'))}>
+            <FormControlLabel
+                value='true'
+                control={<Radio name="available" checked={form.values.available===true}/>}
+                label="Yes"
+                labelPlacement="top"
+            />
+            <FormControlLabel
+                value='false'
+                control={<Radio name="available" checked={form.values.available===false} />}
+                label="No"
+                labelPlacement="top"
+            />
+        </RadioGroup>
+        </>
+        );
+    }
 
     return(
         <Paper elevation={10} className={classes.paperStyle}>
                 <Formik 
                 initialValues={initialValues}
                 onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
+                validationSchema={validationSchema}
                 >               
+                 {({ errors, touched}) => (  
                     <Form>
                     <Grid container justify="center">
                         <Grid item sm={12} className={classes.outerColumn}>
-                            <Grid container justify="center" spacing={1}>
-                                <Grid item xs={12}> <Typography variant="h5">Edit Detail Requirement for the class</Typography></Grid>
+                            <Grid container spacing={1}>
+                                <Grid item xs={12}> <Typography variant="h5" color="primary">Edit requirement for the class</Typography></Grid>
                                 <Grid item xs={12}>
                                     <Field 
                                         component={multiSelectDropdown}
                                         name="grade"
                                         type="text"
                                         label="Grade"
+                                        option={FilterField.gradOption}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -205,6 +227,7 @@ const DetailModal = (props)=>{
                                         name="subject"
                                         type="text"
                                         label="Subject"
+                                        option={FilterField.subjOption}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -213,6 +236,7 @@ const DetailModal = (props)=>{
                                     name="district"
                                     type="text"
                                     label="District"
+                                    option={FilterField.distOption}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -221,6 +245,8 @@ const DetailModal = (props)=>{
                                     name="fee"
                                     type="text"
                                     label="Tuition Fee"
+                                    errors={errors}
+                                    touched={touched}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -229,24 +255,36 @@ const DetailModal = (props)=>{
                                     name="address"
                                     type="text"
                                     label="Address"
+                                    errors={errors}
+                                    touched={touched}
+                                    />
+                                </Grid>
+                                    
+                                <Grid item xs={6}>
+                                    <FormLabel> <Typography variant="body1" color="primary">Looking for teacher now</Typography></FormLabel>
+                                    <Field
+                                        component={renderRadio}
+                                        name="available"
                                     />
                                 </Grid>
                             </Grid>
+
                         </Grid>
 
                         <Grid item sm={12}>
                             <Grid container direction="row"  justify="flex-end" spacing={1}
         >
                                 <Grid item md={2}>
-                                    <Button className={classes.btn} type="submit" fullWidth>Lưu lại</Button>
+                                    <Button className={classes.btn} type="submit" fullWidth>Save</Button>
                                 </Grid>
                                 <Grid item md={2}>
-                                    <Button className={classes.btn} fullWidth onClick={props.closeModal}>Hủy bỏ</Button>
+                                    <Button className={classes.btn} fullWidth onClick={props.closeModal}>Cancel</Button>
                                 </Grid>
                             </Grid>             
                         </Grid>
                     </Grid>
             </Form>
+            )}
             </Formik>
         </Paper>           
     );

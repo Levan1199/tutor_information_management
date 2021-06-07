@@ -10,6 +10,8 @@ import {ConfigureStore} from './redux/configureStore';
 import {ThemeProvider} from '@material-ui/core/styles';
 import theme from './shared/theme';
 //test
+
+
 const store = ConfigureStore();  
 
 class App extends Component{

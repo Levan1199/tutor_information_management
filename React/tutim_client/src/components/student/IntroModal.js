@@ -31,17 +31,18 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const validationSchema = Yup.object({
+const validationSchema = Yup.object({   
     name: Yup.string()
-        .required('Bạn cần điền mục này')
-        .min(4,'Cần nhiều hơn 4 chữ cái')
-        .max(36,'Ít hơn 36 chữ cái'),
-
-    password: Yup.string()
-        .required('Bạn cần điền mục này')
-        .min(4,'Cần nhiều hơn 4 chữ cái')
-        .max(36,'Ít hơn 36 chữ cái'),
+        .required('This field is required')
+        .max(36,'Maximum characters are 36'),
+    email: Yup.string()
+        .required('This field is required')
+        .email('The email is invalid')
+        .max(200,'Maximum characters are 200'),
+    description: Yup.string()
+        .max(200,'Maximum characters are 200'),
 });
+
 
 
 
@@ -63,18 +64,20 @@ const IntroModal = (props)=>{
     }
 
 
-    const inputBar = ({field, form, type, label, ...props}) => {
+    const inputBar = ({field, form, type, label,errors, touched}) => {
         const {name} = field;
-        const helpText = "Nhập " + label;
+        const helpText = "Input " + label;
         const initialValue = form.values[name];
+        console.log(errors[name], touched);
         return (
             <>
             <InputLabel className={classes.label} htmlFor={name}>{label}</InputLabel>
             <TextField type={type} name={name} placeholder={helpText} className={classes.inputBar} fullWidth margin="normal"
              defaultValue={initialValue}
             onChange = {(evt)=>form.setFieldValue(name, evt.target.value)}
+            error={touched[name] && Boolean(errors[name])}
+            helperText={errors[name]}
             />
-            <ErrorMessage name={name}/>
             </>
         );
     }
@@ -87,11 +90,11 @@ const IntroModal = (props)=>{
                 withPreview={true}
                 singleImage={true}
                 label=""
-                buttonText="Thay đổi ảnh đại diện"
+                buttonText="Change profile picture"
                 onChange={(pic)=>form.setFieldValue(name, pic[0])}
-                imgExtension={[".jpg", ".gif", ".png"]}
+                imgExtension={[".jpg", ".gif", ".png","jpeg"]}
                 maxFileSize={1048576}
-                fileSizeError=" file size is too big"
+                fileSizeError=" file size is too big or wrong extension"
           />
        
         );
@@ -102,9 +105,11 @@ const IntroModal = (props)=>{
             <Formik 
             initialValues={initialValues}
             onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
+            validationSchema={validationSchema}
             >               
+             {({ errors, touched}) => (  
                 <Form >
-                <Typography variant="h5">Chỉnh sửa phần giới thiệu</Typography>
+                <Typography variant="h5" color="primary">Edit introduction</Typography>
                 <Grid container direction="row" spacing={3} >
                         <Grid item sm={12} md={3}>
                             <Field 
@@ -120,7 +125,9 @@ const IntroModal = (props)=>{
                                         component={inputBar}
                                         name="name"
                                         type="text"
-                                        label="Họ và tên"
+                                        label="Full name"
+                                        errors={errors}
+                                        touched={touched}
                                     />
                                 </Grid>
                             
@@ -130,6 +137,8 @@ const IntroModal = (props)=>{
                                         name="email"
                                         type="text"
                                         label="Email"
+                                        errors={errors}
+                                        touched={touched}
                                     />
                                 </Grid>
                             
@@ -138,7 +147,9 @@ const IntroModal = (props)=>{
                                         component={inputBar}
                                         name="description"
                                         type="text"
-                                        label="Mô tả"
+                                        label="Description"
+                                        errors={errors}
+                                        touched={touched}
                                     />
                                 </Grid>
                             </Grid>
@@ -146,13 +157,14 @@ const IntroModal = (props)=>{
                     </Grid>
                     <Grid container direction="row"  justify="space-evenly">
                         <Grid md={4} item>
-                            <Button className={classes.btn} type="submit" fullWidth>Lưu lại</Button>
+                            <Button className={classes.btn} type="submit" fullWidth>Save</Button>
                         </Grid>
                         <Grid md={4} item>
-                            <Button className={classes.btn} type="submit" fullWidth>Hủy bỏ</Button>
+                            <Button className={classes.btn} onClick={props.closeModal} fullWidth>Cancel</Button>
                         </Grid>
                     </Grid>                
                 </Form>
+            )}
             </Formik>
         </Paper>           
     );

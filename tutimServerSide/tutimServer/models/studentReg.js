@@ -54,6 +54,10 @@ const studentRegSchema = new Schema({
         type:String,
         default:''
     },
+    available:{
+        type:Boolean,
+        default:false
+    },
     teacherReg:[
         {
             type: mongoose.Schema.Types.ObjectId,

@@ -1,19 +1,19 @@
-import React from 'react';
+import React,{useState, useContext} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Formik, Form, ErrorMessage, Field } from "formik";
-import {useHistory} from 'react-router-dom';
+// import {useHistory} from 'react-router-dom';
+import FacebookLogin from 'react-facebook-login';
+import {appID} from '../../shared/baseUrl';
+import './signInStyle.css';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ const initialValues = {
   password: ''
 }
 
-const handleSubmit = (values, actions, setOpenModal, loginUser, history) => {
+const handleSubmit = (values, actions, setOpenModal, loginUser) => {
   loginUser(values);
   return setOpenModal(false); 
 }
@@ -70,9 +70,16 @@ const textField = ({field, form, type}) => {
   );
 }
 
+
+const responseFacebook = (response, loginWithFacebook) =>{
+  console.log('res ',response.accessToken);
+  loginWithFacebook(response.accessToken);
+}
+
 function SignIn(props){
   const classes = useStyles();
-  const history = useHistory();
+  // const history = useHistory();
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -86,7 +93,7 @@ function SignIn(props){
 
         <Formik
             initialValues={initialValues}
-            onSubmit={(value, action)=> handleSubmit(value,action,props.setOpenModal, props.loginUser, history)}
+            onSubmit={(value, action)=> handleSubmit(value,action,props.setOpenModal, props.loginUser)}
         >
             <Form noValidate>            
                 <Field component={textField}
@@ -100,10 +107,10 @@ function SignIn(props){
                 </Field>
 
                
-                <FormControlLabel
+                {/* <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}
                     label="Remember me"
-                />
+                /> */}
                 <Button
                     type="submit"
                     fullWidth
@@ -113,12 +120,19 @@ function SignIn(props){
                 >
                     Sign In
                 </Button>
+                <FacebookLogin
+                  appId={appID}
+                  // autoLoad={true}
+                  fields="name"
+                  // onClick={componentClicked}
+                  callback={(response)=>responseFacebook(response,props.loginWithFacebook)}
+                />
                 <Grid container>
-                    <Grid item xs>
+                    {/* <Grid item xs>
                     <Link href="#" variant="body2">
                         Forgot password?
                     </Link>
-                    </Grid>
+                    </Grid> */}
                     <Grid item>
                     <Link  variant="body2" onClick={()=>{props.switchModal();}}>
                         {"Don't have an account? Sign Up"}
@@ -126,9 +140,8 @@ function SignIn(props){
                     </Grid>
                 </Grid>
             </Form>
-        </Formik>
-      </div>
-     
+        </Formik>       
+      </div>    
     </Container>
   );
 }

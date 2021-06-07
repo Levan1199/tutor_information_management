@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -15,9 +15,12 @@ import SchoolIcon from '@material-ui/icons/School';
 import HomeIcon from '@material-ui/icons/Home';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 
+import {avatarUrl} from '../../shared/baseUrl';
 // import Login from './login';
 import SignIn from '../entrance/signIn';
 import SignUp from '../entrance/signUp';
+
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,9 +57,9 @@ const useStyles = makeStyles(theme => ({
     }
   },
   username:{
-    color: theme.palette.warning.dark,
-    backgroundColor: theme.palette.secondary.light,
+    color: "#000000",
     fontWeight: 'bold',
+    fontFamily:"Roboto",
     marginRight: '15px'
   }
 }));
@@ -68,7 +71,6 @@ const NewHeader = (props) => {
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
-
 
   const [openModal, setOpenModal] = React.useState(false);
   const [modalSignUp, setModalSU] = React.useState(false);
@@ -118,11 +120,16 @@ const NewHeader = (props) => {
       link: '/teacherList',
       nameLink: 'Teacher',
       icon: <SchoolIcon/>
+    },
+    {
+      link: '/home',
+      nameLink: 'Courses',
+      icon: <SchoolIcon/>
     }
   ]
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root}>       
       <AppBar position="fixed" >
         <Toolbar className={classes.title}>
           {/* <Avatar alt="logo" src="/assets/images/download.png" variant="square" /> */}
@@ -189,7 +196,7 @@ const NewHeader = (props) => {
                       </Link>     
                     );
                   })
-                }              
+                }                 
               </div>
               {
                 !props.auth.isAuthenticated ?
@@ -203,9 +210,14 @@ const NewHeader = (props) => {
                 :
                 <>
                 <Link to="/newInfo">
-                <Typography variant="h6" className={classes.username}>
-                  {props.name?props.name.toUpperCase():null}
-                </Typography>
+                  <Grid container direction="row" alignItems="center" spacing={1}>
+                    <Grid item><Avatar alt="avatar" src= {avatarUrl+props.imgPath} /></Grid>
+                    <Grid item>
+                      <Typography variant="h6" className={classes.username}>
+                      {props.name?props.name:null}
+                      </Typography>
+                    </Grid>                
+                  </Grid>
                 </Link>              
                 <Button onClick={handleLogout} variant="contained" color="secondary" >
                     Sign Out
@@ -227,7 +239,8 @@ const NewHeader = (props) => {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        <SignIn loginUser={props.loginUser} setOpenModal={()=>setOpenModal()} switchModal={switchModal}/>              
+        <SignIn loginUser={props.loginUser} setOpenModal={()=>setOpenModal()} switchModal={switchModal}
+        loginWithFacebook={props.loginWithFacebook}/>              
       </Modal>
 
       <Modal
@@ -238,6 +251,7 @@ const NewHeader = (props) => {
       >
         <SignUp signUp={props.signUp} setModalSU={()=>setModalSU()} switchModal={switchModal}/>              
       </Modal>
+
     </div>
   );
 };

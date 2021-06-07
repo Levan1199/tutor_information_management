@@ -18,15 +18,15 @@ export default function Information(props) {
   const {name, email, handleBack, handleNext } = props;
   const validationSchema = Yup.object({
     name: Yup.string()
-        .required('Bạn cần điền mục này'),
+        .required('This field is required'),
     email: Yup.string()
-          .email('Email cần phải đúng cú pháp')
-          .required('Bạn cần điền mục này')
+          .email('Email wrong syntax')
+          .required('This field is required')
   });
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Thông tin cơ bản
+        Information
       </Typography>
       <Grid container spacing={3}>
         <Formik initialValues={{name,email}}
@@ -42,7 +42,7 @@ export default function Information(props) {
                       required
                       id="name"
                       name="name"
-                      label="Họ và tên"
+                      label="Full name"
                       fullWidth
                       autoComplete="cc-csc"
                       onChange={(e)=>{
@@ -70,7 +70,7 @@ export default function Information(props) {
               </FormControl>
               <Grid container row justify="flex-end">
                 <Grid item >
-                  <Button onClick={() => { handleBack(values) } }> Quay lại </Button>
+                  <Button onClick={() => { handleBack(values) } }> Back </Button>
                 </Grid>
                 <Grid item>
                 <Button variant="contained" color="primary" 
@@ -78,14 +78,14 @@ export default function Information(props) {
                     () => validateForm()
                       .then((errors) => {                        
                         if(Object.entries(errors).length === 0 && errors.constructor === Object ) {
-                          console.log('inside valid',values);
+                          // console.log('inside valid',values);
                           handleNext(values);
                         } else {
                           setTouched(errors);
                         }
                       })
                   } >
-                  Tiếp theo
+                  Next
                 </Button>
                 </Grid>
               </Grid>        

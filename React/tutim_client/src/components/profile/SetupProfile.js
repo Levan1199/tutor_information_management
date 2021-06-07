@@ -45,7 +45,17 @@ const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
+  }, 
+  normalText:{
+    fontFamily:"Segoe UI",
+    fontWeight:"medium",
+    fontSize:"1.5rem"
   },
+  headerText:{
+  fontWeight: "bold",
+  fontFamily:"Roboto",
+  color:theme.palette.primary.main
+},
 }));
 
 
@@ -53,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SetupProfile(props) {
   console.log('inside setup profile');
   const classes = useStyles();
-  const steps = ['Bạn là', 'Thông tin', 'Xác nhận'];
+  const steps = ['Your role', 'Information', 'Confirmation'];
   const [activeStep, setActiveStep] = useState(0);
   var initialFields = {
     role:'',
@@ -90,7 +100,7 @@ export default function SetupProfile(props) {
     <React.Fragment>
       <main className={classes.layout}>
         <Paper className={classes.paper}>
-          <Typography component="h1" variant="h4" align="center">
+          <Typography component="h1" variant="h4" align="center" className={classes.headerText}>
             Checkin
           </Typography>
           <Stepper activeStep={activeStep} className={classes.stepper}>

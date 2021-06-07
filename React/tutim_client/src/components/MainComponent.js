@@ -8,7 +8,7 @@ import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
 import FindClass from './forms/findClass';
 import TeacherRegs from './list/teacherRegs';
-import StudentRegs from './list/studentRegs';
+// import StudentRegs from './list/studentRegs';
 import NewStudentRegs from './list/newStudentRegs'
 
 import NewHeader from './header/NewHeaderComponent';
@@ -20,11 +20,14 @@ import Upload from './teacher/Upload';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {fetchCourseInfo ,teacherRegStudent, studentRegTeacher, updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
+import { loginWithFacebook,fetchCourseInfo ,teacherRegStudent, studentRegTeacher, updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
       loginUser, logoutUser} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import DetailModal from './teacher/DetailModal';
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const mapStatetoProps = state =>{
   return{
@@ -57,6 +60,7 @@ const mapDispatchToProps = dispatch => ({
   postProfile: (props)=>{dispatch(postProfile(props))},
   updateProfile: (props)=>{dispatch(updateProfile(props))},
   //Log in/out
+  loginWithFacebook: (accessToken) => dispatch(loginWithFacebook(accessToken)),
   loginUser: (creds) => dispatch(loginUser(creds)),
   logoutUser: () => dispatch(logoutUser())
 })
@@ -87,9 +91,9 @@ class Main extends Component{
     );
 
     const RenderProfile = (props) => {
-      console.log('inside render', props.profile);
+      // console.log('inside render', props.profile);
       if(props.profile.isTeacher && !props.profile.isStudent){
-        console.log('inside render profile tea');
+        // console.log('inside render profile tea');
         return <NewTeacherInfo
           {...props}
       />}
@@ -106,15 +110,19 @@ class Main extends Component{
     const RenderHeader = (props) => {
       const {profile} = props;
       var name="";
+      var imgPath="";
       if (profile.isTeacher && !profile.isStudent){
         name = profile.teacherProfile.name;
+        imgPath = profile.teacherProfile.imgPath;
       }
       else if (!profile.isTeacher && profile.isStudent){
         name = profile.studentProfile.name;
+        imgPath = profile.studentProfile.imgPath;
       }
       return <NewHeader
         name = {name}
         {...props}
+        imgPath = {imgPath}
       />
     }
 
@@ -122,7 +130,7 @@ class Main extends Component{
       if (this.props.profiles.isEmpty && this.props.location.pathname != '/stepper'){
          this.props.history.push('/stepper');
          return <div></div>;
-      }
+      }    
       else{
         return <div></div>;
       }
@@ -146,6 +154,7 @@ class Main extends Component{
     return (
       <div>      
         <CheckStepper/>
+        <ToastContainer position="top-center" autoClose={3000}/>
         <RenderHeader
         profile={this.props.profiles.profiles}
         auth={this.props.auth}
@@ -153,6 +162,7 @@ class Main extends Component{
         logoutUser={this.props.logoutUser}
         signUp={this.props.signUp}
         isEmpty={this.props.profiles.isEmpty}
+        loginWithFacebook={this.props.loginWithFacebook}
         />
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
@@ -197,7 +207,7 @@ class Main extends Component{
 
                 <Route path="/newInfo/:profileId" component={RenderViewProfile}/>
 
-                <Route path='/upload' component={()=><Upload/> }/>
+                {/* <Route path='/upload' component={()=><Upload/> }/> */}
 
                 <PrivateRoute path="/newteacherInfo" component={()=> <StudentInfo 
                       profile={this.props.profiles.profiles}
@@ -205,18 +215,14 @@ class Main extends Component{
                       errMess={this.props.profiles.errMess}
                 />}/>
 
-                {/* <Route path="/newstudentList" component={() => <NewStudentRegs 
-                studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
-                register={this.props.teacherRegStudent}
-                isLoading = {this.props.studentRegs.isLoading}
-                auth={this.props.auth.isAuthenticated}
-                profile={this.props.profiles.profiles}
-                />}/> */}
-
-                <Route path="/detailmodal" component={() => <DetailModal/>}/>
+                {/* <Route path="/detailmodal" component={() => <DetailModal/>}/> */}
                 <Route path="/stepper" component={()=><SetupProfile 
                 setupProfile = {this.props.postProfile}
                 />}/>
+
+                <Route path='/sticky' component={()=><StickyFooter/> }/> 
+
+
                 <Redirect to="/home"/>
               
               </Switch>

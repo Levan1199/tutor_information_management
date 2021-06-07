@@ -1,5 +1,7 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { toast } from 'react-toastify';
+
 export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
     payload: comment
@@ -409,6 +411,13 @@ export const loginError = (message) => {
     }
 }
 
+export const displayToast = (message) => {
+    return{
+        type: ActionTypes.LOGIN_FAILURE,
+        message
+    }
+}
+
 export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
     dispatch(requestLogin(creds));
@@ -419,6 +428,56 @@ export const loginUser = (creds) => (dispatch) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(creds)
+    })
+    .then((response)=>{
+        if(response.ok){
+            toast.success("Login successfully!"); 
+            return response;
+        }
+        else if(response.status == 401){
+            toast.error("Account invalid!");        
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },(error)=>{
+        throw error;
+    })
+    .then((response)=>response.json())
+    .then((response)=>{
+        if(response.success){
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('creds', JSON.stringify(creds));
+            dispatch(fetchProfile());
+            dispatch(receiveLogin(response));
+        }
+        else{
+            var error = new Error('Error ' + response.status);
+            error.response = response;
+            throw error;
+        }
+    })
+    .catch((error) => dispatch(loginError(error.message)));
+}
+
+//Login with facebook
+
+export const loginWithFacebook = (accessToken) => (dispatch) => {
+    // We dispatch requestLogin to kickoff the call to the API
+    console.log('inside login fb');
+    const bearer = 'Bearer ' + accessToken;
+
+    return fetch(baseUrl + 'users/facebook/token',{
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },       
     })
     .then((response)=>{
         if(response.ok){
@@ -434,24 +493,11 @@ export const loginUser = (creds) => (dispatch) => {
     })
     .then((response)=>response.json())
     .then((response)=>{
-        if(response.success){
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('creds', JSON.stringify(creds));
-            console.log('login success fetching');
-            // if(response.isTeacher){
-            //     dispatch(fetchTeacherProfile());
-            // }
-            // else if(response.isStudent){
-            //     dispatch(fetchStudentProfile());
-            // }
-            dispatch(fetchProfile());
-            dispatch(receiveLogin(response));
-        }
-        else{
-            var error = new Error('Error ' + response.status);
-            error.response = response;
-            throw error;
-        }
+        console.log('login success fetching ',response);
+        localStorage.setItem('token', response.token);
+        
+        dispatch(fetchProfile());
+        dispatch(receiveLogin(response));
     })
     .catch((error) => dispatch(loginError(error.message)));
 }

@@ -78,6 +78,8 @@ const RenderUI = (props) => {
     const subject = teacherProfile.subject?teacherProfile.subject.join(', '):"";
     const district = teacherProfile.district?teacherProfile.district.join(', '):"";
 
+    var fee = (teacherProfile.fee)?(teacherProfile.fee.toLocaleString()):0;
+
     return (
         <Container maxWidth="false" className={classes.main}>
             <Container maxWidth="lg" className={classes.container}>
@@ -120,16 +122,16 @@ const RenderUI = (props) => {
                 <Grid item md={12} lg={6}>
                     <Typography variant="h4" className={classes.headerText} color="secondary">Class information</Typography>
                     <Typography variant="body1" className={classes.normalText}>
-                        Các Lớp: {grade}
+                        <b>Grade: </b>{grade}
                     </Typography>        
                     <Typography variant="body1" className={classes.normalText}>
-                        Môn học: {subject}
+                        <b>Subject: </b>{subject}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        Khu vực: {district}
+                        <b>District: </b>  {district}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        Học phí: {teacherProfile.fee}
+                        <b>Tuition Fee: </b> {fee}
                     </Typography>  
                 </Grid>
 

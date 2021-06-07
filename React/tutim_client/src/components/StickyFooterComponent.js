@@ -1,63 +1,89 @@
 import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
+// import {courseUrl, avatarUrl} from '../../shared/baseUrl';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import {Grid, Container,Box} from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
+import {Link} from 'react-router-dom';
+// import local data
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+const useStyles = makeStyles((theme)=>({
+  text:{
+    fontWeight: "bold",
+    fontSize: "30px",
+    color: theme.palette.primary.dark
+  },
+  container:{
+      padding:"20px 0px"
+  },
+  header:{
+      paddingBottom: "10px"
+  },
+  button:{
+      height:"50px",
+      width:"75px"
+  } ,
+  main:{
+      backgroundColor:"#f5f5f5",
+      padding:0,
+      minHeight:"100vh"
+  },
+  box:{
+      width:"100%",
+      padding:"20px 0",
+      backgroundColor:theme.palette.secondary.light
+  },
+  normalText:{
+    fontFamily:"Segoe UI",
+    fontWeight:"medium",
+    fontSize:"1.5rem"
+  },
+  headerText:{
+      fontWeight: "bold",
+      fontFamily:"Roboto",
+      color: theme.palette.primary.dark
+  },
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-  },
-  main: {
-    marginTop: theme.spacing(8),
-    marginBottom: theme.spacing(2),
-  },
-  footer: {
-    padding: theme.spacing(3, 2),
-    marginTop: 'auto',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
-  },
+  cardcontent: {
+  "&:last-child": {
+    paddingTop: 0
+  }
+  }
 }));
 
-export default function StickyFooter() {
-  const classes = useStyles();
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      {/* <Container component="main" className={classes.main} maxWidth="sm">
-        <Typography variant="h2" component="h1" gutterBottom>
-          Sticky footer
-        </Typography>
-        <Typography variant="h5" component="h2" gutterBottom>
-          {'Pin a footer to the bottom of the viewport.'}
-          {'The footer will move as the main element of the page grows.'}
-        </Typography>
-        <Typography variant="body1">Sticky footer placeholder.</Typography>
-      </Container> */}
-      <footer className={classes.footer}>
-        <Container maxWidth="sm">
-          <Typography variant="body1">My sticky footer can be found here.</Typography>
-          <Copyright />
-        </Container>
-      </footer>
-    </div>
-  );
+
+function Home(props){
+    const classes = useStyles();
+    if(props.isLoadingCourse){
+      return <div></div>;
+    }
+    else{
+    return(
+      <Container maxWidth="false" className={classes.main}>
+        <Box className={classes.box}>
+            <Typography variant="h4" align="center" className={classes.normalText}>
+                Current classes
+            </Typography>
+            <Typography variant="body1" align="center" className={classes.normalText}>
+                Current classes that is in need of teachers requested by students 
+            </Typography>
+        </Box>
+      <Container maxWidth="lg" className={classes.container}>
+          <Grid container spacing={1}>
+            
+          </Grid>
+      </Container>
+      </Container>
+    )}
 }
+
+export default Home;
+

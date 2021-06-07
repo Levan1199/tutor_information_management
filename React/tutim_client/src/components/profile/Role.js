@@ -9,12 +9,12 @@ export default function Role(props) {
   const {role, handleNext } = props;
   const validationSchema = Yup.object({
     role: Yup.string()
-        .required('Bạn cần điền mục này')
+        .required('This field is required')
   });
   return (
     <React.Fragment>
       <Typography variant="h6" gutterBottom>
-        Bạn là:
+        You are:
       </Typography>
       <Grid container spacing={3}>
         <Formik initialValues={{role}}
@@ -33,10 +33,10 @@ export default function Role(props) {
                   }}>
                     <Grid container justify="space-evenly">
                         <Grid item>
-                            <FormControlLabel value="isStudent" control={<Radio color="primary" />} label="Học sinh"/>
+                            <FormControlLabel value="isStudent" control={<Radio color="primary" />} label="Student"/>
                         </Grid>
                         <Grid item>
-                          <FormControlLabel value="isTeacher" control={<Radio color="primary" />} label="Gia sư"/>
+                          <FormControlLabel value="isTeacher" control={<Radio color="primary" />} label="Teacher"/>
                         </Grid>
                     </Grid>
                     <ErrorMessage name="role"/>
@@ -59,7 +59,7 @@ export default function Role(props) {
                         }
                       }) 
                   } >
-                  Tiếp theo
+                  Next
                 </Button>
                 </Grid>
               </Grid>        

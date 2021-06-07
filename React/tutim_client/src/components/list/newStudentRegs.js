@@ -1,16 +1,13 @@
 
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import {Loading} from '../LoadingComponent';
-// import {baseUrl} from '../shared/baseUrl';
-import {BreadcrumbItem, Breadcrumb, Label, Col, Row} from 'reactstrap';
+// import {Loading} from '../LoadingComponent';
 import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import {Multiselect} from 'multiselect-react-dropdown';
-import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
-import * as FilterField from './constValues';
+import { Formik, Form,ErrorMessage, FastField } from "formik";
+import * as FilterField from '../../shared/constValues';
 import { makeStyles } from '@material-ui/core/styles';
+import {Link} from 'react-router-dom';
 import "./findBar.css";
-import { SubjectTwoTone } from '@material-ui/icons';
 const useStyles = makeStyles((theme)=>({
     text:{
         fontWeight: "bold",
@@ -111,10 +108,10 @@ function RenderStudentCard({student, auth, profile,register}){
     let dist = student.district.join(',');
     return(
         <Card>
+            
             <CardHeader 
-                title={"Class SubJect: " + subject}
-                subheader={"Student Name: " + student.name}
-                // titleTypographyProps={{variant:'h5', fontFamily:'Roboto',color:'#FF0000' }}
+                title={"Class Subject: " + subject}
+                subheader={<Link to={`/newInfo/${student._id}`}>Student Name: {student.name}</Link>}
                 classes={{
                     title: editStyle.headerText,
                     subheader: editStyle.normalText
@@ -165,7 +162,7 @@ const NewStudentRegs = (props) =>{
             return (
                 <Container maxWidth="false" className={classes.main}>
                 <Box className={classes.box}>
-                    <Typography variant="h4" align="center" className={classes.normalText}>
+                    <Typography variant="h4" align="center" className={classes.headerText}>
                         Current classes
                     </Typography>
                     <Typography variant="body1" align="center" className={classes.normalText}>
@@ -227,12 +224,13 @@ const NewStudentRegs = (props) =>{
                             {(()=>{
                                 if(foundStudents!=null){
                                     return foundStudents.map((student)=>{
-                                       
+                                       if(student.available){
                                         return (
                                                 <Grid item xs={12} md={5}>
                                                 <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile}/>
                                                 </Grid>
                                             );
+                                        }
                                        
                                     });
                                 }

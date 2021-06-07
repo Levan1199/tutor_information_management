@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { Avatar, Grid, Typography, Button, Box, Modal, Container} from "@material-ui/core";
+import { Avatar, Grid, Typography, Button, Box, Modal, Container,FormControlLabel, Radio, RadioGroup} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
@@ -52,8 +52,8 @@ const RenderUI = (props) => {
 
     const grade = studentProfile.grade?studentProfile.grade.join(', '):"";
     const subject = studentProfile.subject?studentProfile.subject.join(', '):"";
-    const district = studentProfile.district?studentProfile.district.join(', '):"";
-
+    const district = studentProfile.district?studentProfile.district.join(', '):""; 
+    var fee = (studentProfile.fee)?(studentProfile.fee.toLocaleString()):0;
     return (
         <Container maxWidth="false" className={classes.main}>
             <Container maxWidth="lg" className={classes.container}>
@@ -93,26 +93,45 @@ const RenderUI = (props) => {
             </Grid>
             
             <Grid container direction="row" spacing={2} >
-                <Grid item md={10}>
+                <Grid item md={6}>
                     <Typography variant="h4" className={classes.headerText} color="secondary">Class information</Typography>
                     <Typography variant="body1" className={classes.normalText}>
-                        Grade: {grade}
+                        <b>Grade: </b>{grade}
                     </Typography>        
                     <Typography variant="body1" className={classes.normalText}>
-                        Subject: {subject}
+                        <b>Subject: </b>{subject}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        District: {district}
+                        <b>District: </b>{district}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        Tuition Fee: {studentProfile.fee}
+                        <b>Tuition Fee: </b>{fee}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        Address: {studentProfile.address}
-                    </Typography>
+                        <b>Address: </b>{studentProfile.address}
+                    </Typography>                   
                 </Grid>
-
-                
+                <Grid item md={4}>
+                    <Typography variant="h4" className={classes.headerText} color="secondary">
+                        Finding teacher: 
+                    </Typography> 
+                        <RadioGroup row aria-label="position" name="available" defaultValue="top"
+                            defaultChecked={studentProfile.available}
+                        >
+                            <FormControlLabel
+                                value='true'
+                                control={<Radio name="available" checked={studentProfile.available===true}/>}
+                                label="Yes"
+                                labelPlacement="top"
+                            />
+                            <FormControlLabel
+                                value='false'
+                                control={<Radio name="available" checked={studentProfile.available===false} />}
+                                label="No"
+                                labelPlacement="top"
+                            />
+                        </RadioGroup>
+                </Grid>
                 <Box
                     component={Grid}
                     item

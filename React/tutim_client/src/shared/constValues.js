@@ -18,6 +18,7 @@ export const subjOption = [
     {name: 'Chemistry'},
     {name: 'Biology'},
     {name: 'English'},
+    {name: 'Literature'},
     {name: 'Swim'},
     {name: 'Guitar'},
     {name: 'Piano'},

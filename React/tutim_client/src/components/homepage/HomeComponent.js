@@ -14,7 +14,7 @@ import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 import {Link} from 'react-router-dom';
 // import local data
-import './homepage.css';
+// import './homepage.css';
 
 const useStyles = makeStyles((theme)=>({
     root: {
@@ -79,7 +79,7 @@ const styleTeacherInfo = makeStyles((theme)=>({
 
 const ComplexGrid = ({profile}) => {
   const classes = styleTeacherInfo();
-  console.log(profile);
+  let subject = (profile.subject)?profile.subject.join(', '):"";
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} md={12}> 
@@ -96,7 +96,7 @@ const ComplexGrid = ({profile}) => {
                   {profile.name}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
-                  {profile.subject}
+                  {subject}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
                   {profile.description}
@@ -205,7 +205,8 @@ function Home(props){
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container justify="center" id="test" spacing={2}>
                   {(()=>{
-                        return props.teacherRegs.map((teacher)=>{
+                        const teachers = props.teacherRegs.slice(0,5);
+                        return teachers.map((teacher)=>{
                           if(teacher){
                             return (
                               <Grid item xs={12}>
