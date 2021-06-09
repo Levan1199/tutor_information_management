@@ -94,7 +94,7 @@ const RenderUI = (props) => {
             
             <Grid container direction="row" spacing={2} >
                 <Grid item md={6}>
-                    <Typography variant="h4" className={classes.headerText} color="secondary">Class information</Typography>
+                    <Typography variant="h4" className={classes.headerText} color="secondary">Class required information</Typography>
                     <Typography variant="body1" className={classes.normalText}>
                         <b>Grade: </b>{grade}
                     </Typography>        

@@ -12,17 +12,32 @@ import Typography from '@material-ui/core/Typography';
 import {Grid, Container,Box} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
-import {Link} from 'react-router-dom';
-// import local data
-// import './homepage.css';
+import {Link, useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles((theme)=>({
-    root: {
-      maxWidth: 345,
-    },
-    media: {
-      height: 140,
-    },
+  root: {
+    flexGrow: 1,    
+  },
+  paper: {
+    padding: theme.spacing(2),
+    margin: 'auto',
+    maxWidth: '80%',
+    backgroundColor: "#f7e7e2"
+  },
+  image: {
+    width: 128,
+    height: 128,
+  },
+  img: {
+    margin: 'auto',
+    display: 'block',
+    maxWidth: '100%',
+    maxHeight: '100%',
+  },
+
+  media: {
+    height: 140,
+  },
   paperStyle:{
     display: "flex",
     flexDirection:"column",
@@ -44,7 +59,6 @@ const useStyles = makeStyles((theme)=>({
   box:{
     width:"100%",
     padding:"20px 0",
-    // backgroundColor:theme.palette.secondary.light
   },
   main:{
     backgroundColor:"#f5f5f5",
@@ -52,33 +66,12 @@ const useStyles = makeStyles((theme)=>({
   },
   container:{
     padding:"20px 0px"
-  }
+  }, 
 }));
 
-const styleTeacherInfo = makeStyles((theme)=>({
-  root: {
-    flexGrow: 1,    
-  },
-  paper: {
-    padding: theme.spacing(2),
-    margin: 'auto',
-    maxWidth: '80%',
-    backgroundColor: "#f7e7e2"
-  },
-  image: {
-    width: 128,
-    height: 128,
-  },
-  img: {
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-  }
-}));
 
 const ComplexGrid = ({profile}) => {
-  const classes = styleTeacherInfo();
+  const classes = useStyles();
   let subject = (profile.subject)?profile.subject.join(', '):"";
   return (
     <div className={classes.root}>
@@ -120,30 +113,31 @@ const ComplexGrid = ({profile}) => {
 
 
 const TopCourses = (props) => {
+    const {name, imgPath} = props.course;
     const classes = useStyles();
+    const history = useHistory();
+    const handleClick = () =>{
+      history.push(`/courseDetail/${name}`)
+    }
     return (
-        <Card className={classes.root}>
-          <CardActionArea>
-            <CardMedia
-              className={classes.media}
-              image={courseUrl+props.picture}
-              title="Top Course"
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                {props.name}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {props.description}
-              </Typography>
-            </CardContent>
-          </CardActionArea>
-          <CardActions>
-            <Link to={`/teacherList/${props.name}`}>
+        <Card>
+            <CardActionArea onClick={handleClick}>
+              <CardMedia
+                className={classes.media}
+                image={courseUrl+imgPath}
+                title="Top Course"
+              />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  {name}
+                </Typography>              
+              </CardContent>
+            </CardActionArea>
+          
+          <CardActions onClick={handleClick}>
             <Button variant="contained" color="primary">
-              Register Now
+              More Information
             </Button>
-            </Link>
           </CardActions>
         </Card>
       );
@@ -178,11 +172,12 @@ function Home(props){
                 <Grid item xs={12}>             
                   <Grid container spacing={2} justify="center">
                     {(()=>{
-                        return props.courseInfo.map((course)=>{
+                        const courses = props.courseInfo.slice(0,3);
+                        return courses.map((course)=>{
                           if(course){
                             return (
                               <Grid item md={3}>
-                                  <TopCourses name={course.name} picture={course.imgPath} description={course.description}/>
+                                  <TopCourses course={course}/>
                               </Grid>
                             );
                           }

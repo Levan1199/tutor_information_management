@@ -1,0 +1,127 @@
+import React from 'react';
+import {courseUrl} from '../shared/baseUrl';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import {Grid, Container,Box, Button,  Divider} from '@material-ui/core';
+import {Loading} from './LoadingComponent';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import {Link, useHistory} from 'react-router-dom';
+
+// import local data
+
+const useStyles = makeStyles((theme)=>({
+root: {
+    flexGrow: 1,    
+    },
+media: {
+    height: 140,
+  },
+  container:{
+      padding:"20px 0px"
+  }, 
+  paper:{
+    minHeight:"400px",
+    maxHeight:"400px",
+    maxWidth:"700px",
+    width:"700px",
+    margin:"20px 0px"
+  },
+  main:{
+      backgroundColor:"#f5f5f5",
+      padding:0,
+      minHeight:"100vh"
+  },
+  box:{
+      width:"100%",
+      padding:"20px 0",
+      backgroundColor:theme.palette.secondary.light
+  },
+  normalText:{
+    fontFamily:"Segoe UI",
+    fontWeight:"medium",
+    fontSize:"1.2rem"
+  },
+  headerText:{
+      fontWeight: "bold",
+      fontFamily:"Roboto",
+      color: theme.palette.primary.dark
+  },
+   
+}));
+
+const CoursesRender = (props) => {
+    const {name, imgPath} = props.course;
+    const classes = useStyles();
+    const history = useHistory();
+    console.log(courseUrl+imgPath);
+    const handleClick = () =>{
+    history.push(`/courseDetail/${name}`)
+  }
+  return (
+      <Card className={classes.root}>
+          <CardActionArea onClick={handleClick}>
+            <CardMedia
+              className={classes.media}
+              image={courseUrl+imgPath}
+              title="Top Course"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                {name}
+              </Typography>              
+            </CardContent>
+          </CardActionArea>
+        
+        <CardActions onClick={handleClick}>
+          <Button variant="contained" color="primary">
+            More Information
+          </Button>
+        </CardActions>
+      </Card>
+    );
+}
+
+const Courses = (props) => {
+    const classes = useStyles();
+    if(props.isLoadingCourse){
+      return (<Loading/>);
+    }
+    else{
+    return(    
+        <Container maxWidth="false" className={classes.main}>
+            <Box className={classes.box}>
+                <Typography variant="h4" align="center" className={classes.normalText}>
+                    Lastest Courses
+                </Typography>
+                <Typography variant="body1" align="center" className={classes.normalText}>
+                    Discover courses for all ages and exciting subjects
+                </Typography>
+            </Box>
+            <Container maxWidth="lg" className={classes.container}>                
+                <Grid item xs={12}>             
+                    <Grid container spacing={2} justify="center">
+                    {(()=>{
+                        return props.courseInfo.map((course)=>{
+                            if(course){
+                            return (
+                                <Grid item md={3}>
+                                    <CoursesRender course={course}/>
+                                </Grid>
+                            );
+                            }
+                        });
+                    })()}
+                    </Grid>
+                </Grid>
+            </Container>
+        </Container>
+            
+    )}
+}
+
+export default Courses;
+

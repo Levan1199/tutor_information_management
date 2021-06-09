@@ -529,7 +529,7 @@ export const logoutUser = () => (dispatch) => {
 
 export const fetchTeacherReg = () => (dispatch) => {
     dispatch(teacherRegLoading(true));
-
+console.log('fetching');
     return fetch(baseUrl + 'teacherReg')
         .then(response => response.json())
         .then(teacherReg => dispatch(addTeacherReg(teacherReg)));

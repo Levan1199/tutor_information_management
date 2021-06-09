@@ -37,15 +37,10 @@ const validationSchema = Yup.object({
         .max(36,'Maximum characters are 36'),
     email: Yup.string()
         .required('This field is required')
-        .email('The email is invalid')
-        .max(200,'Maximum characters are 200'),
+        .email('The email is invalid'),
     description: Yup.string()
-        .max(200,'Maximum characters are 200'),
+        .max(115,'Maximum characters are 115'),
 });
-
-
-
-
 
 
 const handleInput = (values, actions, updateProfile, closeModal)=>{   
@@ -81,6 +76,27 @@ const IntroModal = (props)=>{
             </>
         );
     }
+
+    const inputTextArea = ({field, form, type, label, errors, touched}) => {
+        const {name} = field;
+        const helpText = "Input " + label;
+        const initialValue = form.values[name];
+        return (
+            <>
+            <InputLabel className={classes.label} htmlFor={name}>{label}</InputLabel>
+            <TextField type={type} name={name} placeholder={helpText} className={classes.inputBar} fullWidth margin="normal"
+            defaultValue={initialValue}
+            onChange = {(evt)=>form.setFieldValue(name, evt.target.value)}
+            error={touched[name] && Boolean(errors[name])}
+            helperText={errors[name]}
+            multiline
+            rows={3}
+            rowsMax={3}
+            />
+            </>
+        );
+    }
+
     const uploadFile = ({field, form, type, ...props}) => {
         const {name} = field;
         return (
@@ -144,7 +160,7 @@ const IntroModal = (props)=>{
                             
                                 <Grid item>
                                     <Field 
-                                        component={inputBar}
+                                        component={inputTextArea}
                                         name="description"
                                         type="text"
                                         label="Description"

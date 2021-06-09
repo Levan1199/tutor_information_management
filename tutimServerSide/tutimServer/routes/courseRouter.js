@@ -23,13 +23,13 @@ courseRouter.route('/')
 .get(cors.cors, (req,res,next)=>{
     Course.find({})
     .then((courses)=>{
-        var latest=[]
-        for (var n = 1; n <= 3;n++ ){
-            latest.push(courses[courses.length-n]);
-        }
+        // var latest=[]
+        // for (var n = 1; n <= 3;n++ ){
+        //     latest.push(courses[courses.length-n]);
+        // }
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(latest);   
+        res.json(courses);   
     },(err)=>next(err))
     .catch((err)=> next(err));  
 })

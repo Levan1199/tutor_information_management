@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -14,6 +14,7 @@ import {Link, useHistory} from 'react-router-dom';
 import SchoolIcon from '@material-ui/icons/School';
 import HomeIcon from '@material-ui/icons/Home';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import DescriptionIcon from '@material-ui/icons/Description';
 
 import {avatarUrl} from '../../shared/baseUrl';
 // import Login from './login';
@@ -122,9 +123,9 @@ const NewHeader = (props) => {
       icon: <SchoolIcon/>
     },
     {
-      link: '/home',
+      link: '/courses',
       nameLink: 'Courses',
-      icon: <SchoolIcon/>
+      icon: <DescriptionIcon/>
     }
   ]
 

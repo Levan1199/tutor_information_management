@@ -37,21 +37,23 @@ const useStyles = makeStyles((theme)=>({
     normalText:{
       fontFamily:"Segoe UI",
       fontWeight:"medium",
-      fontSize:"1.5rem"
+      fontSize:"1.5rem",
     },
     headerText:{
         fontWeight: "bold",
         fontFamily:"Roboto",
         color: theme.palette.primary.dark
-  },
- 
-  cardcontent: {
-    "&:last-child": {
-      paddingTop: 0
-    }
-  }
-
+    },
+    card:{
+        minHeight:"220px",
+        maxHeight:"220px"
+    },
     
+    cardcontent: {
+        "&:last-child": {
+        paddingTop: 0
+        }
+    }    
 }));
 
 const multiSelectDropdown = ({field,placeholder, form, meta, option, ...props})=>{
@@ -104,14 +106,13 @@ const handleRegister = (register, studentId, auth, isTeacher) =>{
 function RenderStudentCard({student, auth, profile,register}){
     const editStyle = useStyles();
     let subject = student.subject.join(', ');
-    let grade = student.grade.join(', ');
     let dist = student.district.join(',');
+    let fee = (student.fee)?student.fee.toLocaleString():""
     return(
-        <Card>
-            
+        <Card className={editStyle.card}>            
             <CardHeader 
-                title={"Class Subject: " + subject}
-                subheader={<Link to={`/newInfo/${student._id}`}>Student Name: {student.name}</Link>}
+                title={"Subject: " + subject}
+                subheader={<Link to={`/newInfo/${student._id}`}>Student: {student.name}</Link>}
                 classes={{
                     title: editStyle.headerText,
                     subheader: editStyle.normalText
@@ -128,7 +129,7 @@ function RenderStudentCard({student, auth, profile,register}){
             <CardContent className={editStyle.cardcontent}>              
                 <strong>Address: </strong>{student.address}
                 <br/>
-                <strong>Recommend Tuition Fee: </strong>{student.fee}
+                <strong>Recommend Tuition Fee: </strong>{fee}
                 <br/>
                 <strong>District: </strong>{dist}
                 <br/>

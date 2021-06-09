@@ -44,7 +44,11 @@ import "./findBar.css";
             fontWeight: "bold",
             fontFamily:"Roboto",
             color: theme.palette.primary.dark
-      },
+        },
+        card:{
+            maxHeight:"280px",
+            minHeight:"280px"
+        }
     }));
 
     
@@ -118,12 +122,13 @@ import "./findBar.css";
 
 
     const RenderTeacherCard = ({teacher, register, auth, profile}) => {
+        const classes = useStyles();
             let subject = teacher.subject.join(', ');
             let grade = teacher.grade.join(', ');
             let district = teacher.district.join(', ');
-        return(
-       
-        <Card className="border">
+            let fee = (teacher.fee)?teacher.fee.toLocaleString():""
+        return(       
+        <Card className={classes.card}>
             <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
                         title={<Link to={`/newInfo/${teacher._id}`}>{teacher.name}</Link>}
                         subheader={'Email: '+ teacher.email}
@@ -131,22 +136,22 @@ import "./findBar.css";
                         action= {(                           
                             teacher.studentReg.includes((profile.studentProfile)?profile.studentProfile._id:null))
                             ?
-                            <Button color="secondary" variant="contained">Đã Đăng ký</Button>
+                            <Button color="secondary" variant="contained">Registered</Button>
                             :<Button color="secondary" variant="contained" onClick={()=>
                                         handleRegister(register,teacher._id,auth, profile.isStudent)
-                                     }>Đăng ký</Button>
+                                     }>Register</Button>
                         }
             />
             <CardContent>
-                <strong>Các lớp: </strong>{grade}
+                <strong>Grade: </strong>{grade}
                 <br/>
-                <strong>Môn học: </strong>{subject}
+                <strong>Subject: </strong>{subject}
                 <br/>
-                <strong>Khu vực quận: </strong>{district}
+                <strong>District: </strong>{district}
                 <br/>
-                <strong>Học phí: </strong>{teacher.fee}
+                <strong>Tuition fee: </strong>{fee}
                 <br/>
-                <strong>Thông tin khác: </strong>{teacher.description}
+                <strong>Description: </strong>{teacher.description}
             </CardContent> 
         </Card>
         );

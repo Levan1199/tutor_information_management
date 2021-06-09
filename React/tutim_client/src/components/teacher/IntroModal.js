@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Grid,Paper, TextField, Button, Typography, InputLabel, Input } from '@material-ui/core'
+import { Grid,Paper, TextField, Button, Typography, InputLabel, Input, textare } from '@material-ui/core'
 import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import ImageUploader from "react-images-upload";
@@ -45,10 +45,9 @@ const validationSchema = Yup.object({
         .max(36,'Maximum characters are 36'),
     email: Yup.string()
         .required('This field is required')
-        .email('The email is invalid')
-        .max(200,'Maximum characters are 200'),
+        .email('The email is invalid'),
     description: Yup.string()
-        .max(200,'Maximum characters are 200'),
+        .max(150,'Maximum characters are 150'),
 });
 
 
@@ -83,6 +82,26 @@ const IntroModal = (props)=>{
             onChange = {(evt)=>form.setFieldValue(name, evt.target.value)}
             error={touched[name] && Boolean(errors[name])}
             helperText={errors[name]}
+            />
+            </>
+        );
+    }
+
+    const inputTextArea = ({field, form, type, label, errors, touched}) => {
+        const {name} = field;
+        const helpText = "Input " + label;
+        const initialValue = form.values[name];
+        return (
+            <>
+            <InputLabel className={classes.label} htmlFor={name}>{label}</InputLabel>
+            <TextField type={type} name={name} placeholder={helpText} className={classes.inputBar} fullWidth margin="normal"
+            defaultValue={initialValue}
+            onChange = {(evt)=>form.setFieldValue(name, evt.target.value)}
+            error={touched[name] && Boolean(errors[name])}
+            helperText={errors[name]}
+            multiline
+            rows={3}
+            rowsMax={3}
             />
             </>
         );
@@ -153,7 +172,7 @@ const IntroModal = (props)=>{
                             
                                 <Grid item>
                                     <Field 
-                                        component={inputBar}
+                                        component={inputTextArea}
                                         name="description"
                                         type="text"
                                         label="Description"

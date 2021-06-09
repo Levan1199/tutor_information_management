@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Home from './homepage/HomeComponent';
 import Header from './HeaderComponent';
 import Footer from '../footer/FooterComponent';
-import StickyFooter from './StickyFooterComponent';
 // import HomePageComponent from './homepage/HomePageComponent';
 import TeacherInfo from './teacher/TeacherInfo';
 import findTeacher from './forms/findTeacher';
@@ -16,7 +15,8 @@ import NewTeacherInfo from './teacher/NewTeacherInfo';
 import StudentInfo from './student/StudentInfo';
 import SetupProfile from './profile/SetupProfile';
 
-import Upload from './teacher/Upload';
+// import Upload from './teacher/Upload';
+import {Loading} from './LoadingComponent';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -24,7 +24,8 @@ import { loginWithFacebook,fetchCourseInfo ,teacherRegStudent, studentRegTeacher
       loginUser, logoutUser} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
-import DetailModal from './teacher/DetailModal';
+import CourseDetail from './CourseDetail';
+import Courses from './Courses';
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -91,9 +92,7 @@ class Main extends Component{
     );
 
     const RenderProfile = (props) => {
-      // console.log('inside render', props.profile);
       if(props.profile.isTeacher && !props.profile.isStudent){
-        // console.log('inside render profile tea');
         return <NewTeacherInfo
           {...props}
       />}
@@ -103,7 +102,7 @@ class Main extends Component{
         />
       }
       else {
-        return <div></div>
+        return <Loading/>
       }
     }
 
@@ -148,6 +147,9 @@ class Main extends Component{
       else if(stuProfile){
         return <RenderProfile
         profile={stuProfile}/>
+      }
+      else{
+        return <Loading/>
       }
     }
 
@@ -207,21 +209,26 @@ class Main extends Component{
 
                 <Route path="/newInfo/:profileId" component={RenderViewProfile}/>
 
-                {/* <Route path='/upload' component={()=><Upload/> }/> */}
-
                 <PrivateRoute path="/newteacherInfo" component={()=> <StudentInfo 
                       profile={this.props.profiles.profiles}
                       isLoading={this.props.profiles.isLoading}
                       errMess={this.props.profiles.errMess}
                 />}/>
 
-                {/* <Route path="/detailmodal" component={() => <DetailModal/>}/> */}
                 <Route path="/stepper" component={()=><SetupProfile 
                 setupProfile = {this.props.postProfile}
                 />}/>
 
-                <Route path='/sticky' component={()=><StickyFooter/> }/> 
+                <Route path='/courseDetail/:courseName' component={({match})=><CourseDetail
+                courseName={match.params.courseName}
+                courseInfo={this.props.courseInfo.courseInfo}
+                isLoadingCourse = {this.props.courseInfo.isLoading}
+                /> }/> 
 
+                <Route path='/courses' component={()=><Courses
+                  courseInfo={this.props.courseInfo.courseInfo}
+                  isLoadingCourse = {this.props.courseInfo.isLoading}
+                />}/> 
 
                 <Redirect to="/home"/>
               
