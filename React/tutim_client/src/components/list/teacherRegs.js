@@ -46,8 +46,8 @@ import "./findBar.css";
             color: theme.palette.primary.dark
         },
         card:{
-            maxHeight:"280px",
-            minHeight:"280px"
+            maxHeight:"250px",
+            minHeight:"250px"
         }
     }));
 
@@ -120,13 +120,35 @@ import "./findBar.css";
         }
     }
 
+    const switchWeekdays = (day) => {
+        switch(day){
+            case 2:
+                return "Monday";
+            case 3:
+                return "Tuesday";
+            case 4:
+                return "Wednesday";
+            case 5:
+                return "Thursday";
+            case 6:
+                return "Friday";
+            case 7:
+                return "Saturday";
+            case 8:
+                return "Sunday";
+            default:
+                return "";                                                  
+        }
+    }
+
 
     const RenderTeacherCard = ({teacher, register, auth, profile}) => {
         const classes = useStyles();
-            let subject = teacher.subject.join(', ');
-            let grade = teacher.grade.join(', ');
-            let district = teacher.district.join(', ');
-            let fee = (teacher.fee)?teacher.fee.toLocaleString():""
+        let subject = teacher.subject.join(', ');
+        let grade = teacher.grade.join(', ');
+        let district = teacher.district.join(', ');
+        let weekly = teacher.weekly.map(switchWeekdays).join(', ');
+        let fee = (teacher.fee)?teacher.fee.toLocaleString():""
         return(       
         <Card className={classes.card}>
             <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
@@ -151,7 +173,7 @@ import "./findBar.css";
                 <br/>
                 <strong>Tuition fee: </strong>{fee}
                 <br/>
-                <strong>Description: </strong>{teacher.description}
+                <strong>Available Weekdays: </strong>{weekly}
             </CardContent> 
         </Card>
         );

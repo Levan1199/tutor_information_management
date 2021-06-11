@@ -1,6 +1,6 @@
 import React from 'react';
-import { Loading } from '../LoadingComponent';
-import {courseUrl, avatarUrl} from '../../shared/baseUrl';
+import { Loading } from './LoadingComponent';
+import {courseUrl, avatarUrl} from '../shared/baseUrl';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -172,7 +172,9 @@ function Home(props){
                 <Grid item xs={12}>             
                   <Grid container spacing={2} justify="center">
                     {(()=>{
-                        const courses = props.courseInfo.slice(0,3);
+                      console.log("length ",props.courseInfo.length);
+                      const length = props.courseInfo.length;
+                        const courses = props.courseInfo.slice(length-3,length);
                         return courses.map((course)=>{
                           if(course){
                             return (

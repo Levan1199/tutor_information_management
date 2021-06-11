@@ -1,98 +1,68 @@
 
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
-import {Loading} from '../LoadingComponent';
-// import {baseUrl} from '../shared/baseUrl';
-import {BreadcrumbItem, Breadcrumb, Button, Label, Col, Row} from 'reactstrap';
+import React from 'react';
+// import {Loading} from '../LoadingComponent';
+import {Card, CardHeader, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import {Multiselect} from 'multiselect-react-dropdown';
-import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
-import {Card, CardHeader,  CardContent} from '@material-ui/core';
-
-
-
-class FilterRegs extends Component {
-constructor(props){
-    super(props);      
+import { Formik, Form,  FastField } from "formik";
+import * as FilterField from '../../shared/constValues';
+import { makeStyles } from '@material-ui/core/styles';
+import {Link} from 'react-router-dom';
+import "./findBar.css";
+const useStyles = makeStyles((theme)=>({
+    text:{
+        fontWeight: "bold",
+        fontSize: "30px",
+        color: theme.palette.primary.dark
+    },
+    container:{
+        padding:"20px 0px"
+    },
+    header:{
+        paddingBottom: "10px"
+    },
+    button:{
+        height:"50px",
+        width:"75px"
+    } ,
+    main:{
+        backgroundColor:"#f5f5f5",
+        padding:0,
+        minHeight:"100vh"
+    },
+    box:{
+        width:"100%",
+        padding:"20px 0",
+        backgroundColor:theme.palette.secondary.light
+    },
+    normalText:{
+      fontFamily:"Segoe UI",
+      fontWeight:"medium",
+      fontSize:"1.5rem",
+    },
+    headerText:{
+        fontWeight: "bold",
+        fontFamily:"Roboto",
+        color: theme.palette.primary.dark
+    },
+    card:{
+        minHeight:"220px",
+        maxHeight:"220px"
+    },
     
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.multiSelectDropdown = this.multiSelectDropdown.bind(this);
-    this.filterProps = this.filterProps.bind(this);
+    cardcontent: {
+        "&:last-child": {
+        paddingTop: 0
+        }
+    }    
+}));
 
-    this.state = {
-        initialValues: {
-            district: [],
-            grade:[],
-            subject:[],
-        },        
-        filter:{
-            district:[],
-            grade:[],
-            subject:[]
-        },
-        options:{
-            district:[
-                {name: 'Quận 1', id: 1},
-                {name: 'Quận 2', id: 2},
-                {name: 'Quận 3', id: 3},
-                {name: 'Quận 4', id: 4},
-                {name: 'Quận 5', id: 5},
-                {name: 'Quận 6', id: 6},
-                {name: 'Quận 7', id: 7},
-                {name: 'Quận 8', id: 8},
-                {name: 'Quận 9', id: 9},
-                {name: 'Quận 10', id: 10},
-                {name: 'Quận 11', id: 11},
-                {name: 'Quận 12', id: 12},
-                {name: 'Quận Thủ Đức', id: 13},
-                {name: 'Quận Bình Thạnh', id: 14},
-                {name: 'Quận Tân Bình', id: 15},
-                {name: 'Quận Phú Nhuận', id: 16},
-                {name: 'Quận Tân Phú', id: 17},
-                {name: 'Quận Bình Tân', id: 18},
-                {name: 'Quận Gò Vấp', id: 19}
-            ],
-            grade:[
-                {name: 'Lớp 1', id: 1},
-                {name: 'Lớp 2', id: 2},
-                {name: 'Lớp 3', id: 3},
-                {name: 'Lớp 4', id: 4},
-                {name: 'Lớp 5', id: 5},
-                {name: 'Lớp 6', id: 6},
-                {name: 'Lớp 7', id: 7},
-                {name: 'Lớp 8', id: 8},
-                {name: 'Lớp 9', id: 9},
-                {name: 'Lớp 10', id: 10},
-                {name: 'Lớp 11', id: 11},
-                {name: 'Lớp 12', id: 12},
-                
-            ],
-            subject:[
-                {name: 'Toán', id: 1},
-                {name: 'Lý', id: 2},
-                {name: 'Hóa', id: 3},
-                {name: 'Sinh', id: 4},
-                {name: 'Anh', id: 5},
-            ]
-        },
-    }
-}      
-
-handleSubmit(values){
-    console.log(values);
-    var filterName = {};
-        filterName.district = values.district.map(district=>district.name);
-        filterName.grade = values.grade.map(grade=>grade.name);
-        filterName.subject = values.subject.map(subject=>subject.name);
-    this.setState({filter:filterName});
-}
-
-multiSelectDropdown({field, form, meta, ...props}){
+const multiSelectDropdown = ({field,placeholder, form, meta, option, ...props})=>{
     const optionName = field.name;
-    const options = this.state.options[optionName];
     return (
         <Multiselect
-            options={options}
+            options={option}
             displayValue="name" 
+            placeholder={placeholder}
             showCheckbox
             onSelect={(value)=>{
                 form.setFieldValue(optionName,value);
@@ -101,18 +71,16 @@ multiSelectDropdown({field, form, meta, ...props}){
     );
 }
 
-filterProps(student){
-    const distEve = (element) => {
-        return student.district.includes(element);
-    }
-////
-    const dist = this.state.filter.district.every(distEve);
+const filterProps = (filterVals,student) => {
+    const dist = filterVals.district.every((e=>{
+        return student.district.includes(e);
+    }));
 
-    const grade = this.state.filter.grade.every((e=>{
+    const grade = filterVals.grade.every((e=>{
         return student.grade.includes(e);
     }));
 
-    const subject = this.state.filter.subject.every((e=>{
+    const subject = filterVals.subject.every((e=>{
         return student.subject.includes(e);
     }));
 
@@ -121,63 +89,6 @@ filterProps(student){
 
 }
 
-render(){
-    const Rendering = this.props.RenderRegs;
-    let Filtered = this.props.studentRegs.filter((student)=>{
-        return this.filterProps(student);
-    });
-    return(
-        <>
-        <div className="row">
-            <Formik 
-                className="row"
-                initialValues={this.state.initialValues}
-                onSubmit={this.handleSubmit}
-            >
-                <Form className="col-12 col-md-9">                          
-                    <Row className="form-group justify-content-center">
-                        <Label htmlFor="district" md={1}>Quận:</Label>
-                        <Col md={2}>
-                            <FastField
-                                id="district"
-                                name="district"
-                                component={this.multiSelectDropdown}
-                            />                                        
-                        </Col>
-                        <Label htmlFor="grade" md={1}>Lớp:</Label>
-                        <Col md={2}>
-                            <FastField id="grade" name="grade" 
-                            className="form-control"    
-                            component={this.multiSelectDropdown}                                    
-                            />
-                        <ErrorMessage name="grade"/>
-                        </Col>
-                        <Label htmlFor="subject" md={2}>Môn học:</Label>
-                        <Col md={2}>
-                            <FastField id="subject" name="subject" 
-                            className="form-control"    
-                            component={this.multiSelectDropdown}                                    
-                            />
-                        <ErrorMessage name="subject"/>
-                        </Col>
-                        <Col md={2}>
-                        <Button type="submit" color="primary">
-                            Xác nhận
-                        </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </Formik>
-        </div>
-        <div className="row">
-            <Rendering regs={Filtered} auth={this.props.auth}
-                                profile={this.props.profile}
-                                register={this.props.register}/>
-        </div>
-        </>
-    );
-}
-}
 
 const handleRegister = (register, studentId, auth, isTeacher) =>{
     if (!auth){
@@ -193,37 +104,36 @@ const handleRegister = (register, studentId, auth, isTeacher) =>{
 }
 
 function RenderStudentCard({student, auth, profile,register}){
+    const editStyle = useStyles();
     let subject = student.subject.join(', ');
-    let grade = student.grade.join(', ');
     let dist = student.district.join(',');
-    // console.log('check',student, profile);
+    let fee = (student.fee)?student.fee.toLocaleString():""
     return(
-        <Card className="border">
+        <Card className={editStyle.card}>            
             <CardHeader 
-                title={"Lớp: " + grade}
-                subheader={"Môn học: " + subject}
-                titleTypographyProps={{variant:'h5' }}
+                title={"Subject: " + subject}
+                subheader={<Link to={`/newInfo/${student._id}`}>Student: {student.name}</Link>}
+                classes={{
+                    title: editStyle.headerText,
+                    subheader: editStyle.normalText
+                }}
                 action={
                     (
                     student.teacherReg.includes((profile.teacherProfile)?profile.teacherProfile._id:null))?
-                    <Button color="secondary" variant="contained">Đã Đăng ký</Button>
+                    <Button color="secondary" variant="contained">Registered</Button>
                     :<Button color="secondary" variant="contained" onClick={()=>
                         handleRegister(register,student._id,auth, profile.isTeacher)
-                    }>Đăng ký</Button>
+                    }>Register</Button>
                 }
             />
-            <CardContent>
-                <strong>Số buổi trong tuần: </strong>{student.periodAWeek}
+            <CardContent className={editStyle.cardcontent}>              
+                <strong>Address: </strong>{student.address}
                 <br/>
-                <strong>Thời gian: </strong>{student.time}
+                <strong>Recommend Tuition Fee: </strong>{fee}
                 <br/>
-                <strong>Địa chỉ: </strong>{student.address}
+                <strong>District: </strong>{dist}
                 <br/>
-                <strong>Học phí: </strong>{student.fee}
-                <br/>
-                <strong>Quận: </strong>{dist}
-                <br/>
-                <strong>Yêu cầu khác: </strong>{student.description}
+                <strong>Description: </strong>{student.description}
                 
             </CardContent> 
         </Card>
@@ -231,60 +141,107 @@ function RenderStudentCard({student, auth, profile,register}){
 }
 
 
-const RenderRegs = ({regs, auth, profile, register}) => {
-    console.log('stustu ', regs);
-    const Regs = regs.map((student)=>{
-      
-        return (                
-            <div key={student.id} className="col-12 col-md-5 m-1">
-                <RenderStudentCard student={student} auth={auth}
-                profile={profile} register={register}/>
-            </div>
-        );
-    });
 
-    return (
-        <>
-            {Regs}
-        </>
-    );
+
+const NewStudentRegs = (props) =>{      
+    const classes = useStyles();
+        const [filterVals, setFilterVals] = React.useState({ district:[],
+            grade:[],
+            subject:[]})
+
+        let foundStudents = props.studentRegs.filter((student)=>{
+            return filterProps(filterVals, student);
+        });
+
+        const handleSubmit = (values) => {
+            var filterName = {};
+                filterName.district = values.district.map(district=>district.name);
+                filterName.grade = values.grade.map(grade=>grade.name);
+                filterName.subject = values.subject.map(subject=>subject.name);
+            setFilterVals(filterName);
+        }
+            return (
+                <Container maxWidth="false" className={classes.main}>
+                <Box className={classes.box}>
+                    <Typography variant="h4" align="center" className={classes.headerText}>
+                        Current classes
+                    </Typography>
+                    <Typography variant="body1" align="center" className={classes.normalText}>
+                        Current classes that is in need of teachers requested by students 
+                    </Typography>
+                </Box>
+                <Container maxWidth="lg" className={classes.container}>
+                    <Grid container spacing={1}>
+                       <Grid item xs={12} className={classes.header}>
+                            <Grid container spacing={1} className={classes.header}>
+                                <Grid item xs={12} sm={9}>
+                                    <Formik initialValues={FilterField.stuInit}
+                                    onSubmit = {handleSubmit}
+                                    >
+                                        <Form>
+                                            <Grid container spacing={1} className={classes.multiSelect}>
+                                                <Grid item xs={12} sm={3}>
+                                                    <FastField
+                                                        id="district"
+                                                        name="district"
+                                                        component={multiSelectDropdown}
+                                                        option={FilterField.distOption}
+                                                        placeholder="District"
+                                                    />  
+                                                </Grid>
+                                                <Grid item xs={12} sm={3}>
+                                                    <FastField
+                                                        id="grade"
+                                                        name="grade"
+                                                        component={multiSelectDropdown}
+                                                        option={FilterField.gradOption}
+                                                        placeholder="Grade"
+                                                    />  
+                                                </Grid>
+                                                <Grid item xs={12} sm={3}>
+                                                    <FastField
+                                                        id="subject"
+                                                        name="subject"
+                                                        component={multiSelectDropdown}
+                                                        option={FilterField.subjOption}
+                                                        placeholder="Subject"
+                                                    />  
+                                                </Grid>
+                                                <Grid item xs={12} sm={2}>
+                                                    <Button 
+                                                    className={classes.button}
+                                                    color="secondary" type="submit" variant="contained"
+                                                    >Find</Button>  
+                                                </Grid>                                            
+                                            </Grid>
+                                        </Form>
+                                    </Formik>
+                                </Grid>
+                            </Grid>
+                            <Divider gutterBottom/>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid container direction="row" spacing={2} justify="center">
+                            {(()=>{
+                                if(foundStudents!=null){
+                                    return foundStudents.map((student)=>{
+                                       if(student.available){
+                                        return (
+                                                <Grid item xs={12} md={5}>
+                                                <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile}/>
+                                                </Grid>
+                                            );
+                                        }
+                                       
+                                    });
+                                }
+                            })()}
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Container>
+                </Container>
+            );
 }
 
-const StudentRegs = (props) =>{      
-    if (props.isLoading) {
-        console.log("Loadingggg");
-        return(
-            <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
-            </div>
-        );
-    }
-    else if (props.studentRegs != null){
-    console.log('check', props.studentRegs);
-
-        return (
-            <div className="container">
-                <div className="row">
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to="/home">Trang chủ</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>Student</BreadcrumbItem>
-                    </Breadcrumb>
-                    <div className="col-12">
-                        <h3>Các lớp học cần tìm gia sư</h3>
-                        <hr/>
-                    </div>
-                </div>
-                    <FilterRegs studentRegs={props.studentRegs}
-                                RenderRegs = {RenderRegs}
-                                register={props.register}
-                                auth={props.auth}
-                                profile={props.profile}
-                    />
-                </div>
-        );
-    }
-}
-
-export default StudentRegs;
+export default NewStudentRegs;

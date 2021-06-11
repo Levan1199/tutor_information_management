@@ -2,14 +2,14 @@ import React from 'react';
 import {courseUrl} from '../shared/baseUrl';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import {Grid, Container,Box, Button,  Divider} from '@material-ui/core';
+import {Grid, Container,Box, Button} from '@material-ui/core';
 import {Loading} from './LoadingComponent';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import {Link, useHistory} from 'react-router-dom';
+import { useHistory} from 'react-router-dom';
 
 // import local data
 
@@ -95,28 +95,26 @@ const Courses = (props) => {
         <Container maxWidth="false" className={classes.main}>
             <Box className={classes.box}>
                 <Typography variant="h4" align="center" className={classes.normalText}>
-                    Lastest Courses
+                    Courses
                 </Typography>
                 <Typography variant="body1" align="center" className={classes.normalText}>
                     Discover courses for all ages and exciting subjects
                 </Typography>
             </Box>
             <Container maxWidth="lg" className={classes.container}>                
-                <Grid item xs={12}>             
-                    <Grid container spacing={2} justify="center">
-                    {(()=>{
-                        return props.courseInfo.map((course)=>{
-                            if(course){
-                            return (
-                                <Grid item md={3}>
-                                    <CoursesRender course={course}/>
-                                </Grid>
-                            );
-                            }
-                        });
-                    })()}
-                    </Grid>
-                </Grid>
+              <Grid container spacing={2} justify="center">
+              {(()=>{
+                  return props.courseInfo.map((course)=>{
+                      if(course){
+                      return (
+                          <Grid item xs={3}>
+                              <CoursesRender course={course}/>
+                          </Grid>
+                      );
+                      }
+                  });
+              })()}
+              </Grid>
             </Container>
         </Container>
             

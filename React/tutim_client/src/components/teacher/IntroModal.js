@@ -46,8 +46,8 @@ const validationSchema = Yup.object({
     email: Yup.string()
         .required('This field is required')
         .email('The email is invalid'),
-    description: Yup.string()
-        .max(150,'Maximum characters are 150'),
+    // description: Yup.string()
+    //     .max(150,'Maximum characters are 150'),
 });
 
 
@@ -100,8 +100,8 @@ const IntroModal = (props)=>{
             error={touched[name] && Boolean(errors[name])}
             helperText={errors[name]}
             multiline
-            rows={3}
-            rowsMax={3}
+            rows={5}
+            rowsMax={5}
             />
             </>
         );

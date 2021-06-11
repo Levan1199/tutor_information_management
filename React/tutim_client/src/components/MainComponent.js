@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import Home from './homepage/HomeComponent';
-import Header from './HeaderComponent';
-import Footer from '../footer/FooterComponent';
-// import HomePageComponent from './homepage/HomePageComponent';
-import TeacherInfo from './teacher/TeacherInfo';
-import findTeacher from './forms/findTeacher';
-import FindClass from './forms/findClass';
-import TeacherRegs from './list/teacherRegs';
-// import StudentRegs from './list/studentRegs';
-import NewStudentRegs from './list/newStudentRegs'
+import Home from './HomeComponent';
+import Footer from './FooterComponent';
+import TeacherRegs from './list/TeacherRegs';
+import StudentRegs from './list/StudentRegs'
 
-import NewHeader from './header/NewHeaderComponent';
-import NewTeacherInfo from './teacher/NewTeacherInfo';
+import NewHeader from './NewHeaderComponent';
+import TeacherInfo from './teacher/TeacherInfo';
 import StudentInfo from './student/StudentInfo';
 import SetupProfile from './profile/SetupProfile';
 
-// import Upload from './teacher/Upload';
 import {Loading} from './LoadingComponent';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
@@ -93,7 +86,7 @@ class Main extends Component{
 
     const RenderProfile = (props) => {
       if(props.profile.isTeacher && !props.profile.isStudent){
-        return <NewTeacherInfo
+        return <TeacherInfo
           {...props}
       />}
       else if (!props.profile.isTeacher && props.profile.isStudent){
@@ -186,20 +179,14 @@ class Main extends Component{
                 subjectName={match.params.subjectName}
                 />}/>
 
-                <Route path="/studentList" component={() => <NewStudentRegs 
+                <Route path="/studentList" component={() => <StudentRegs 
                 studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
                 register={this.props.teacherRegStudent}
                 isLoading = {this.props.studentRegs.isLoading}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
-                />}/>
-
-              
-                <Route path='/findTeacher' component={findTeacher}/>
-                <Route path='/findClass' component={() => <FindClass/>}/>
-                
+                />}/>                             
             
-
                 <Route exact path="/newInfo" component={()=><RenderProfile
                   profile={this.props.profiles.profiles}
                   isLoading={this.props.profiles.isLoading}
@@ -207,13 +194,7 @@ class Main extends Component{
                   updateProfile={this.props.updateProfile}
                 />}/>
 
-                <Route path="/newInfo/:profileId" component={RenderViewProfile}/>
-
-                <PrivateRoute path="/newteacherInfo" component={()=> <StudentInfo 
-                      profile={this.props.profiles.profiles}
-                      isLoading={this.props.profiles.isLoading}
-                      errMess={this.props.profiles.errMess}
-                />}/>
+                <Route path="/newInfo/:profileId" component={RenderViewProfile}/>             
 
                 <Route path="/stepper" component={()=><SetupProfile 
                 setupProfile = {this.props.postProfile}

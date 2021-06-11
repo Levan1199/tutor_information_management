@@ -43,36 +43,6 @@ const useStyles = makeStyles((theme)=>({
    
 }));
 
-// const Courses = (props) => {
-//   const classes = useStyles();
-//   const history = useHistory();
-//   const handleClick = () =>{
-//     history.push(`/courseDetail/${props.name}`)
-//   }
-//   return (
-//       <Card className={classes.root}>
-//           <CardActionArea onClick={handleClick}>
-//             <CardMedia
-//               className={classes.media}
-//               image={courseUrl+props.picture}
-//               title="Top Course"
-//             />
-//             <CardContent>
-//               <Typography gutterBottom variant="h5" component="h2">
-//                 {props.name}
-//               </Typography>              
-//             </CardContent>
-//           </CardActionArea>
-        
-//         <CardActions onClick={handleClick}>
-//           <Button variant="contained" color="primary">
-//             More Information
-//           </Button>
-//         </CardActions>
-//       </Card>
-//     );
-// }
-
 const CourseDetail = (props) => {
   const classes = useStyles(); 
   if(props.isLoadingCourse){

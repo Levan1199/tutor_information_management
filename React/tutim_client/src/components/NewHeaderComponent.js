@@ -16,10 +16,9 @@ import HomeIcon from '@material-ui/icons/Home';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import DescriptionIcon from '@material-ui/icons/Description';
 
-import {avatarUrl} from '../../shared/baseUrl';
-// import Login from './login';
-import SignIn from '../entrance/signIn';
-import SignUp from '../entrance/signUp';
+import {avatarUrl} from '../shared/baseUrl';
+import SignIn from './entrance/signIn';
+import SignUp from './entrance/signUp';
 
 
 

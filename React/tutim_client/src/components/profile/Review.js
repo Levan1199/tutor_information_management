@@ -49,7 +49,8 @@ export default function Review(props) {
         <Button variant="contained" color="primary" 
           onClick={()=> {
             setupProfile({name,email,role});
-            return history.push('/home');
+            history.push('/home');
+            return;
           }}
         >
           Save
