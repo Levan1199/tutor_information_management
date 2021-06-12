@@ -159,7 +159,7 @@ function Home(props){
             A place for pupils and teachers
           </Typography>
         </Paper>
-          <Container maxWidth="false" className={classes.main}>
+          <Container maxWidth={false} className={classes.main}>
             <Box className={classes.box}>
               <Typography variant="h4" align="center" className={classes.normalText}>
                   Lastest Courses
@@ -172,13 +172,12 @@ function Home(props){
                 <Grid item xs={12}>             
                   <Grid container spacing={2} justify="center">
                     {(()=>{
-                      console.log("length ",props.courseInfo.length);
                       const length = props.courseInfo.length;
                         const courses = props.courseInfo.slice(length-3,length);
                         return courses.map((course)=>{
                           if(course){
                             return (
-                              <Grid item md={3}>
+                              <Grid item md={3} key={course._id}>
                                   <TopCourses course={course}/>
                               </Grid>
                             );
@@ -206,7 +205,7 @@ function Home(props){
                         return teachers.map((teacher)=>{
                           if(teacher){
                             return (
-                              <Grid item xs={12}>
+                              <Grid item xs={12} key={teacher._id}>
                                 <ComplexGrid profile={teacher}/>
                               </Grid>
                             );

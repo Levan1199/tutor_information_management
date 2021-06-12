@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { Avatar, Grid, Typography, Button, Box, Modal, Container,FormControlLabel, Radio, RadioGroup} from "@material-ui/core";
+import { Avatar, Grid, Typography, Button, Box, Modal, Container,FormControlLabel, Radio, RadioGroup, Divider} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
@@ -55,7 +55,7 @@ const RenderUI = (props) => {
     const district = studentProfile.district?studentProfile.district.join(', '):""; 
     var fee = (studentProfile.fee)?(studentProfile.fee.toLocaleString()):0;
     return (
-        <Container maxWidth="false" className={classes.main}>
+        <Container maxWidth={false} className={classes.main}>
             <Container maxWidth="lg" className={classes.container}>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
@@ -68,12 +68,13 @@ const RenderUI = (props) => {
                     <Typography variant="h2" className={classes.headerText}>
                             {studentProfile.name}
                     </Typography>
-                    <Typography variant="h4" className={classes.normalText}>
-                            {studentProfile.email}
-                            <hr/>
-                    </Typography>   
-                    
                     <Typography variant="h6" className={classes.normalText}>
+                            Email: {studentProfile.email}
+                    </Typography>   
+
+                    <Divider/>
+
+                    <Typography variant="h5" className={classes.normalText}>
                             Description: {studentProfile.description}
                     </Typography>     
                   
@@ -88,7 +89,7 @@ const RenderUI = (props) => {
                     <Button onClick={()=>setModalIntro(true)}><EditIcon/></Button>    
                 </Box>
                 <Grid item md={12}>
-                <Typography><hr/></Typography>
+                    <Divider/>
                 </Grid>
             </Grid>
             

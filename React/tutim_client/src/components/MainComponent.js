@@ -4,7 +4,7 @@ import Footer from './FooterComponent';
 import TeacherRegs from './list/TeacherRegs';
 import StudentRegs from './list/StudentRegs'
 
-import NewHeader from './NewHeaderComponent';
+import HeaderComponent from './HeaderComponent';
 import TeacherInfo from './teacher/TeacherInfo';
 import StudentInfo from './student/StudentInfo';
 import SetupProfile from './profile/SetupProfile';
@@ -111,7 +111,7 @@ class Main extends Component{
         name = profile.studentProfile.name;
         imgPath = profile.studentProfile.imgPath;
       }
-      return <NewHeader
+      return <HeaderComponent
         name = {name}
         {...props}
         imgPath = {imgPath}

@@ -8,7 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Button from "@material-ui/core/Button";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { Avatar, Modal, FormControl, InputLabel, Input, FormHelperText, Grid, Typography } from "@material-ui/core";
+import { Avatar, Modal,  Grid, Typography } from "@material-ui/core";
 import {Link, useHistory} from 'react-router-dom';
 
 import SchoolIcon from '@material-ui/icons/School';
@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NewHeader = (props) => {
+const HeaderComponent = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -94,16 +94,6 @@ const NewHeader = (props) => {
       return setModalSU(false);
     }
   }
-
-  const body = (
-    <Grid>
-      <FormControl>
-        <InputLabel htmlFor="my-input">Email address</InputLabel>
-        <Input id="my-input" aria-describedby="my-helper-text" />
-        <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
-      </FormControl>
-    </Grid>
-  );
 
   const navRoute =[
     {
@@ -141,10 +131,10 @@ const NewHeader = (props) => {
             </IconButton>
             <Menu id="menu-appbar" anchorEl={anchorEl} getContentAnchorEl={null} anchorOrigin={{vertical: "bottom", horizontal: "center"}} keepMounted transformOrigin={{vertical: "top", horizontal: "center" }} open={open} onClose={() => setAnchorEl(null)} className={classes.menuPaper}>
               {
-                navRoute.map(item => {
+                navRoute.map((item, index) => {
                   const {link, nameLink} = item;
                   return (
-                    <Link to={link} className={classes.navButton, classes.customWidth}>
+                    <Link to={link} key={index} className={classes.navButton, classes.customWidth}>
                       <MenuItem fontWeight='bold'>
                         {nameLink}
                       </MenuItem>
@@ -186,10 +176,10 @@ const NewHeader = (props) => {
             <>
               <div className={classes.headerOptions}>
                 {
-                  navRoute.map(item => {
+                  navRoute.map((item, index) => {
                     const {link, nameLink, icon} = item;
                     return (
-                      <Link to={link} className={classes.navButton}>
+                      <Link to={link} key={index} className={classes.navButton}>
                         <Button variant="text" >
                           {icon} {nameLink}
                         </Button>
@@ -256,5 +246,5 @@ const NewHeader = (props) => {
   );
 };
 
-export default NewHeader;
+export default HeaderComponent;
 

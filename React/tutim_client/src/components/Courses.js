@@ -57,7 +57,6 @@ const CoursesRender = (props) => {
     const {name, imgPath} = props.course;
     const classes = useStyles();
     const history = useHistory();
-    console.log(courseUrl+imgPath);
     const handleClick = () =>{
     history.push(`/courseDetail/${name}`)
   }
@@ -92,7 +91,7 @@ const Courses = (props) => {
     }
     else{
     return(    
-        <Container maxWidth="false" className={classes.main}>
+        <Container maxWidth={false} className={classes.main}>
             <Box className={classes.box}>
                 <Typography variant="h4" align="center" className={classes.normalText}>
                     Courses
@@ -104,10 +103,10 @@ const Courses = (props) => {
             <Container maxWidth="lg" className={classes.container}>                
               <Grid container spacing={2} justify="center">
               {(()=>{
-                  return props.courseInfo.map((course)=>{
+                  return props.courseInfo.map((course, index)=>{
                       if(course){
                       return (
-                          <Grid item xs={3}>
+                          <Grid item xs={3} key={index}>
                               <CoursesRender course={course}/>
                           </Grid>
                       );

@@ -5,7 +5,6 @@ import {avatarUrl} from '../../shared/baseUrl';
 import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
-import {Label, Col, Row} from 'reactstrap';
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as FilterField from '../../shared/constValues';
 import "./findBar.css";
@@ -205,7 +204,7 @@ import "./findBar.css";
             setFilterVals(filterName);
         }
             return (
-                <Container maxWidth="false" className={classes.main}>
+                <Container maxWidth={false} className={classes.main}>
                 <Box className={classes.box}>
                     <Typography variant="h4" align="center" className={classes.headerText}>
                         Current teachers
@@ -263,17 +262,16 @@ import "./findBar.css";
                                     </Formik>
                                 </Grid>
                             </Grid>
-                            <Divider gutterBottom/>
+                            <Divider/>
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container direction="row" spacing={2} justify="center">
-                            {/* <RenderFilter teachers={props.teacherRegs} register={props.register} auth={props.auth} profile={props.profile}/> */}
                             {(()=>{
                                 if(foundTeachers!=null){
-                                    return foundTeachers.map((teacher)=>{
+                                    return foundTeachers.map((teacher, index)=>{
                                         if(teacher.available){
                                         return (
-                                                <Grid item xs={12} md={5}>
+                                                <Grid item xs={12} md={5} key={index}>
                                                 <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile}/>
                                                 </Grid>
                                             );

@@ -161,7 +161,7 @@ const NewStudentRegs = (props) =>{
             setFilterVals(filterName);
         }
             return (
-                <Container maxWidth="false" className={classes.main}>
+                <Container maxWidth={false} className={classes.main}>
                 <Box className={classes.box}>
                     <Typography variant="h4" align="center" className={classes.headerText}>
                         Current classes
@@ -218,16 +218,16 @@ const NewStudentRegs = (props) =>{
                                     </Formik>
                                 </Grid>
                             </Grid>
-                            <Divider gutterBottom/>
+                            <Divider/>
                         </Grid>
                         <Grid item xs={12}>
                             <Grid container direction="row" spacing={2} justify="center">
                             {(()=>{
                                 if(foundStudents!=null){
-                                    return foundStudents.map((student)=>{
+                                    return foundStudents.map((student, index)=>{
                                        if(student.available){
                                         return (
-                                                <Grid item xs={12} md={5}>
+                                                <Grid item xs={12} md={5} key={index}>
                                                 <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile}/>
                                                 </Grid>
                                             );

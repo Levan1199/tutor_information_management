@@ -130,11 +130,9 @@ export const studentRegTeacher = (teacherId) => (dispatch) => {
     })
     .then(response => {
         if(response.status === 200){
-            console.log('sRegt ',response);
             return response;
         }
         else{
-            // console.log('fetch failedd');
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
@@ -165,7 +163,6 @@ export const teacherRegStudent = (studentId) => (dispatch) => {
             return response;
         }
         else{
-            // console.log('fetch failedd');
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
@@ -233,13 +230,10 @@ export const fetchProfile = () => (dispatch) => {
             return response;
         }
         else if (response.status === 204){
-            console.log('inside empty');
             dispatch(emptyProfile());
-            console.log('inside empty 2');
             return response;
         }
         else{
-            console.log('fetch failedd');
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
@@ -258,7 +252,6 @@ export const fetchProfile = () => (dispatch) => {
 
 
 export const postProfile = (props) => (dispatch) =>  {
-    console.log('inside post profile ',props);
     if (props.role === 'isTeacher'){
         props.isTeacher = true;
         props.isStudent = false;
@@ -306,8 +299,6 @@ export const updateProfile = (props) => (dispatch) => {
             continue;
         }
         formdata.append(key, JSON.stringify(props[key]));
-        for(var val of formdata.values() )
-        console.log('form', val);
     }
     return fetch(baseUrl + 'profile',
     {
@@ -360,7 +351,6 @@ export const profileLoading = () =>({
 
 //signup
 export const signUp = (creds) => (dispatch) => {
-    console.log('in signup');
     return fetch(baseUrl + 'users/signup',{
         method: 'POST',
         headers:{
@@ -369,7 +359,6 @@ export const signUp = (creds) => (dispatch) => {
         body: JSON.stringify(creds)
     })
     .then((response)=>{
-        console.log('res ',response);
 
         if(response.ok){
             dispatch(loginUser(creds));
@@ -469,7 +458,6 @@ export const loginUser = (creds) => (dispatch) => {
 
 export const loginWithFacebook = (accessToken) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
-    console.log('inside login fb');
     const bearer = 'Bearer ' + accessToken;
 
     return fetch(baseUrl + 'users/facebook/token',{
@@ -493,7 +481,6 @@ export const loginWithFacebook = (accessToken) => (dispatch) => {
     })
     .then((response)=>response.json())
     .then((response)=>{
-        console.log('login success fetching ',response);
         localStorage.setItem('token', response.token);
         
         dispatch(fetchProfile());
@@ -529,7 +516,6 @@ export const logoutUser = () => (dispatch) => {
 
 export const fetchTeacherReg = () => (dispatch) => {
     dispatch(teacherRegLoading(true));
-console.log('fetching');
     return fetch(baseUrl + 'teacherReg')
         .then(response => response.json())
         .then(teacherReg => dispatch(addTeacherReg(teacherReg)));
@@ -550,7 +536,6 @@ export const teacherRegLoading = () =>({
 })
 //////////////////////////////
 export const fetchStudentReg = () => (dispatch) => {
-    console.log('inside fetch stu');
     dispatch(studentRegLoading(true));
 
     return fetch(baseUrl + 'studentReg')
@@ -590,7 +575,6 @@ export const courseInfoLoading = () =>({
 
 export const fetchCourseInfo = () => (dispatch) => {
     dispatch(courseInfoLoading());
-    console.log('inside fetch course');
     return fetch(baseUrl + 'course')
         .then(response => response.json())
         .then(course => dispatch(addCourseInfo(course)));

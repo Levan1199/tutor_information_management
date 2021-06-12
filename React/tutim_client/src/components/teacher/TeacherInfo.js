@@ -81,7 +81,7 @@ const RenderUI = (props) => {
     var fee = (teacherProfile.fee)?(teacherProfile.fee.toLocaleString()):0;
 
     return (
-        <Container maxWidth="false" className={classes.main}>
+        <Container maxWidth={false} className={classes.main}>
             <Container maxWidth="lg" className={classes.container}>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
@@ -94,12 +94,13 @@ const RenderUI = (props) => {
                     <Typography variant="h2" className={classes.headerText}>
                             {teacherProfile.name}
                     </Typography>
-                    <Typography variant="h4" className={classes.normalText}>
-                            {teacherProfile.email}
-                    <Divider light/>
-                    </Typography>   
-                    
                     <Typography variant="h6" className={classes.normalText}>
+                            Email: {teacherProfile.email}                   
+                    </Typography>   
+
+                    <Divider/>
+                    
+                    <Typography variant="h5" className={classes.normalText}>
                             Description: {teacherProfile.description}
                     </Typography>     
                   
@@ -114,7 +115,7 @@ const RenderUI = (props) => {
                     <Button onClick={()=>setModalIntro(true)}><EditIcon/></Button>    
                 </Box>
                 <Grid item md={12}>
-                <Divider light/>
+                    <Divider/>
                 </Grid>
             </Grid>
             
@@ -139,13 +140,14 @@ const RenderUI = (props) => {
                     <Typography variant="h4" className={classes.headerText} color="secondary">
                         Schedule 
                     </Typography>           
-                    {checkBoxValues.map(obj => (
+                    {checkBoxValues.map((obj, index) => (
                         <RenderCheckBox label={obj.label}
                         value={obj.value}
-                        weekly = {teacherProfile.weekly}/>
+                        weekly = {teacherProfile.weekly}
+                        key={index}/>
                     ))}   
-                    <Typography variant="body1">
-                        Available: 
+                    <Grid item xs={12}>
+                        <Typography variant="h4" className={classes.headerText} color="secondary">Available: </Typography>
                         <RadioGroup row aria-label="position" name="available" defaultValue="top"
                             defaultChecked={teacherProfile.available}
                         >
@@ -162,7 +164,7 @@ const RenderUI = (props) => {
                                 labelPlacement="top"
                             />
                         </RadioGroup>
-                    </Typography> 
+                    </Grid> 
                 </Grid>
                 <Box
                     component={Grid}
@@ -198,7 +200,7 @@ const RenderUI = (props) => {
     );
 }
 
-const NewTeacherInfo = (props) => {
+const TeacherInfo = (props) => {
    
 
     useEffect(()=>{
@@ -234,4 +236,4 @@ const NewTeacherInfo = (props) => {
     }
 }
 
-export default NewTeacherInfo;
+export default TeacherInfo;
