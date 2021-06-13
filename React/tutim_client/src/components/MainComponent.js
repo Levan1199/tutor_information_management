@@ -75,16 +75,16 @@ class Main extends Component{
 
   render(){
     
-    const PrivateRoute = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-        this.props.auth.isAuthenticated
-          ? <Component {...props} />
-          : <Redirect to={{
-              pathname: '/home',
-              state: { from: props.location }
-            }} />
-      )} />
-    );
+    // const PrivateRoute = ({ component: Component, ...rest }) => (
+    //   <Route {...rest} render={(props) => (
+    //     this.props.auth.isAuthenticated
+    //       ? <Component {...props} />
+    //       : <Redirect to={{
+    //           pathname: '/home',
+    //           state: { from: props.location }
+    //         }} />
+    //   )} />
+    // );
 
     const RenderProfile = (props) => {
       if(props.profile.isTeacher && !props.profile.isStudent){
@@ -121,7 +121,7 @@ class Main extends Component{
     })
 
     const CheckStepper = () => {
-      if (this.props.profiles.isEmpty && this.props.location.pathname != '/stepper'){
+      if (this.props.profiles.isEmpty && this.props.location.pathname !== '/stepper'){
          this.props.history.push('/stepper');
          return <div></div>;
       }    

@@ -11,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import {Grid, Container,Box} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import Divider from '@material-ui/core/Divider';
 import {Link, useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles((theme)=>({

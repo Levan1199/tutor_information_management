@@ -232,7 +232,9 @@ const NewStudentRegs = (props) =>{
                                                 </Grid>
                                             );
                                         }
-                                       
+                                       else{
+                                           return "";
+                                       }
                                     });
                                 }
                             })()}

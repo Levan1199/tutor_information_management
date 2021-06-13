@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Review(props) {
   const classes = useStyles();
-  const {review, handleBack, handleNext, setupProfile } = props;
+  const {review, handleBack, setupProfile } = props;
   const {role, name, email} = review;
   let history = useHistory();
   return (

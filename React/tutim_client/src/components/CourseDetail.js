@@ -87,7 +87,7 @@ const CourseDetail = (props) => {
             </Grid>
 
             <Paper variant="outlined" className={classes.paper}>
-              <img src={`${courseUrl}${course.imgPath}`} width="100%" height="100%" />
+              <img alt="course ava" src={`${courseUrl}${course.imgPath}`} width="100%" height="100%" />
             </Paper>
            
           </Grid>

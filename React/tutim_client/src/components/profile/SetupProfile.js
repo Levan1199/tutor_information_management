@@ -72,15 +72,12 @@ export default function SetupProfile(props) {
   }
 
   const [formValues, setFormValues] = useState(initialFields);
-  var tempVal = '';
   const handleNext = (newValues) => {
-    tempVal = newValues;
     setFormValues({...formValues,...newValues});
     setActiveStep(activeStep + 1);
   };
   
   const handleBack = (newValues) => {
-    tempVal = newValues;
     setFormValues({ ...formValues, ...newValues });
     setActiveStep(activeStep - 1);
   };

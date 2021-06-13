@@ -54,7 +54,12 @@ const useStyles = makeStyles(theme => ({
   customWidth: {
     '& li': {
         width: '300px',
-    }
+    },
+    '&:hover': {
+      backgroundColor: 'theme.palette.primary.dark',
+      textDecoration: 'none',
+    },
+    color: '#000000',
   },
   username:{
     color: "#000000",
@@ -134,7 +139,7 @@ const HeaderComponent = React.forwardRef((props, ref) => {
                 navRoute.map((item, index) => {
                   const {link, nameLink} = item;
                   return (
-                    <Link to={link} key={index} className={classes.navButton, classes.customWidth}>
+                    <Link to={link} key={index} className={classes.customWidth}>
                       <MenuItem fontWeight='bold'>
                         {nameLink}
                       </MenuItem>

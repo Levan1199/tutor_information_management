@@ -110,7 +110,10 @@ const Courses = (props) => {
                               <CoursesRender course={course}/>
                           </Grid>
                       );
-                      }
+                    }
+                    else{
+                      return "";
+                    }
                   });
               })()}
               </Grid>

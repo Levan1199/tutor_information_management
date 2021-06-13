@@ -3,11 +3,10 @@ import React from 'react';
 import { Grid,Paper, TextField, Button, Typography, InputLabel } from '@material-ui/core';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { makeStyles } from "@material-ui/core/styles";
-import { Formik, Form, ErrorMessage, Field } from "formik";
+import { Formik, Form,  Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as Yup from "yup"; 
 import * as FilterField from '../../shared/constValues';
@@ -52,43 +51,6 @@ const validationSchema = Yup.object({
         .positive('The number must be positive')
 });
 
-const options={
-    district:[
-        {name: 'Quận 1'},
-        {name: 'Quận 2'},
-        {name: 'Quận 3'},
-        {name: 'Quận 4'},
-        {name: 'Quận 5'},
-        {name: 'Quận 6'},
-        {name: 'Quận 7'},
-        {name: 'Quận 8'},
-        {name: 'Quận 9'},
-        {name: 'Quận 10'},
-        {name: 'Quận 11'},
-        {name: 'Quận 12'},
-        {name: 'Quận Thủ Đức'},
-        {name: 'Quận Bình Thạnh'},
-        {name: 'Quận Tân Bình'},
-        {name: 'Quận Phú Nhuận'},
-        {name: 'Quận Tân Phú'},
-        {name: 'Quận Bình Tân'},
-        {name: 'Quận Gò Vấp'}
-    ],
-    grade:[
-        {name: 'Lớp 1'},
-        {name: 'Lớp 2'},
-        {name: 'Lớp 3'},
-        {name: 'Lớp 4'},
-        {name: 'Lớp 5'},
-        
-    ],
-    subject:[
-        {name: 'Toán'},
-        {name: 'Lý'},
-        {name: 'Hóa'},
-    ]
-
-}
 
 
 const handleInput = (values, actions, updateProfile, closeModal)=>{   

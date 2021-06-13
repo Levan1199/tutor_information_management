@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import {Link} from 'react-router-dom';
-import {Loading} from '../LoadingComponent';
+// import {Loading} from '../LoadingComponent';
 import {avatarUrl} from '../../shared/baseUrl';
 import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Formik, Form, Field, ErrorMessage, FastField } from "formik";
+import { Formik, Form,  FastField } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as FilterField from '../../shared/constValues';
 import "./findBar.css";
@@ -54,7 +54,7 @@ import "./findBar.css";
 
     const multiSelectDropdown = ({field, form, option, placeholder, preVal})=>{
         const optionName = field.name;
-        if(preVal!=undefined){
+        if(preVal !== undefined){
             const temp=[{name:preVal}];
             return (
                 <Multiselect
@@ -185,7 +185,7 @@ import "./findBar.css";
             subject:[]});
 
         useEffect(()=>{
-            if(props.subjectName!=null){
+            if(props.subjectName !== null){
                 setFilterVals(prev=>{
                     return {...prev,subject:[props.subjectName]};
                 });
