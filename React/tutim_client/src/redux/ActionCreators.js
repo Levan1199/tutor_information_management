@@ -294,7 +294,7 @@ export const updateProfile = (props) => (dispatch) => {
     const bearer = 'Bearer ' + localStorage.getItem('token');
     var formdata = new FormData();
     for ( var key in props ) {
-        if (key=='avatar'){
+        if (key==='avatar'){
             formdata.append(key, props[key]);
             continue;
         }
@@ -423,7 +423,7 @@ export const loginUser = (creds) => (dispatch) => {
             toast.success("Login successfully!"); 
             return response;
         }
-        else if(response.status == 401){
+        else if(response.status === 401){
             toast.error("Account invalid!");        
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;

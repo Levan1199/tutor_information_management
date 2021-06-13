@@ -22,6 +22,7 @@ import Courses from './Courses';
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ref } from 'yup';
 
 const mapStatetoProps = state =>{
   return{
@@ -61,6 +62,7 @@ const mapDispatchToProps = dispatch => ({
 
 
 class Main extends Component{
+ 
     componentDidMount(){
     this.props.fetchTeacherReg();
     this.props.fetchStudentReg();
@@ -99,7 +101,7 @@ class Main extends Component{
       }
     }
 
-    const RenderHeader = (props) => {
+    const RenderHeader = React.forwardRef((props, ref) => {
       const {profile} = props;
       var name="";
       var imgPath="";
@@ -116,7 +118,7 @@ class Main extends Component{
         {...props}
         imgPath = {imgPath}
       />
-    }
+    })
 
     const CheckStepper = () => {
       if (this.props.profiles.isEmpty && this.props.location.pathname != '/stepper'){

@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const HeaderComponent = (props) => {
+const HeaderComponent = React.forwardRef((props, ref) => {
   const classes = useStyles();
   const history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -209,7 +209,7 @@ const HeaderComponent = (props) => {
                     </Grid>                
                   </Grid>
                 </Link>              
-                <Button onClick={handleLogout} variant="contained" color="secondary" >
+                <Button onClick={handleLogout} variant="contained" color="secondary">
                     Sign Out
                     {props.auth.isFetching ?
                         <span className="fa fa-spinner fa-pulse fa-fw"></span>
@@ -244,7 +244,7 @@ const HeaderComponent = (props) => {
 
     </div>
   );
-};
+})
 
 export default HeaderComponent;
 

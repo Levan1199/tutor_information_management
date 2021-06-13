@@ -7,9 +7,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import { makeStyles } from "@material-ui/core/styles";
-import { Formik, Form, ErrorMessage, Field } from "formik";
+import { Formik, Form, Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
-import * as Yup from "yup"; 
+// import * as Yup from "yup"; 
 import * as FilterField from '../../shared/constValues';
 
 const useStyles = makeStyles(theme => ({
@@ -46,11 +46,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const validationSchema = Yup.object({
-    fee: Yup.number()
-        .typeError('you must specify a number')
-        .positive('The number must be positive')
-});
+// const validationSchema = Yup.object({
+//     fee: Yup.number()
+//         .typeError('you must specify a number')
+//         .positive('The number must be positive')
+// });
 
 const checkBoxValues = [
     {label:'Mon', value:2},
