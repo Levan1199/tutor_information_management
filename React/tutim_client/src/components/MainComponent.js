@@ -9,20 +9,26 @@ import TeacherInfo from './teacher/TeacherInfo';
 import StudentInfo from './student/StudentInfo';
 import SetupProfile from './profile/SetupProfile';
 
+import ViewStudentInfo from './viewProfile/StudentInfo';
+import ViewTeacherInfo from './viewProfile/TeacherInfo';
+
+import RegisteredList from './student/RegisteredList';
+import TeaRegisteredList from './teacher/RegisteredList';
+
 import {Loading} from './LoadingComponent';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import { loginWithFacebook,fetchCourseInfo ,teacherRegStudent, studentRegTeacher, updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
+import { removeTeacherAwait ,removeStudentAwait  ,fetchTeacherAwait ,teacherAwait ,fetchStudentAwait ,studentAwait ,loginWithFacebook,fetchCourseInfo , updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
       loginUser, logoutUser} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
 import CourseDetail from './CourseDetail';
 import Courses from './Courses';
+import Map from './Map';
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ref } from 'yup';
 
 const mapStatetoProps = state =>{
   return{
@@ -30,6 +36,7 @@ const mapStatetoProps = state =>{
     studentRegs: state.studentRegs,
     profiles: state.profiles,
     courseInfo: state.courseInfo,
+    awaiting: state.awaiting,
     // comments: state.comments,
     // favorites: state.favorites,
     auth: state.auth,
@@ -46,8 +53,13 @@ const mapDispatchToProps = dispatch => ({
   fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
   fetchStudentReg: ()=>{dispatch(fetchStudentReg())},
 
-  studentRegTeacher: (teacherId)=>{dispatch(studentRegTeacher(teacherId))},
-  teacherRegStudent: (studentId)=>{dispatch(teacherRegStudent(studentId))},
+  removeStudentAwait: (connecting)=>{dispatch(removeStudentAwait(connecting))},
+  removeTeacherAwait: (connecting)=>{dispatch(removeTeacherAwait(connecting))},
+
+  studentAwait: (connecting)=>{dispatch(studentAwait(connecting))},
+  fetchStudentAwait: ()=>{dispatch(fetchStudentAwait())},
+  teacherAwait: (connecting)=>{dispatch(teacherAwait(connecting))},
+  fetchTeacherAwait: ()=>{dispatch(fetchTeacherAwait())},
 
   fetchCourseInfo:()=>{dispatch(fetchCourseInfo())},
 ///////////
@@ -66,25 +78,26 @@ class Main extends Component{
     componentDidMount(){
     this.props.fetchTeacherReg();
     this.props.fetchStudentReg();
-    // this.props.fetchTeacherProfile();
-    // this.props.fetchStudentProfile();
     this.props.fetchProfile();
     this.props.fetchCourseInfo();
+    this.props.fetchTeacherAwait();
+    this.props.fetchStudentAwait();    
   }
 
+ 
 
   render(){
     
-    // const PrivateRoute = ({ component: Component, ...rest }) => (
-    //   <Route {...rest} render={(props) => (
-    //     this.props.auth.isAuthenticated
-    //       ? <Component {...props} />
-    //       : <Redirect to={{
-    //           pathname: '/home',
-    //           state: { from: props.location }
-    //         }} />
-    //   )} />
-    // );
+    const PrivateRoute = ({ component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+        this.props.auth.isAuthenticated
+          ? <Component {...props} />
+          : <Redirect to={{
+              pathname: '/home',
+              state: { from: props.location }
+            }} />
+      )} />
+    );
 
     const RenderProfile = (props) => {
       if(props.profile.isTeacher && !props.profile.isStudent){
@@ -134,20 +147,45 @@ class Main extends Component{
       const teaProfile = this.props.teacherRegs.teacherRegs.filter((teacher)=>teacher.teacherProfile._id===match.params.profileId)[0];
       const stuProfile = this.props.studentRegs.studentRegs.filter((student)=>student.studentProfile._id===match.params.profileId)[0];
 
+      const awaiting = this.props.awaiting.awaiting;
+
       if(teaProfile){
-        return <RenderProfile
-        profile={teaProfile}
+        const awaitList = awaiting.filter((teacher)=>teacher.teacherId._id === teaProfile.teacherProfile._id);
+        const awaitObj = awaitList.filter((student)=>student.studentId === this.props.profiles.profiles.studentProfile._id)[0];
+        const isTeacherId=(awaitObj)?true:false;
+
+        return <ViewTeacherInfo
+        teaProfile={teaProfile}        
+        isTeacherId={isTeacherId}
+
+        remove={this.props.removeStudentAwait}
+
+        register={this.props.studentAwait}
+        auth={this.props.auth.isAuthenticated}
+        profile = {this.props.profiles.profiles}
       />
       }
       else if(stuProfile){
-        return <RenderProfile
-        profile={stuProfile}/>
+        const awaitList = awaiting.filter((student)=>student.studentId._id === stuProfile.studentProfile._id);
+        const awaitObj = awaitList.filter((teacher)=>teacher.teacherId === this.props.profiles.profiles.teacherProfile._id)[0];
+        const isStudentId=(awaitObj)?true:false;
+
+        return <ViewStudentInfo
+        stuProfile={stuProfile}
+        isStudentId={isStudentId}
+        remove={this.props.removeTeacherAwait}
+
+        register={this.props.teacherAwait}
+        auth={this.props.auth.isAuthenticated}
+        profile = {this.props.profiles.profiles}
+        />
       }
       else{
         return <Loading/>
       }
     }
-
+    
+   
     return (
       <div>      
         <CheckStepper/>
@@ -170,33 +208,36 @@ class Main extends Component{
                 isLoadingTech = {this.props.teacherRegs.isLoading}
                 />}/>
                 <Route exact path="/teacherList" component={() => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
-                register={this.props.studentRegTeacher}
+                register={this.props.studentAwait}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
+                awaiting={this.props.awaiting.awaiting}
                 />}/>
                 <Route path="/teacherList/:subjectName" component={({match}) => <TeacherRegs teacherRegs={this.props.teacherRegs.teacherRegs.map((teacher)=>teacher.teacherProfile)}
                 register={this.props.studentRegTeacher}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
                 subjectName={match.params.subjectName}
+                awaiting={this.props.awaiting.awaiting}
                 />}/>
 
                 <Route path="/studentList" component={() => <StudentRegs 
                 studentRegs={this.props.studentRegs.studentRegs.map((student)=>student.studentProfile)}
-                register={this.props.teacherRegStudent}
+                register={this.props.teacherAwait}
                 isLoading = {this.props.studentRegs.isLoading}
                 auth={this.props.auth.isAuthenticated}
                 profile={this.props.profiles.profiles}
+                awaiting={this.props.awaiting.awaiting}
                 />}/>                             
             
-                <Route exact path="/newInfo" component={()=><RenderProfile
+                <Route exact path="/profile" component={()=><RenderProfile
                   profile={this.props.profiles.profiles}
                   isLoading={this.props.profiles.isLoading}
                   errMess={this.props.profiles.errMess}
                   updateProfile={this.props.updateProfile}
                 />}/>
 
-                <Route path="/newInfo/:profileId" component={RenderViewProfile}/>             
+                <Route path="/profile/:profileId" component={RenderViewProfile}/>             
 
                 <Route path="/stepper" component={()=><SetupProfile 
                 setupProfile = {this.props.postProfile}
@@ -207,14 +248,28 @@ class Main extends Component{
                 courseInfo={this.props.courseInfo.courseInfo}
                 isLoadingCourse = {this.props.courseInfo.isLoading}
                 /> }/> 
-
                 <Route path='/courses' component={()=><Courses
                   courseInfo={this.props.courseInfo.courseInfo}
                   isLoadingCourse = {this.props.courseInfo.isLoading}
                 />}/> 
 
-                <Redirect to="/home"/>
-              
+                <Route exact path='/map' component={()=><Map/>}/> 
+                <Route path='/map/:address' component={({match})=><Map address={match.params.address}/>}/> 
+
+                <PrivateRoute path='/awaiting' component={()=><RegisteredList 
+                  errMess = {this.props.awaiting.errMess}
+                  awaiting = {this.props.awaiting.awaiting}
+                  isLoading = {this.props.awaiting.isLoading}
+                  remove = {this.props.removeStudentAwait}         
+                />}/> 
+
+                <PrivateRoute path='/teaAwaiting' component={()=><TeaRegisteredList 
+                  errMess = {this.props.awaiting.errMess}
+                  awaiting = {this.props.awaiting.awaiting}
+                  isLoading = {this.props.awaiting.isLoading}
+                  remove ={this.props.removeTeacherAwait}
+                />}/> 
+                <Redirect to="/home"/>              
               </Switch>
             </CSSTransition>
         </TransitionGroup>  

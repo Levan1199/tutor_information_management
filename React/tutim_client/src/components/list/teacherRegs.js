@@ -8,6 +8,8 @@ import { Formik, Form,  FastField } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as FilterField from '../../shared/constValues';
 import "./findBar.css";
+import { toast } from 'react-toastify';
+
     const useStyles = makeStyles((theme)=>({
         text:{
             fontWeight: "bold",
@@ -106,16 +108,18 @@ import "./findBar.css";
     
     }
 
-    const handleRegister = (register, teacherId, auth, isStudent) =>{
+    const handleRegister = (register, teacherId, auth,  studentId) =>{
+        const connecting = {studentId: studentId, teacherId: teacherId};      
+
         if (!auth){
-            alert("You need to login to register");
+            toast.error("You need to login!");      
         }
-        else if(!isStudent){
-            alert("Only student can register");
+        else if(!studentId){
+            toast.error("Only student can register"); 
         }
         else {
-            register(teacherId);
-            alert('register successfully');
+            register(connecting);
+            toast.success('Register successfully');
         }
     }
 
@@ -140,27 +144,44 @@ import "./findBar.css";
         }
     }
 
+    const isInclude = (arr, teaId) =>{        
+        const temp = arr.map(teacher=>teacher.teacherId._id);
+        const index = temp.indexOf(teaId);
+        if(index === -1)
+            return false;
+        else return true;
+    }
 
-    const RenderTeacherCard = ({teacher, register, auth, profile}) => {
+
+    const RenderTeacherCard = ({teacher, register, auth, profile, awaiting}) => {
         const classes = useStyles();
         let subject = teacher.subject.join(', ');
         let grade = teacher.grade.join(', ');
         let district = teacher.district.join(', ');
         let weekly = teacher.weekly.map(switchWeekdays).join(', ');
         let fee = (teacher.fee)?teacher.fee.toLocaleString():""
+        
+        let studentId="";
+        if(profile.studentProfile){
+            studentId = profile.studentProfile._id;
+        }
+
         return(       
         <Card className={classes.card}>
             <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
-                        title={<Link to={`/newInfo/${teacher._id}`}>{teacher.name}</Link>}
+                        title={<Link to={`/profile/${teacher._id}`}>{teacher.name}</Link>}
                         subheader={'Email: '+ teacher.email}
                         titleTypographyProps={{variant:'h6' }}
-                        action= {(                           
-                            teacher.studentReg.includes((profile.studentProfile)?profile.studentProfile._id:null))
+                        action= {
+                            (                        
+                                isInclude(awaiting, teacher._id)
+                            )
                             ?
-                            <Button color="secondary" variant="contained">Registered</Button>
-                            :<Button color="secondary" variant="contained" onClick={()=>
-                                        handleRegister(register,teacher._id,auth, profile.isStudent)
-                                     }>Register</Button>
+                            <Button color="secondary" variant="contained">Connecting</Button>
+                            :
+                            <Button color="secondary" variant="contained" onClick={()=>
+                                        handleRegister(register,teacher._id,auth, studentId)
+                            }>Register</Button>
                         }
             />
             <CardContent>
@@ -185,7 +206,7 @@ import "./findBar.css";
             subject:[]});
 
         useEffect(()=>{
-            if(props.subjectName !== null){
+            if(props.subjectName != undefined){
                 setFilterVals(prev=>{
                     return {...prev,subject:[props.subjectName]};
                 });
@@ -272,7 +293,7 @@ import "./findBar.css";
                                         if(teacher.available){
                                         return (
                                                 <Grid item xs={12} md={5} key={index}>
-                                                <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile}/>
+                                                <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile} awaiting={props.awaiting}/>
                                                 </Grid>
                                             );
                                         }

@@ -1,15 +1,11 @@
 import React, {useEffect} from "react";
-import { Avatar, Grid, Typography, Button, Box, Modal, Container,FormControlLabel, Radio, RadioGroup, Divider} from "@material-ui/core";
+import { Avatar, Grid, Typography,  Container,FormControlLabel, Radio, RadioGroup, Divider, Button} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles } from "@material-ui/core/styles";
-import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
-import IntroModal from "./IntroModal";
-import DetailModal from "./DetailModal";
-import SubdirectoryArrowLeftIcon from '@material-ui/icons/SubdirectoryArrowLeft';
 import {Link} from 'react-router-dom';
-
-const useStyles = makeStyles(theme => ({
+import { toast } from 'react-toastify';
+const useStyles = makeStyles((theme) => ({
     main:{
         backgroundColor:"#f5f5f5",
         minHeight:"100vh"
@@ -47,11 +43,35 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const handleRegister = (register, studentId, auth, teacherId) =>{
+    const connecting = {studentId: studentId, teacherId: teacherId};      
+
+    if (!auth){
+        toast.error("You need to login!");      
+    }
+    else if(!teacherId){
+        toast.error("Only teacher can register"); 
+    }
+    else {
+        register(connecting);
+        toast.success('Register successfully');
+    }
+}
+
+
 const RenderUI = (props) => {
     const classes = useStyles();
-    const [modalIntro, setModalIntro] = React.useState(false);
-    const [modalDetail, setModalDetail] = React.useState(false);
-    const {studentProfile} = props.profile;   
+    const {studentProfile} = props.stuProfile;
+
+    const handleRemove = () => {
+        const obj = {studentId: studentProfile._id}
+        return props.remove(obj);
+    }
+
+    let teacherId="";
+    if(props.profile.teacherProfile){
+        teacherId = props.profile.teacherProfile._id;
+    }
 
     const grade = studentProfile.grade?studentProfile.grade.join(', '):"";
     const subject = studentProfile.subject?studentProfile.subject.join(', '):"";
@@ -67,7 +87,7 @@ const RenderUI = (props) => {
                     alt="Student Avatar"/>                      
                 </Grid>
 
-                <Grid item md={12} lg={8}>
+                <Grid item md={10} lg={8}>
                     <Typography variant="h2" className={classes.headerText}>
                             {studentProfile.name}
                     </Typography>
@@ -82,15 +102,14 @@ const RenderUI = (props) => {
                     </Typography>     
                   
                 </Grid>
+                <Grid item md={2} lg={1}>                   
+                    {(                                                
+                        props.isStudentId
+                    )?
+                    <Button color="secondary" variant="contained" onClick={handleRemove}>Connecting</Button>
+                    :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,studentProfile._id,props.auth, teacherId)}>Connect</Button>}
+                </Grid>
 
-                <Box
-                    component={Grid}
-                    item
-                    md={12} lg={1}
-                    display={{ md: "none", lg: "block" }}
-                >
-                    <Button onClick={()=>setModalIntro(true)}><EditIcon/></Button>    
-                </Box>
                 <Grid item md={12}>
                     <Divider/>
                 </Grid>
@@ -112,7 +131,7 @@ const RenderUI = (props) => {
                         <b>Tuition Fee: </b>{fee}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        <b>Address: </b>{studentProfile.address}
+                        <b>Address: </b>{studentProfile.address} <Link to={`/map/${studentProfile.address}`}>Find!</Link>
                     </Typography>                   
                 </Grid>
                 <Grid item md={4}>
@@ -135,78 +154,35 @@ const RenderUI = (props) => {
                                 labelPlacement="top"
                             />
                         </RadioGroup>
-                        <Link to={`/awaiting`}><Button variant="contained" color="primary">View teachers you registered! <SubdirectoryArrowLeftIcon/> </Button></Link>
                 </Grid>
-                <Box
-                    component={Grid}
-                    item
-                    md={2}
-                    display={{ md: "none", lg: "block" }}
-                >
-                    <Button onClick={()=>setModalDetail(true)}><EditIcon/></Button>    
-                </Box>
-                <Grid item md={12}>
-                    <Divider/>
-                </Grid>
+         
             </Grid>        
            
     
-            <Modal
-            className={classes.modal}
-            open={modalIntro}
-            onClose={()=>setModalIntro(false)}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            >
-                <IntroModal closeModal={()=>setModalIntro(false)} updateProfile={props.updateProfile} {...studentProfile}/>              
-            </Modal>    
-
-            <Modal
-                className={classes.modal}
-                open={modalDetail}
-                onClose={()=>setModalDetail(false)}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-                >
-                    <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...studentProfile}/>   
-            </Modal>    
         </Container>
         </Container>
     );
 }
 
-const StudentInfo = (props) => {
+const ViewStudentInfo = (props) => {
     // useEffect(()=>{
     //     if(props.profile){
     //         return (
-    //             <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+    //             <RenderUI profile={props.profile}/>
     //         );
     //     }
     // },[props.profile]);
     
     if (props.isLoading) {
         return(
-            <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
-            </div>
-        );
-    }
-    else if (props.errMess) {
-        return(
-            <div className="container">
-                <div className="row">
-                    <h4>{props.errMess}</h4>
-                </div>
-            </div>
+            <Loading />
         );
     }
     else if (props.profile) {         
         return (
-            <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+            <RenderUI stuProfile={props.stuProfile} remove={props.remove}  isStudentId={props.isStudentId}  register={props.register} auth={props.auth} profile={props.profile} />
         );
     }
 }
 
-export default StudentInfo;
+export default ViewStudentInfo;

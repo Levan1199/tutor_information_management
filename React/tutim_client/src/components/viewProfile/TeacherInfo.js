@@ -1,13 +1,9 @@
 import React, {useEffect} from "react";
 import {avatarUrl} from "../../shared/baseUrl";
-import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container} from "@material-ui/core";
+import { Avatar, Grid, Typography, Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container, Button} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
-import IntroModal from "./IntroModal";
-import DetailModal from "./DetailModal";
-import SubdirectoryArrowLeftIcon from '@material-ui/icons/SubdirectoryArrowLeft';
-import {Link} from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const useStyles = makeStyles(theme => ({
     main:{
@@ -44,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     headerText:{
     fontWeight: "bold",
     fontFamily:"Roboto"
-  },
+    }
 }));
 
 const checkBoxValues = [
@@ -70,12 +66,37 @@ const RenderCheckBox = (props) => {
     );
 }
 
+
+const handleRegister = (register, teacherId, auth, studentId) =>{
+    const connecting = {studentId: studentId, teacherId: teacherId};      
+
+    if (!auth){
+        toast.error("You need to login!");      
+    }
+    else if(!studentId){
+        toast.error("Only student can register"); 
+    }
+    else {
+        register(connecting);
+        toast.success('Register successfully');
+    }
+}
+
 const RenderUI = (props) => {
     const classes = useStyles();
-    const [modalIntro, setModalIntro] = React.useState(false);
-    const [modalDetail, setModalDetail] = React.useState(false);
 
-    const {teacherProfile} = props.profile;
+    const {teacherProfile} = props.teaProfile;
+
+    const handleRemove = () => {
+        const obj = {teacherId: teacherProfile._id}
+        return props.remove(obj);
+    }
+
+    let studentId="";
+    if(props.profile.studentProfile){
+        studentId = props.profile.studentProfile._id;
+    }
+
     const grade = teacherProfile.grade?teacherProfile.grade.join(', '):"";
     const subject = teacherProfile.subject?teacherProfile.subject.join(', '):"";
     const district = teacherProfile.district?teacherProfile.district.join(', '):"";
@@ -92,7 +113,7 @@ const RenderUI = (props) => {
                     alt="Teacher Avatar"/>                   
                 </Grid>
 
-                <Grid item md={12} lg={8}>
+                <Grid item md={10} lg={8}>
                     <Typography variant="h2" className={classes.headerText}>
                             {teacherProfile.name}
                     </Typography>
@@ -107,15 +128,14 @@ const RenderUI = (props) => {
                     </Typography>     
                   
                 </Grid>
-
-                <Box
-                    component={Grid}
-                    item
-                    md={12} lg={1}
-                    display={{ md: "none", lg: "block" }}
-                >
-                    <Button onClick={()=>setModalIntro(true)}><EditIcon/></Button>    
-                </Box>
+                <Grid item md={2} lg={1}>                   
+                    {(                                                
+                        props.isTeacherId
+                    )?
+                    <Button  color="secondary" variant="contained" onClick={handleRemove}>Connecting</Button>
+                    :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,teacherProfile._id,props.auth, studentId)}>Connect</Button>}
+                </Grid>
+           
                 <Grid item md={12}>
                     <Divider/>
                 </Grid>
@@ -166,77 +186,36 @@ const RenderUI = (props) => {
                                 labelPlacement="top"
                             />
                         </RadioGroup>
-                        <Link to={`/teaAwaiting`}><Button variant="contained" color="primary">View teachers you registered! <SubdirectoryArrowLeftIcon/> </Button></Link>
                     </Grid> 
                 </Grid>
-                <Box
-                    component={Grid}
-                    item
-                    md={12} lg={1}
-                    display={{ md: "none", lg: "block" }}
-                >
-                    <Button onClick={()=>setModalDetail(true)}><EditIcon/></Button>    
-                </Box>
+           
             </Grid>         
-
-            <Modal
-            className={classes.modal}
-            open={modalIntro}
-            onClose={()=>setModalIntro(false)}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            >
-                <IntroModal closeModal={()=>setModalIntro(false)} updateProfile={props.updateProfile} {...teacherProfile}/>              
-            </Modal>    
-
-            <Modal
-                className={classes.modal}
-                open={modalDetail}
-                onClose={()=>setModalDetail(false)}
-                aria-labelledby="simple-modal-title"
-                aria-describedby="simple-modal-description"
-                >
-                    <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...teacherProfile}/>   
-            </Modal>    
+       
             </Container>
         </Container>
     );
 }
 
-const TeacherInfo = (props) => {
-  
+const ViewTeacherInfo = (props) => {
 
     // useEffect(()=>{
-    //     if(props.profile){
+    //     if(props.teaProfile){
     //         return (
-    //             <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+    //             <RenderUI teaProfile={props.teaProfile} teacherId={props.teacherId} remove={props.remove}/>
     //         );
     //     }
     // },[props.profile]);
 
     if (props.isLoading) {
         return(
-            <div className="container">
-                <div className="row">
-                    <Loading />
-                </div>
-            </div>
+            <Loading />
         );
-    }
-    else if (props.errMess) {
-        return(
-            <div className="container">
-                <div className="row">
-                    <h4>{props.errMess}</h4>
-                </div>
-            </div>
-        );
-    }
-    else if (props.profile) {  
+    }  
+    else if (props.teaProfile) {  
         return (
-            <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+            <RenderUI teaProfile={props.teaProfile}  isTeacherId={props.isTeacherId} remove={props.remove}   register={props.register} auth={props.auth} profile={props.profile}/>
         );   
     }
 }
 
-export default TeacherInfo;
+export default ViewTeacherInfo;

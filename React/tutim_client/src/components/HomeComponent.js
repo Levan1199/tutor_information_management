@@ -95,7 +95,7 @@ const ComplexGrid = ({profile}) => {
                 </Typography>
               </Grid>
               <Grid item>
-                <Link  to={`/newInfo/${profile._id}`}>
+                <Link  to={`/profile/${profile._id}`}>
                   <Button variant="contained" color="secondary">
                     More Information
                   </Button>
@@ -198,7 +198,7 @@ function Home(props){
             </Box>
 
             <Container maxWidth="lg" className={classes.container}>
-                <Grid container justify="center" id="test" spacing={2}>
+                <Grid container justify="center" spacing={2}>
                   {(()=>{
                         const teachers = props.teacherRegs.slice(0,5);
                         return teachers.map((teacher)=>{

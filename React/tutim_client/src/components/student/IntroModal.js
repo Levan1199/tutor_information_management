@@ -2,7 +2,7 @@
 import React from 'react'
 import { Grid,Paper, TextField, Button, Typography, InputLabel } from '@material-ui/core'
 import { makeStyles } from "@material-ui/core/styles";
-import { Formik, Form, ErrorMessage, Field } from "formik";
+import { Formik, Form,  Field } from "formik";
 import ImageUploader from "react-images-upload";
 import * as Yup from "yup"; 
 

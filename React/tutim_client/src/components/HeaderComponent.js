@@ -15,6 +15,7 @@ import SchoolIcon from '@material-ui/icons/School';
 import HomeIcon from '@material-ui/icons/Home';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import DescriptionIcon from '@material-ui/icons/Description';
+import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
 
 import {avatarUrl} from '../shared/baseUrl';
 import SignIn from './entrance/signIn';
@@ -120,6 +121,11 @@ const HeaderComponent = React.forwardRef((props, ref) => {
       link: '/courses',
       nameLink: 'Courses',
       icon: <DescriptionIcon/>
+    },
+    {
+      link: '/map',
+      nameLink: 'Map',
+      icon: <NotListedLocationIcon/>
     }
   ]
 
@@ -158,7 +164,7 @@ const HeaderComponent = React.forwardRef((props, ref) => {
               </MenuItem>
               :
               <>
-              <Link to="/newInfo">
+              <Link to="/profile">
                 <MenuItem>
                   <Typography variant="body1">
                     Your Profile
@@ -204,7 +210,7 @@ const HeaderComponent = React.forwardRef((props, ref) => {
                 </Button>
                 :
                 <>
-                <Link to="/newInfo">
+                <Link to="/profile">
                   <Grid container direction="row" alignItems="center" spacing={1}>
                     <Grid item><Avatar alt="avatar" src= {avatarUrl+props.imgPath} /></Grid>
                     <Grid item>

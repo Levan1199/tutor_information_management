@@ -118,103 +118,7 @@ export const postFeedback = (firstname, lastname, telnum, email, agree, contactT
         .catch(error => {console.log('Post Feedback ', error.message);
             alert('Your feedback could not be posted\nError: ' + error.message);});
 }
-////////////////////// register 
-export const studentRegTeacher = (teacherId) => (dispatch) => {
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + 'studentReg/add/' + teacherId, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': bearer
-        }
-    })
-    .then(response => {
-        if(response.status === 200){
-            return response;
-        }
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.response = response;
-            throw error;
-        }
-    },
-    error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then(response => response.json())
-    .then(profile => {
-        return dispatch(addProfile(profile));
-    })
-    .catch(error => dispatch(profileFailed(error.message)));
-}
-
-export const teacherRegStudent = (studentId) => (dispatch) => {
-    const bearer = 'Bearer ' + localStorage.getItem('token');
-    return fetch(baseUrl + 'teacherReg/add/' + studentId, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': bearer
-        }
-    })
-    .then(response => {
-        if(response.status === 200){
-            return response;
-        }
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.response = response;
-            throw error;
-        }
-    },
-    error => {
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then(response => response.json())
-    .then(profile => {
-        return dispatch(addProfile(profile));
-    })
-    .catch(error => dispatch(profileFailed(error.message)));
-}
-// profile
-// export const fetchProfileInfo = () => (dispatch) => {
-//     dispatch(profileLoading(true));
-//     const bearer = 'Bearer ' + localStorage.getItem('token');
-//     return fetch(baseUrl + 'profile', {
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': bearer
-//         }
-//     })
-//     .then(response => {
-//         if(response.status === 200){
-//             return response;
-//         }
-//         else if (response.status === 204){
-//             console.log('inside empty');
-//             dispatch(emptyProfile());
-//             console.log('inside empty 2');
-//             return response;
-//         }
-//         else{
-//             console.log('fetch failedd');
-//             var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//             error.response = response;
-//             throw error;
-//         }
-//     },
-//     error => {
-//         var errmess = new Error(error.message);
-//         throw errmess;
-//     })
-//     .then(response => response.json())
-//     .then(profile => {
-//         return dispatch(addProfile(profile));
-//     })
-//     .catch(error => dispatch(profileFailed(error.message)));
-// }
+//////
 
 export const fetchProfile = () => (dispatch) => {
     dispatch(profileLoading(true));
@@ -400,12 +304,12 @@ export const loginError = (message) => {
     }
 }
 
-export const displayToast = (message) => {
-    return{
-        type: ActionTypes.LOGIN_FAILURE,
-        message
-    }
-}
+// export const displayToast = (message) => {
+//     return{
+//         type: ActionTypes.LOGIN_FAILURE,
+//         message
+//     }
+// }
 
 export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
@@ -578,4 +482,158 @@ export const fetchCourseInfo = () => (dispatch) => {
     return fetch(baseUrl + 'course')
         .then(response => response.json())
         .then(course => dispatch(addCourseInfo(course)));
+}
+
+////////////////////// Connection
+export const addAwaiting = (awaiting)=> ({
+    type: ActionTypes.ADD_AWAITING,
+    payload: awaiting
+});
+
+export const awaitingFailed = (errmess)=>({
+    type: ActionTypes.AWAITING_FAILED,
+    payload: errmess
+})
+
+export const awaitingLoading = () =>({
+    type: ActionTypes.AWAITING_LOADING
+})
+
+///////hold on
+export const studentAwait = (connecting) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'awaiting/student', {
+        method: 'POST',
+        body: JSON.stringify(connecting),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(dispatch(fetchStudentAwait()))   
+    .catch(error => dispatch(awaitingFailed(error.message)));
+}
+
+export const removeStudentAwait = (connecting) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'awaiting/student', {
+        method: 'DELETE',
+        body: JSON.stringify(connecting),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(dispatch(fetchStudentAwait()))   
+    .catch(error => dispatch(awaitingFailed(error.message)));
+}
+
+export const fetchStudentAwait = () => (dispatch) => {
+    dispatch(awaitingLoading(true));
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'awaiting/student', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        }
+    })
+    .then(response => {
+        return response.json()})
+    .then(awaiting => {
+        return dispatch(addAwaiting(awaiting));
+    })
+    .catch(error => dispatch(awaitingFailed(error.message)));
+}
+
+///////teacher
+export const teacherAwait = (connecting) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'awaiting/teacher', {
+        method: 'POST',
+        body: JSON.stringify(connecting),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(dispatch(fetchTeacherAwait()))   
+    .catch(error => dispatch(awaitingFailed(error.message)));
+}
+
+export const fetchTeacherAwait = () => (dispatch) => {
+    dispatch(awaitingLoading(true));
+    console.log('inside fetch teacher ');
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'awaiting/teacher', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        }
+    })
+    .then(response => {
+        return response.json()})
+    .then(awaiting => {
+        return dispatch(addAwaiting(awaiting));
+    })
+    .catch(error => dispatch(awaitingFailed(error.message)));
+}
+
+export const removeTeacherAwait = (connecting) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'awaiting/teacher', {
+        method: 'DELETE',
+        body: JSON.stringify(connecting),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(dispatch(fetchTeacherAwait()))   
+    .catch(error => dispatch(awaitingFailed(error.message)));
 }

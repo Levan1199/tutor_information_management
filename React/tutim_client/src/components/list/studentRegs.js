@@ -8,6 +8,8 @@ import * as FilterField from '../../shared/constValues';
 import { makeStyles } from '@material-ui/core/styles';
 import {Link} from 'react-router-dom';
 import "./findBar.css";
+import { toast } from 'react-toastify';
+
 const useStyles = makeStyles((theme)=>({
     text:{
         fontWeight: "bold",
@@ -90,44 +92,60 @@ const filterProps = (filterVals,student) => {
 }
 
 
-const handleRegister = (register, studentId, auth, isTeacher) =>{
+const handleRegister = (register, studentId, auth, teacherId) =>{
+    const connecting = {studentId: studentId, teacherId: teacherId};
     if (!auth){
-        alert("You need to login to register");
+        toast.error("You need to login!");      
     }
-    else if(!isTeacher){
-        alert("Only teacher can register");
+    else if(!teacherId){
+        toast.error("Only teacher can register"); 
     }
     else {
-        register(studentId);
-        alert('register successfully');
+        register(connecting);
+        toast.success('Register successfully');
     }
 }
 
-function RenderStudentCard({student, auth, profile,register}){
+const isInclude = (arr, teaId) =>{        
+    const temp = arr.map(student=>student.studentId._id);
+    const index = temp.indexOf(teaId);
+    if(index === -1)
+        return false;
+    else return true;
+}
+
+function RenderStudentCard({student, auth, profile,register, awaiting}){
     const editStyle = useStyles();
     let subject = student.subject.join(', ');
     let dist = student.district.join(',');
     let fee = (student.fee)?student.fee.toLocaleString():""
+
+    let teacherId="";
+    if(profile.teacherProfile){
+        teacherId = profile.teacherProfile._id;
+    }
+
     return(
         <Card className={editStyle.card}>            
             <CardHeader 
                 title={"Subject: " + subject}
-                subheader={<Link to={`/newInfo/${student._id}`}>Student: {student.name}</Link>}
+                subheader={<Link to={`/profile/${student._id}`}>Student: {student.name}</Link>}
                 classes={{
                     title: editStyle.headerText,
                     subheader: editStyle.normalText
                 }}
                 action={
-                    (
-                    student.teacherReg.includes((profile.teacherProfile)?profile.teacherProfile._id:null))?
-                    <Button color="secondary" variant="contained">Registered</Button>
+                    (                                                
+                        isInclude(awaiting, student._id)
+                    )?
+                    <Button color="secondary" variant="contained">Connecting</Button>
                     :<Button color="secondary" variant="contained" onClick={()=>
-                        handleRegister(register,student._id,auth, profile.isTeacher)
+                        handleRegister(register,student._id,auth, teacherId)
                     }>Register</Button>
                 }
             />
             <CardContent className={editStyle.cardcontent}>              
-                <strong>Address: </strong>{student.address}
+                <strong>Address: </strong>{student.address}  <Link to={`/map/${student.address}`}>Find!</Link>
                 <br/>
                 <strong>Recommend Tuition Fee: </strong>{fee}
                 <br/>
@@ -228,7 +246,7 @@ const NewStudentRegs = (props) =>{
                                        if(student.available){
                                         return (
                                                 <Grid item xs={12} md={5} key={index}>
-                                                <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile}/>
+                                                <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile} awaiting={props.awaiting}/>
                                                 </Grid>
                                             );
                                         }

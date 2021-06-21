@@ -49,15 +49,7 @@ const teacherRegSchema = new Schema({
     fee:{
         type:Number,
         default:''
-    },
-    // periodAWeek:{
-    //     type:Number,
-    //     default:''
-    // },
-    // time:{
-    //     type:String,
-    //     default:''
-    // },
+    },  
     weekly:[{
         type:Number,
         default:''
@@ -69,11 +61,7 @@ const teacherRegSchema = new Schema({
     description:{
         type:String,
         default:''
-    },
-    // teacherId:{
-    //     type:String,
-    //     required:true
-    // }
+    },   
     imgPath:{
         type:String,
         default:''
