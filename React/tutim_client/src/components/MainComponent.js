@@ -19,7 +19,7 @@ import {Loading} from './LoadingComponent';
 
 import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import { removeTeacherAwait ,removeStudentAwait  ,fetchTeacherAwait ,teacherAwait ,fetchStudentAwait ,studentAwait ,loginWithFacebook,fetchCourseInfo , updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
+import { fetchComments, postComment ,removeTeacherAwait ,removeStudentAwait  ,fetchTeacherAwait ,teacherAwait ,fetchStudentAwait ,studentAwait ,loginWithFacebook,fetchCourseInfo , updateProfile ,postProfile ,fetchProfile ,signUp  ,fetchTeacherReg, fetchStudentReg,
       loginUser, logoutUser} from '../redux/ActionCreators'
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 
@@ -37,18 +37,19 @@ const mapStatetoProps = state =>{
     profiles: state.profiles,
     courseInfo: state.courseInfo,
     awaiting: state.awaiting,
-    // comments: state.comments,
+    comments: state.comments,
     // favorites: state.favorites,
     auth: state.auth,
   }   
 }
 
 const mapDispatchToProps = dispatch => ({
-  // postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+  postComment: (commentTo, rating, comment) => dispatch(postComment(commentTo, rating, comment)),
   // postFeedback: (firstName, lastName, tel, email, agree, feedback) => dispatch(postFeedback(firstName, lastName, tel, email, agree, feedback)),
   // resetFeedbackForm: ()=>{
   //   dispatch(actions.reset('feedback'))
   // },
+  fetchComments:()=>{dispatch(fetchComments())},
   signUp:(creds)=>dispatch(signUp(creds)),
   fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
   fetchStudentReg: ()=>{dispatch(fetchStudentReg())},
@@ -74,6 +75,10 @@ const mapDispatchToProps = dispatch => ({
 
 
 class Main extends Component{
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {currentProfileID:""};
+  // }
  
     componentDidMount(){
     this.props.fetchTeacherReg();
@@ -82,8 +87,16 @@ class Main extends Component{
     this.props.fetchCourseInfo();
     this.props.fetchTeacherAwait();
     this.props.fetchStudentAwait();    
+    this.props.fetchComments();
   }
 
+  // componentDidUpdate(prevProps, prevState){
+  //   console.log('fetch sth',this.state.currentProfileID,prevState.currentProfileID );
+  //   if(this.state.currentProfileID != prevState.currentProfileID){
+      
+  //     this.props.fetchComments();
+  //   }
+  // }
  
 
   render(){
@@ -154,15 +167,17 @@ class Main extends Component{
         const awaitObj = awaitList.filter((student)=>student.studentId === this.props.profiles.profiles.studentProfile._id)[0];
         const isTeacherId=(awaitObj)?true:false;
 
+        const cmt = this.props.comments.comments.filter((comment)=>comment.commentTo===teaProfile.teacherProfile._id);
+
         return <ViewTeacherInfo
         teaProfile={teaProfile}        
         isTeacherId={isTeacherId}
-
         remove={this.props.removeStudentAwait}
-
         register={this.props.studentAwait}
         auth={this.props.auth.isAuthenticated}
         profile = {this.props.profiles.profiles}
+        cmt = {(cmt)?cmt:""}
+        postComment = {this.props.postComment}
       />
       }
       else if(stuProfile){

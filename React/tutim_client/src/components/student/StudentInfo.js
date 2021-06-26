@@ -74,6 +74,9 @@ const RenderUI = (props) => {
                     <Typography variant="h6" className={classes.normalText}>
                             Email: {studentProfile.email}
                     </Typography>   
+                    <Typography variant="h6" className={classes.normalText}>
+                            Phone Number: {studentProfile.telnum}                   
+                    </Typography>   
 
                     <Divider/>
 

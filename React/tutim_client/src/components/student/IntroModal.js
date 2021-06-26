@@ -38,6 +38,9 @@ const validationSchema = Yup.object({
     email: Yup.string()
         .required('This field is required')
         .email('The email is invalid'),
+    telnum: Yup.number()
+        .typeError('you must specify a number')
+        .positive('The number must be positive'),
     description: Yup.string()
         .max(115,'Maximum characters are 115'),
 });
@@ -50,10 +53,11 @@ const handleInput = (values, actions, updateProfile, closeModal)=>{
 
 const IntroModal = (props)=>{
     const classes = useStyles();
-    const {name, email, description} = props;
+    const {name, email,telnum, description} = props;
     const initialValues = {
         name: name,
         email: email,
+        telnum: telnum,
         description: description,
         avatar:''
     }
@@ -158,6 +162,17 @@ const IntroModal = (props)=>{
                                     />
                                 </Grid>
                             
+                                <Grid item>
+                                    <Field 
+                                        component={inputBar}
+                                        name="telnum"
+                                        type="text"
+                                        label="Phone Number"
+                                        errors={errors}
+                                        touched={touched}
+                                    />
+                                </Grid>
+
                                 <Grid item>
                                     <Field 
                                         component={inputTextArea}

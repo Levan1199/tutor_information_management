@@ -1,9 +1,10 @@
 import React, {useEffect} from "react";
-import {avatarUrl} from "../../shared/baseUrl";
-import { Avatar, Grid, Typography, Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container, Button} from "@material-ui/core";
+import {avatarUrl, baseUrl} from "../../shared/baseUrl";
+import { Avatar, Grid, Typography, Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container, Button, Paper, Modal} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Loading } from '../LoadingComponent';
 import { toast } from 'react-toastify';
+import CommentModal from './CommentModal'
 
 const useStyles = makeStyles(theme => ({
     main:{
@@ -15,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     },
     root: {
       flexGrow: 1,
-      padding: '20px 100px'
+    //   padding: '20px 100px'
     },
     profileImg: {
         height:'300px',
@@ -40,7 +41,17 @@ const useStyles = makeStyles(theme => ({
     headerText:{
     fontWeight: "bold",
     fontFamily:"Roboto"
-    }
+    },
+    cmt:{
+        fontFamily:"Segoe UI",
+        fontWeight:"medium",
+    },
+    paper: {
+        padding:'2px',
+        maxWidth: '100%',
+        backgroundColor: '#f5f5f5',      
+    }   
+
 }));
 
 const checkBoxValues = [
@@ -82,8 +93,37 @@ const handleRegister = (register, teacherId, auth, studentId) =>{
     }
 }
 
+const Comment = ({cmt}) =>{
+    const classes = useStyles();
+    return (
+        <div className={classes.root}>
+          <Paper className={classes.paper} variant="outlined" > 
+            <Grid container alignItems="center" >
+              <Grid sm={1} justify="center" container>
+                <Avatar alt="avatar" src={`${avatarUrl}+''`}/>                     
+              </Grid>
+              <Grid item sm={10} container alignItems="center">                
+                  <Grid item>
+                    <Typography variant="subtitle1" className={classes.headerText}>
+                      {cmt.commenter.name} 
+                    </Typography> 
+                    <Typography variant="body1" className={classes.cmt}>
+                      rate:  {cmt.rating} 
+                    </Typography>                  
+                    <Typography variant="body2" className={classes.cmt}>
+                      {cmt.comment}
+                    </Typography>
+                  </Grid>                
+              </Grid>
+            </Grid>
+          </Paper>
+        </div>
+      );
+}
+
 const RenderUI = (props) => {
     const classes = useStyles();
+    const [commentModal, setCommentModal] = React.useState(false);
 
     const {teacherProfile} = props.teaProfile;
 
@@ -95,6 +135,15 @@ const RenderUI = (props) => {
     let studentId="";
     if(props.profile.studentProfile){
         studentId = props.profile.studentProfile._id;
+    }
+
+    const handleComment = () => {
+        if(!props.auth || !studentId){
+            toast.error("Only student account can leave comment"); 
+        }
+        else{
+            return setCommentModal(true);
+        }
     }
 
     const grade = teacherProfile.grade?teacherProfile.grade.join(', '):"";
@@ -186,18 +235,59 @@ const RenderUI = (props) => {
                                 labelPlacement="top"
                             />
                         </RadioGroup>
-                    </Grid> 
+                    </Grid>                   
                 </Grid>
-           
-            </Grid>         
-       
+                <Grid item md={12}>
+                    <Divider/>
+                </Grid>
+            </Grid>                    
+
+            <Modal
+            className={classes.modal}
+            open={commentModal}
+            onClose={()=>setCommentModal(false)}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            >
+                <CommentModal closeModal={()=>setCommentModal(false)} postComment={props.postComment} id={teacherProfile._id}/>              
+            </Modal>    
+
+            </Container>
+
+            <Container maxWidth="lg" className={classes.container}>
+               
+                <Grid container justify="center" spacing={2}>
+                    <Grid item xs={10}> 
+                        <Typography variant="h4" className={classes.headerText} color="secondary">
+                            Comments:                 
+                        </Typography>                 
+                    </Grid>                
+                    <Grid item xs={2}>
+                        <Button onClick={handleComment} color="secondary" variant="contained">Submit Comment</Button>    
+                    </Grid>
+                </Grid>
+
+                <Grid container justify="center" spacing={2}>
+                {(()=>{
+                    if(props.cmt){
+                        return props.cmt.map((comment,i)=>{
+                        return (      
+                            <Grid item xs={12} key={i}>                     
+                                <Comment cmt={comment}/>
+                            </Grid>
+                            )
+                        })
+                    }                    
+                })()}              
+                </Grid>
+
+
             </Container>
         </Container>
     );
 }
 
 const ViewTeacherInfo = (props) => {
-
     // useEffect(()=>{
     //     if(props.teaProfile){
     //         return (
@@ -206,14 +296,16 @@ const ViewTeacherInfo = (props) => {
     //     }
     // },[props.profile]);
 
+    // teaProfile={props.teaProfile}  isTeacherId={props.isTeacherId} remove={props.remove}  register={props.register} auth={props.auth} profile={props.profile} cmt={props.cmt}
     if (props.isLoading) {
         return(
             <Loading />
         );
     }  
     else if (props.teaProfile) {  
+        
         return (
-            <RenderUI teaProfile={props.teaProfile}  isTeacherId={props.isTeacherId} remove={props.remove}   register={props.register} auth={props.auth} profile={props.profile}/>
+            <RenderUI {...props}/>
         );   
     }
 }

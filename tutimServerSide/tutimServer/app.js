@@ -15,17 +15,15 @@ var usersRouter = require('./routes/users');
 
 // API routes
 // var uploadRouter = require('./routes/uploadRouter');
-// var commentRouter = require('./routes/commentRouter');
+var commentRouter = require('./routes/commentRouter');
 
 var teacherRegRouter = require('./routes/teacherRegRouter');
 var studentRegRouter = require('./routes/studentRegRouter');
-var teacherProfileRouter = require('./routes/teacherProfileRouter');
-var studentProfileRouter = require('./routes/studentProfileRouter');
 var profileRouter = require('./routes/profileRouter');
 var courseRouter = require('./routes/courseRouter');
 
 var waitingListRouter = require('./routes/waitingListRouter');
-var connectionRouter = require('./routes/connectionRouter');
+
 // Mongoose
 const mongoose = require('mongoose');
 
@@ -58,16 +56,14 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // Adding routes of API endpoints
 // app.use('/imageUpload', uploadRouter);
-// app.use('/comments', commentRouter);
+app.use('/comments', commentRouter);
 app.use('/teacherReg', teacherRegRouter);
 app.use('/studentReg', studentRegRouter);
-app.use('/teacherProfile',teacherProfileRouter);
-app.use('/studentProfile',studentProfileRouter);
 app.use('/profile', profileRouter);
 app.use('/course',courseRouter);
 
 app.use('/awaiting',waitingListRouter);
-// app.use('/connection',connectionRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

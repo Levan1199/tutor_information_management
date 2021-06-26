@@ -19,7 +19,7 @@ const studentRegSchema = new Schema({
         default:''
     },
     telnum:{
-        type: Number,
+        type: String,
         default:''
     },   
     grade:[{

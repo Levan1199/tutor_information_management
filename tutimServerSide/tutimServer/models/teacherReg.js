@@ -27,7 +27,7 @@ const teacherRegSchema = new Schema({
         default:''
     },
     telnum:{
-        type: Number,
+        type: String,
         default: ''
     },   
     email:{

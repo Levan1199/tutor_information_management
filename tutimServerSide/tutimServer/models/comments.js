@@ -12,13 +12,13 @@ const commentSchema = new Schema({
         type: String,
         required:true
     },
-    author:{
+    commenter:{
         type:mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'StudentReg'
     },
-    dish:{
+    commentTo:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'Dish'
+        ref:'TeacherReg'
     }
 },{
     timestamps:true
