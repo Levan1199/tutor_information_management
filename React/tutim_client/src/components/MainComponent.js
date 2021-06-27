@@ -97,7 +97,14 @@ class Main extends Component{
   //     this.props.fetchComments();
   //   }
   // }
- 
+  // checking(){
+  //   if(this.props.profiles.profiles.length != 0){
+  //     console.log('yes');
+  //   }
+  //   else{
+  //     console.log('no');
+  //   }
+  // }
 
   render(){
     

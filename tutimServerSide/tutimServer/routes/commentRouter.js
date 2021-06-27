@@ -59,20 +59,26 @@ commentRouter.route('/')
     .catch((err)=>next(err));
 });
 
-// commentRouter.route('/:commentId')
-// .options( cors.corsWithOptions, (req,res)=>{
-//     res.sendStatus(200);
-// })
-// .get( (req,res,next)=>{
-//     Comments.findById(req.params.commentId)
-//     .populate('author')
-//     .then((comment)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(comment);   
-//     },(err)=>next(err))
-//     .catch((err)=> next(err));
-// })
+commentRouter.route('/:commentTo')
+.options( cors.corsWithOptions, (req,res)=>{
+    res.sendStatus(200);
+})
+.get(cors.corsWithOptions, (req,res,next)=>{
+    Comments.find({commentTo:req.params.commentTo})
+    .then((comment)=>{
+        let ava = 0;
+        comment.map((cmt)=>{
+            ava += cmt.rating;
+        })
+        ava = (ava/comment.length).toFixed(1);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(ava);   
+    },(err)=>next(err))
+    .catch((err)=> next(err));
+})
+
+
 // .post(  (req,res,next)=>{
 //     res.statusCode = 403;
 //     res.end('POST operation not supported on /comments/'

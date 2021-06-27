@@ -95,12 +95,13 @@ const handleRegister = (register, teacherId, auth, studentId) =>{
 
 const Comment = ({cmt}) =>{
     const classes = useStyles();
+    
     return (
         <div className={classes.root}>
           <Paper className={classes.paper} variant="outlined" > 
             <Grid container alignItems="center" >
               <Grid sm={1} justify="center" container>
-                <Avatar alt="avatar" src={`${avatarUrl}+''`}/>                     
+                <Avatar alt="avatar" src={avatarUrl+cmt.commenter.imgPath}/>                     
               </Grid>
               <Grid item sm={10} container alignItems="center">                
                   <Grid item>
@@ -288,6 +289,17 @@ const RenderUI = (props) => {
 }
 
 const ViewTeacherInfo = (props) => {
+    const teachID = props.teaProfile.teacherProfile._id;
+    const route = baseUrl + 'comments/' + teachID;
+    console.log(route);
+    let temp;
+    fetch(route)
+        .then(response => {
+            console.log(response.json);
+            return response.json})
+        .then(res=>temp=res);
+    console.log(temp);
+
     // useEffect(()=>{
     //     if(props.teaProfile){
     //         return (

@@ -72,6 +72,7 @@ const useStyles = makeStyles((theme)=>({
 const ComplexGrid = ({profile}) => {
   const classes = useStyles();
   let subject = (profile.subject)?profile.subject.join(', '):"";
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper} md={12}> 
