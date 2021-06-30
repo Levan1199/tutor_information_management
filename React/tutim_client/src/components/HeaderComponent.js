@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -21,7 +21,24 @@ import {avatarUrl} from '../shared/baseUrl';
 import SignIn from './entrance/signIn';
 import SignUp from './entrance/signUp';
 
+import {connect} from 'react-redux';
+import {loginUser, logoutUser, loginWithFacebook, signUp, fetchProfile} from '../redux/ActionCreators'
 
+const mapStatetoProps = state =>{
+  return{
+    auth: state.auth,
+    profiles: state.profiles,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  signUp:(creds)=>dispatch(signUp(creds)),
+  loginWithFacebook: (accessToken) => dispatch(loginWithFacebook(accessToken)),
+  loginUser: (creds) => dispatch(loginUser(creds)),
+  logoutUser: () => dispatch(logoutUser()),
+  fetchProfile: () => dispatch(fetchProfile())
+})
+ 
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,13 +90,19 @@ const useStyles = makeStyles(theme => ({
 const HeaderComponent = React.forwardRef((props, ref) => {
   const classes = useStyles();
   const history = useHistory();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"));
 
-  const [openModal, setOpenModal] = React.useState(false);
-  const [modalSignUp, setModalSU] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalSignUp, setModalSU] = useState(false);
+
+
+  const username = localStorage.getItem("username");
+  const imgPath = localStorage.getItem("imgPath");
+  const profileRoute = localStorage.getItem("profileRoute");
+  
 
   const handleMenu = event => {
     setAnchorEl(event.currentTarget);
@@ -164,7 +187,7 @@ const HeaderComponent = React.forwardRef((props, ref) => {
               </MenuItem>
               :
               <>
-              <Link to="/profile">
+              <Link to={profileRoute?profileRoute:""}>
                 <MenuItem>
                   <Typography variant="body1">
                     Your Profile
@@ -210,12 +233,12 @@ const HeaderComponent = React.forwardRef((props, ref) => {
                 </Button>
                 :
                 <>
-                <Link to="/profile">
+                <Link to={profileRoute?profileRoute:""}>
                   <Grid container direction="row" alignItems="center" spacing={1}>
-                    <Grid item><Avatar alt="avatar" src= {avatarUrl+props.imgPath} /></Grid>
+                    <Grid item><Avatar alt="avatar" src= {avatarUrl+imgPath} /></Grid>
                     <Grid item>
                       <Typography variant="h6" className={classes.username}>
-                      {props.name?props.name:null}
+                      {username?username:null}
                       </Typography>
                     </Grid>                
                   </Grid>
@@ -257,5 +280,5 @@ const HeaderComponent = React.forwardRef((props, ref) => {
   );
 })
 
-export default HeaderComponent;
+export default connect(mapStatetoProps, mapDispatchToProps)(HeaderComponent);
 

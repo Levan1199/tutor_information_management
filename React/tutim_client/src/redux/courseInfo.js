@@ -5,6 +5,10 @@ export const CourseInfo = (state={
         courseInfo: []
     }, action) => {
     switch(action.type){
+        case ActionTypes.ADD_ONECOURSE:
+            const course = action.payload;
+            return {...state, isLoading: false, errMess:null, courseInfo: state.courseInfo.concat(course)}
+
         case ActionTypes.ADD_COURSEINFO:
             return {...state, isLoading: false, errMess:null, courseInfo: action.payload}
 

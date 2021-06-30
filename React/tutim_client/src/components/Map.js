@@ -44,17 +44,18 @@ const Courses = (props) => {
     const classes = useStyles();
     const [location, setLocation] = useState("Trường+Đại+học+Bách+khoa+-+Đại+học+Quốc+gia+TP.HCM");
 
+    const {address} = props;
     useEffect(()=>{
-        if(props.address != undefined){
-            setLocation(props.address);
+        if(address != undefined){
+            setLocation(address);
         }
-    },[]);
+    },[address]);
 
     useEffect(()=>{
         if(location === ""){
             setLocation("Trường+Đại+học+Bách+khoa+-+Đại+học+Quốc+gia+TP.HCM");
         }
-    });
+    },[location]);
 
     if(props.isLoadingCourse){
       return (<Loading/>);
@@ -87,6 +88,7 @@ const Courses = (props) => {
                 />
               </Grid>
                 <iframe
+                    title="Map in HCMC"
                     width="100%"
                     height="500px"               
                     src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAbCn05e2EtWsNxQzUeEvaNCGU3oTvpmsQ&q=${location}`}>

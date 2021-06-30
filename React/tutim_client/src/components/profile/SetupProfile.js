@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -9,8 +9,21 @@ import Role from './Role';
 import Information from './Information';
 import Review from './Review';
 import {Button, Grid}from '@material-ui/core';
-import {Link} from 'react-router-dom';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 
+import {connect} from 'react-redux';
+import {postProfile} from '../../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    profiles: state.profiles,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  postProfile: (props)=>{dispatch(postProfile(props))},
+})
+ 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -60,11 +73,12 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function SetupProfile(props) {
-  console.log('inside setup profile');
+const SetupProfile = (props) => {
+
   const classes = useStyles();
   const steps = ['Your role', 'Information', 'Confirmation'];
   const [activeStep, setActiveStep] = useState(0);
+
   var initialFields = {
     role:'',
     name:'',
@@ -88,7 +102,7 @@ export default function SetupProfile(props) {
       case 1:
         return <Information {...formValues} handleBack={handleBack} handleNext={handleNext} />;
       case 2:
-        return <Review review={formValues} handleBack={handleBack} handleNext={handleNext} {...props}/>;
+        return <Review review={formValues} handleBack={handleBack} handleNext={handleNext} {...props} setActiveStep={setActiveStep} activeStep={activeStep}/>;
       default:
         throw new Error('Unknown step');
     }
@@ -111,16 +125,10 @@ export default function SetupProfile(props) {
             {activeStep === steps.length ? (
               <React.Fragment>
                 <Typography variant="h5" gutterBottom>
-                  Bạn đã cập nhật thông tin thành công
+                  Registeration Successfully
                 </Typography>
                 <Link to="/home">                
-                    <Grid container row justify="flex-end">
-                    <Grid item >
-                      <Link to="/newteacherInfo">
-                      <Button variant="contained" color="primary"> Tới trang cá nhân </Button>
-                      </Link>
-                    </Grid>
-                  </Grid>
+                      <Button variant="contained" color="primary"> Back to home page </Button>
                 </Link>
               </React.Fragment>
             ) : (
@@ -134,3 +142,7 @@ export default function SetupProfile(props) {
     </React.Fragment>
   );
 }
+
+
+export default connect(mapStatetoProps,mapDispatchToProps)(SetupProfile);
+

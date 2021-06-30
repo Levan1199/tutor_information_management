@@ -8,6 +8,20 @@ import Typography from '@material-ui/core/Typography';
 import {Grid, Container,Box, Divider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {fetchTeacherAwait, removeTeacherAwait} from '../../redux/ActionCreators';
+import { useEffect } from 'react';
+
+const mapStatetoProps = state =>{
+  return{
+    awaiting: state.awaiting,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchTeacherAwait:()=>{dispatch(fetchTeacherAwait())},
+  removeTeacherAwait: (connecting)=>{dispatch(removeTeacherAwait(connecting))},
+})
 
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -122,7 +136,12 @@ const ComplexGrid = ({profile, remove}) => {
 
 function RegisteredList(props){
     const classes = useStyles();
-    if(props.isLoading){
+    const {fetchTeacherAwait} = props;
+    useEffect(()=>{
+      fetchTeacherAwait();
+    },[]);
+
+    if(props.awaiting.isLoading){
       return (<Loading/>);
     }   
     else{
@@ -138,7 +157,7 @@ function RegisteredList(props){
                 <Grid container spacing={1} justify="center">
                     <Grid item xs={12}>
                         <Grid item>
-                            <Link to={`/profile`}>
+                            <Link to={`/profile/teacher`}>
                                 <Button variant="contained" color="primary">
                                     Back to your Profile <SubdirectoryArrowLeftIcon/>
                                 </Button>
@@ -150,12 +169,12 @@ function RegisteredList(props){
                 </Grid>
                 <Grid container justify="center" spacing={2}>
                   {(()=>{
-                        const list = props.awaiting;                      
+                        const list = props.awaiting.awaiting;                      
                         return list.map((student)=>{
                           if(student){
                             return (
                               <Grid item xs={12} key={student._id}>
-                                <ComplexGrid profile={student.studentId} remove={props.remove}/>
+                                <ComplexGrid profile={student.studentId} remove={props.removeTeacherAwait}/>
                               </Grid>
                             );
                           }
@@ -167,5 +186,5 @@ function RegisteredList(props){
     )}
 }
 
-export default RegisteredList;
+export default  connect(mapStatetoProps, mapDispatchToProps)(RegisteredList);
 

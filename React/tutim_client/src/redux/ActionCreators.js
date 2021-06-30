@@ -151,6 +151,16 @@ export const fetchProfile = () => (dispatch) => {
     })
     .then(response => response.json())
     .then(profile => {
+        if(profile.isTeacher){
+            localStorage.setItem("username",profile.teacherProfile.name);
+            localStorage.setItem("imgPath",profile.teacherProfile.imgPath);
+            localStorage.setItem("profileRoute","/profile/teacher");
+        }
+        else if(profile.isStudent){
+            localStorage.setItem("username",profile.studentProfile.name);
+            localStorage.setItem("imgPath",profile.studentProfile.imgPath);
+            localStorage.setItem("profileRoute","/profile/student");
+        }
         return dispatch(addProfile(profile));
     })
     .catch(error => dispatch(profileFailed(error.message)));
@@ -231,6 +241,7 @@ export const updateProfile = (props) => (dispatch) => {
         })
         .then(response => response.json())
         .then(response =>{
+            console.log('update done'); 
             dispatch(addProfile(response));
         })
         .catch(error => {console.log('Update profile ', error.message);
@@ -413,7 +424,10 @@ export const logoutUser = () => (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('token');
     localStorage.removeItem('creds');
-    // localStorage.removeItem('teacherId');
+
+    localStorage.removeItem('username');
+    localStorage.removeItem('imgPath');
+    localStorage.removeItem('profileRoute');
     dispatch(receiveLogout());
 }
 
@@ -485,6 +499,25 @@ export const fetchCourseInfo = () => (dispatch) => {
         .then(response => response.json())
         .then(course => dispatch(addCourseInfo(course)));
 }
+
+export const fetchCourseDetail = (name) => (dispatch) => {
+    dispatch(courseInfoLoading());
+    return fetch(baseUrl + 'course/'+ name,{
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json'          
+        },  
+        credentials: 'same-origin'  
+    })
+        .then(response => response.json())
+        .then(course => dispatch(addOneCourse(course)));
+}
+
+export const addOneCourse = (course)=> ({
+    type: ActionTypes.ADD_ONECOURSE,
+    payload: course
+});
+
 
 ////////////////////// Connection
 export const addAwaiting = (awaiting)=> ({

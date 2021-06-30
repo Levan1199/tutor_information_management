@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Loading } from './LoadingComponent';
 import {courseUrl, avatarUrl} from '../shared/baseUrl';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,7 +11,26 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import {Grid, Container,Box} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import {Link, useHistory} from 'react-router-dom';
+import {Link, useHistory, useLocation} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {fetchCourseInfo, fetchTeacherReg} from '../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    teacherRegs: state.teacherRegs,
+    courseInfo: state.courseInfo,
+    profiles: state.profiles,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchCourseInfo:()=>{dispatch(fetchCourseInfo())},
+  fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
+})
+ 
+
+
+
 
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -96,7 +115,7 @@ const ComplexGrid = ({profile}) => {
                 </Typography>
               </Grid>
               <Grid item>
-                <Link  to={`/profile/${profile._id}`}>
+                <Link  to={`/profile/teacher/${profile._id}`}>
                   <Button variant="contained" color="secondary">
                     More Information
                   </Button>
@@ -115,7 +134,9 @@ const ComplexGrid = ({profile}) => {
 const TopCourses = (props) => {
     const {name, imgPath} = props.course;
     const classes = useStyles();
-    const history = useHistory();
+    let history = useHistory();
+
+
     const handleClick = () =>{
       history.push(`/courseDetail/${name}`)
     }
@@ -144,8 +165,24 @@ const TopCourses = (props) => {
 }
 
 function Home(props){
+  const {fetchCourseInfo, fetchTeacherReg, profiles} = props;
+  let history = useHistory();
+  let location = useLocation();
+  useEffect(()=>{
+    fetchCourseInfo();
+    fetchTeacherReg();
+  },[]);
+  // console.log(profiles.isEmpty);
+
+  useEffect(()=>{
+    if (profiles.isEmpty && location.pathname !== '/stepper'){
+      // console.log('in push');
+      history.push('/stepper');
+    }
+  },[profiles]);
+
     const classes = useStyles();
-    if(props.isLoadingCourse){
+    if(props.courseInfo.isLoading || props.teacherRegs.isLoading){
       return (<Loading/>);
     }
     else{
@@ -172,8 +209,8 @@ function Home(props){
                 <Grid item xs={12}>             
                   <Grid container spacing={2} justify="center">
                     {(()=>{
-                      const length = props.courseInfo.length;
-                        const courses = props.courseInfo.slice(length-3,length);
+                      const length = props.courseInfo.courseInfo.length;
+                        const courses = props.courseInfo.courseInfo.slice(length-3,length);
                         return courses.map((course)=>{
                           if(course){
                             return (
@@ -201,7 +238,7 @@ function Home(props){
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container justify="center" spacing={2}>
                   {(()=>{
-                        const teachers = props.teacherRegs.slice(0,5);
+                        const teachers = props.teacherRegs.teacherRegs.slice(1,6);
                         return teachers.map((teacher)=>{
                           if(teacher){
                             return (
@@ -219,5 +256,5 @@ function Home(props){
     )}
 }
 
-export default Home;
+export default connect(mapStatetoProps, mapDispatchToProps)(Home);
 

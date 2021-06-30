@@ -6,6 +6,27 @@ import { Loading } from '../LoadingComponent';
 import { toast } from 'react-toastify';
 import CommentModal from './CommentModal'
 
+import {connect} from 'react-redux';
+import {studentAwait, removeStudentAwait, fetchTeacherReg, fetchComments, postComment} from '../../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    teacherRegs: state.teacherRegs,
+    auth: state.auth,
+    profiles: state.profiles,
+    awaiting: state.awaiting,
+    comments: state.comments
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+    removeStudentAwait: (connecting)=>{dispatch(removeStudentAwait(connecting))},
+    studentAwait: (connecting)=>{dispatch(studentAwait(connecting))},
+    fetchTeacherReg: ()=>{dispatch(fetchTeacherReg())},
+    postComment: (commentTo, rating, comment) => dispatch(postComment(commentTo, rating, comment)),
+    fetchComments:()=>{dispatch(fetchComments())},
+})
+ 
 const useStyles = makeStyles(theme => ({
     main:{
         backgroundColor:"#f5f5f5",
@@ -126,10 +147,10 @@ const RenderUI = (props) => {
     const classes = useStyles();
     const [commentModal, setCommentModal] = React.useState(false);
 
-    const {teacherProfile} = props.teaProfile;
+    const {teaProfile} = props;
 
     const handleRemove = () => {
-        const obj = {teacherId: teacherProfile._id}
+        const obj = {teacherId: teaProfile._id}
         return props.remove(obj);
     }
 
@@ -147,11 +168,11 @@ const RenderUI = (props) => {
         }
     }
 
-    const grade = teacherProfile.grade?teacherProfile.grade.join(', '):"";
-    const subject = teacherProfile.subject?teacherProfile.subject.join(', '):"";
-    const district = teacherProfile.district?teacherProfile.district.join(', '):"";
+    const grade = teaProfile.grade?teaProfile.grade.join(', '):"";
+    const subject = teaProfile.subject?teaProfile.subject.join(', '):"";
+    const district = teaProfile.district?teaProfile.district.join(', '):"";
 
-    var fee = (teacherProfile.fee)?(teacherProfile.fee.toLocaleString()):0;
+    var fee = (teaProfile.fee)?(teaProfile.fee.toLocaleString()):0;
 
     return (
         <Container maxWidth={false} className={classes.main}>
@@ -159,22 +180,22 @@ const RenderUI = (props) => {
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
                     <Avatar className={classes.profileImg} src=
-                    {avatarUrl+teacherProfile.imgPath}
+                    {avatarUrl+teaProfile.imgPath}
                     alt="Teacher Avatar"/>                   
                 </Grid>
 
                 <Grid item md={10} lg={8}>
                     <Typography variant="h2" className={classes.headerText}>
-                            {teacherProfile.name}
+                            {teaProfile.name}
                     </Typography>
                     <Typography variant="h6" className={classes.normalText}>
-                            Email: {teacherProfile.email}                   
+                            Email: {teaProfile.email}                   
                     </Typography>   
 
                     <Divider/>
                     
                     <Typography variant="h5" className={classes.normalText}>
-                            Description: {teacherProfile.description}
+                            Description: {teaProfile.description}
                     </Typography>     
                   
                 </Grid>
@@ -183,7 +204,7 @@ const RenderUI = (props) => {
                         props.isTeacherId
                     )?
                     <Button  color="secondary" variant="contained" onClick={handleRemove}>Connecting</Button>
-                    :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,teacherProfile._id,props.auth, studentId)}>Connect</Button>}
+                    :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,teaProfile._id,props.auth, studentId)}>Connect</Button>}
                 </Grid>
            
                 <Grid item md={12}>
@@ -215,23 +236,23 @@ const RenderUI = (props) => {
                     {checkBoxValues.map((obj, index) => (
                         <RenderCheckBox label={obj.label}
                         value={obj.value}
-                        weekly = {teacherProfile.weekly}
+                        weekly = {teaProfile.weekly}
                         key={index}/>
                     ))}   
                     <Grid item xs={12}>
                         <Typography variant="h4" className={classes.headerText} color="secondary">Available: </Typography>
                         <RadioGroup row aria-label="position" name="available" defaultValue="top"
-                            defaultChecked={teacherProfile.available}
+                            defaultChecked={teaProfile.available}
                         >
                             <FormControlLabel
                                 value='true'
-                                control={<Radio name="available" checked={teacherProfile.available===true}/>}
+                                control={<Radio name="available" checked={teaProfile.available===true}/>}
                                 label="Yes"
                                 labelPlacement="top"
                             />
                             <FormControlLabel
                                 value='false'
-                                control={<Radio name="available" checked={teacherProfile.available===false} />}
+                                control={<Radio name="available" checked={teaProfile.available===false} />}
                                 label="No"
                                 labelPlacement="top"
                             />
@@ -250,7 +271,7 @@ const RenderUI = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <CommentModal closeModal={()=>setCommentModal(false)} postComment={props.postComment} id={teacherProfile._id}/>              
+                <CommentModal closeModal={()=>setCommentModal(false)} postComment={props.postComment} id={teaProfile._id}/>              
             </Modal>    
 
             </Container>
@@ -289,37 +310,33 @@ const RenderUI = (props) => {
 }
 
 const ViewTeacherInfo = (props) => {
-    const teachID = props.teaProfile.teacherProfile._id;
-    const route = baseUrl + 'comments/' + teachID;
-    console.log(route);
-    let temp;
-    fetch(route)
-        .then(response => {
-            console.log(response.json);
-            return response.json})
-        .then(res=>temp=res);
-    console.log(temp);
 
-    // useEffect(()=>{
-    //     if(props.teaProfile){
-    //         return (
-    //             <RenderUI teaProfile={props.teaProfile} teacherId={props.teacherId} remove={props.remove}/>
-    //         );
-    //     }
-    // },[props.profile]);
+    const {teacherRegs, profileId, fetchTeacherReg, profiles, awaiting, comments, postComment, fetchComments} = props;
+    useEffect(()=>{
+        fetchTeacherReg();
+        fetchComments();
+      },[]);
 
-    // teaProfile={props.teaProfile}  isTeacherId={props.isTeacherId} remove={props.remove}  register={props.register} auth={props.auth} profile={props.profile} cmt={props.cmt}
-    if (props.isLoading) {
+    const teaProfile = teacherRegs.teacherRegs.filter((teacher)=>teacher._id===profileId)[0];
+
+    if (!teaProfile) {
         return(
             <Loading />
         );
     }  
-    else if (props.teaProfile) {  
-        
+    else {         
+    
+        const tempArr = awaiting.awaiting.filter((teacher)=>teacher.teacherId._id === teaProfile._id);
+        const awaitObj = tempArr.filter((student)=>student.studentId === profiles.profiles.studentProfile._id)[0];
+        const isTeacherId=(awaitObj)?true:false;
+    
+        const cmt = comments.comments.filter((comment)=>comment.commentTo===teaProfile._id);
         return (
-            <RenderUI {...props}/>
+            <RenderUI 
+            teaProfile={teaProfile} remove={props.removeStudentAwait}  isTeacherId={isTeacherId}  register={props.studentAwait} auth={props.auth.isAuthenticated} profile={props.profiles.profiles} cmt = {(cmt)?cmt:""} postComment={postComment}
+            />
         );   
     }
 }
 
-export default ViewTeacherInfo;
+export default connect(mapStatetoProps, mapDispatchToProps)(ViewTeacherInfo);

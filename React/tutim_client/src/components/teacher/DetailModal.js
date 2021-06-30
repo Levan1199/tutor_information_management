@@ -155,6 +155,7 @@ const DetailModal = (props)=>{
         }
         return (
             <Multiselect
+                id={field.name}
                 options={option}
                 displayValue="name" 
                 showCheckbox
@@ -243,8 +244,9 @@ const DetailModal = (props)=>{
                     <Grid>
                     
                     <Typography className={classes.label}>Workday</Typography>
-                    {checkBoxValues.map( obj => (
+                    {checkBoxValues.map( (obj,idx) => (
                         <Field
+                        key={idx}
                         component={checkBox}
                         name="weekly"
                         label={obj.label}

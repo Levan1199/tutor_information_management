@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 // import {Loading} from '../LoadingComponent';
 import {Card, CardHeader, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import {Multiselect} from 'multiselect-react-dropdown';
@@ -10,6 +10,24 @@ import {Link} from 'react-router-dom';
 import "./findBar.css";
 import { toast } from 'react-toastify';
 
+import {connect} from 'react-redux';
+import {fetchStudentReg, teacherAwait} from '../../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    studentRegs: state.studentRegs,
+    auth: state.auth,
+    profiles: state.profiles,
+    awaiting: state.awaiting,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchStudentReg:()=>{dispatch(fetchStudentReg())},
+  teacherAwait: (connecting)=>{dispatch(teacherAwait(connecting))},
+
+})
+ 
 const useStyles = makeStyles((theme)=>({
     text:{
         fontWeight: "bold",
@@ -129,7 +147,7 @@ function RenderStudentCard({student, auth, profile,register, awaiting}){
         <Card className={editStyle.card}>            
             <CardHeader 
                 title={"Subject: " + subject}
-                subheader={<Link to={`/profile/${student._id}`}>Student: {student.name}</Link>}
+                subheader={<Link to={`/profile/student/${student._id}`}>Student: {student.name}</Link>}
                 classes={{
                     title: editStyle.headerText,
                     subheader: editStyle.normalText
@@ -161,13 +179,18 @@ function RenderStudentCard({student, auth, profile,register, awaiting}){
 
 
 
-const NewStudentRegs = (props) =>{      
+const StudentRegs = (props) =>{      
+    const {fetchStudentReg} = props;
+    useEffect(()=>{
+        fetchStudentReg();
+    },[]);
+
     const classes = useStyles();
         const [filterVals, setFilterVals] = React.useState({ district:[],
             grade:[],
             subject:[]})
 
-        let foundStudents = props.studentRegs.filter((student)=>{
+        let foundStudents = props.studentRegs.studentRegs.filter((student)=>{
             return filterProps(filterVals, student);
         });
 
@@ -241,12 +264,12 @@ const NewStudentRegs = (props) =>{
                         <Grid item xs={12}>
                             <Grid container direction="row" spacing={2} justify="center">
                             {(()=>{
-                                if(foundStudents!=null){
+                                if(foundStudents!==null){
                                     return foundStudents.map((student, index)=>{
                                        if(student.available){
                                         return (
                                                 <Grid item xs={12} md={5} key={index}>
-                                                <RenderStudentCard student={student} register={props.register} auth={props.auth} profile={props.profile} awaiting={props.awaiting}/>
+                                                <RenderStudentCard student={student} register={props.teacherAwait} auth={props.auth} profile={props.profiles.profiles} awaiting={props.awaiting.awaiting}/>
                                                 </Grid>
                                             );
                                         }
@@ -264,4 +287,4 @@ const NewStudentRegs = (props) =>{
             );
 }
 
-export default NewStudentRegs;
+export default connect(mapStatetoProps, mapDispatchToProps)(StudentRegs);

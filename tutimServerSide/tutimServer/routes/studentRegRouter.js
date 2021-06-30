@@ -17,17 +17,28 @@ studentRegRouter.route('/')
 .options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-.get(cors.cors, (req,res,next)=>{
-    User.find({"isStudent":true})
-    .populate('teacherProfile')
-    .populate('studentProfile')
-    .then((studentRegs)=>{
+// .get(cors.cors, (req,res,next)=>{
+//     User.find({"isStudent":true})
+//     .populate('teacherProfile')
+//     .populate('studentProfile')
+//     .then((studentRegs)=>{
+//         res.statusCode = 200;
+//         res.setHeader('Content-Type', 'application/json');
+//         res.json(studentRegs);
+//     },(err)=>next(err))
+//     .catch((err)=> next(err));
+// })
+
+.get(cors.corsWithOptions, (req,res,next)=>{
+    StudentReg.find()
+    .then((students)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(studentRegs);
+        res.json(students);
     },(err)=>next(err))
     .catch((err)=> next(err));
 })
+
 
 .post(cors.corsWithOptions, authenticate.verifyUser,(req,res,next)=>{
     StudentReg.create(req.body)

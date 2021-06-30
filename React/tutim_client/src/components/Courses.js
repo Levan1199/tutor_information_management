@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {courseUrl} from '../shared/baseUrl';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -10,8 +10,21 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useHistory} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {fetchCourseInfo} from '../redux/ActionCreators'; 
 
-// import local data
+
+const mapStatetoProps = state =>{
+  return{
+    courseInfo: state.courseInfo,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchCourseInfo:()=>{dispatch(fetchCourseInfo())},
+})
+ 
+
 
 const useStyles = makeStyles((theme)=>({
 root: {
@@ -86,7 +99,14 @@ const CoursesRender = (props) => {
 
 const Courses = (props) => {
     const classes = useStyles();
-    if(props.isLoadingCourse){
+    useEffect(()=>{
+      if(props.courseInfo.courseInfo.length == 0)
+      {
+        props.fetchCourseInfo();
+      }
+      return
+    },[]);
+    if(props.courseInfo.isLoadingCourse){
       return (<Loading/>);
     }
     else{
@@ -103,7 +123,7 @@ const Courses = (props) => {
             <Container maxWidth="lg" className={classes.container}>                
               <Grid container spacing={2} justify="center">
               {(()=>{
-                  return props.courseInfo.map((course, index)=>{
+                  return props.courseInfo.courseInfo.map((course, index)=>{
                       if(course){
                       return (
                           <Grid item xs={3} key={index}>
@@ -123,5 +143,5 @@ const Courses = (props) => {
     )}
 }
 
-export default Courses;
+export default connect(mapStatetoProps, mapDispatchToProps)(Courses);
 

@@ -22,6 +22,7 @@ class App extends Component{
           <ThemeProvider theme={theme}>
             <div>      
               <Main/>
+              
             </div>
           </ThemeProvider>
         </BrowserRouter>

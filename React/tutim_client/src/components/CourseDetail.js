@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {courseUrl} from '../shared/baseUrl';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -6,7 +6,21 @@ import {Grid, Container,Box, Button,  Divider} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {Loading} from './LoadingComponent';
 import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {fetchCourseDetail} from '../redux/ActionCreators'
 // import local data
+const mapStatetoProps = state =>{
+  return{
+    courseInfo: state.courseInfo,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchCourseDetail:(name)=>{dispatch(fetchCourseDetail(name))},
+})
+ 
+
+
 
 const useStyles = makeStyles((theme)=>({
   
@@ -45,11 +59,19 @@ const useStyles = makeStyles((theme)=>({
 
 const CourseDetail = (props) => {
   const classes = useStyles(); 
-  if(props.isLoadingCourse){
+  const {courseInfo, courseName, fetchCourseDetail} = props;
+  useEffect(()=>{
+    if(courseInfo.courseInfo.length == 0)
+      {
+        fetchCourseDetail(courseName);
+      }
+  },[]);
+
+  if(props.courseInfo.isLoading){
     return <Loading/>;
   }
   else{
-    const courses = props.courseInfo;
+    const courses = props.courseInfo.courseInfo;
     const course = courses.filter((course)=>course.name===props.courseName)[0];
     const name = (course)?course.name.toUpperCase():"";
     return(
@@ -96,5 +118,5 @@ const CourseDetail = (props) => {
     )}
 }
 
-export default CourseDetail;
+export default  connect(mapStatetoProps, mapDispatchToProps)(CourseDetail);
 

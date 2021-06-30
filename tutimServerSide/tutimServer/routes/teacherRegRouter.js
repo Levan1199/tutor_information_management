@@ -18,10 +18,20 @@ teacherRegRouter.route('/')
 .options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
+// .get(cors.corsWithOptions, (req,res,next)=>{
+//     User.find({"isTeacher":true})
+//     .populate('teacherProfile')
+//     .populate('studentProfile')
+//     .then((teachers)=>{
+//         res.statusCode = 200;
+//         res.setHeader('Content-Type', 'application/json');
+//         res.json(teachers);
+//     },(err)=>next(err))
+//     .catch((err)=> next(err));
+// })
+
 .get(cors.corsWithOptions, (req,res,next)=>{
-    User.find({"isTeacher":true})
-    .populate('teacherProfile')
-    .populate('studentProfile')
+    TeacherReg.find()
     .then((teachers)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -29,6 +39,7 @@ teacherRegRouter.route('/')
     },(err)=>next(err))
     .catch((err)=> next(err));
 })
+
 
 .post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     TeacherReg.create(req.body)

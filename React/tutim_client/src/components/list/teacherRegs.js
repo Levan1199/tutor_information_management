@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom';
 // import {Loading} from '../LoadingComponent';
 import {avatarUrl} from '../../shared/baseUrl';
@@ -9,6 +9,24 @@ import {Multiselect} from 'multiselect-react-dropdown';
 import * as FilterField from '../../shared/constValues';
 import "./findBar.css";
 import { toast } from 'react-toastify';
+import {connect} from 'react-redux';
+import {fetchTeacherReg, studentAwait} from '../../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    teacherRegs: state.teacherRegs,
+    auth: state.auth,
+    profiles: state.profiles,
+    awaiting: state.awaiting,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
+  studentAwait: (connecting)=>{dispatch(studentAwait(connecting))},
+
+})
+ 
 
     const useStyles = makeStyles((theme)=>({
         text:{
@@ -169,7 +187,7 @@ import { toast } from 'react-toastify';
         return(       
         <Card className={classes.card}>
             <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
-                        title={<Link to={`/profile/${teacher._id}`}>{teacher.name}</Link>}
+                        title={<Link to={`/profile/teacher/${teacher._id}`}>{teacher.name}</Link>}
                         subheader={'Email: '+ teacher.email}
                         titleTypographyProps={{variant:'h6' }}
                         action= {
@@ -201,19 +219,25 @@ import { toast } from 'react-toastify';
 
     const TeacherRegs = (props) =>{
         const classes = useStyles();
-        const [filterVals, setFilterVals] = React.useState({ district:[],
+        const [filterVals, setFilterVals] = useState({ district:[],
             grade:[],
             subject:[]});
 
+        const {fetchTeacherReg} = props;
         useEffect(()=>{
-            if(props.subjectName != undefined){
+            fetchTeacherReg();
+        },[]);
+
+        const {subjectName} = props;
+        useEffect(()=>{
+            if(subjectName != undefined){
                 setFilterVals(prev=>{
-                    return {...prev,subject:[props.subjectName]};
+                    return {...prev,subject:[subjectName]};
                 });
             }
         },[]);
  
-        let foundTeachers = props.teacherRegs.filter((teacher)=>{           
+        let foundTeachers = props.teacherRegs.teacherRegs.filter((teacher)=>{           
             return filterProps(filterVals, teacher);
         });
 
@@ -293,7 +317,7 @@ import { toast } from 'react-toastify';
                                         if(teacher.available){
                                         return (
                                                 <Grid item xs={12} md={5} key={index}>
-                                                <RenderTeacherCard teacher={teacher} register={props.register} auth={props.auth} profile={props.profile} awaiting={props.awaiting}/>
+                                                <RenderTeacherCard teacher={teacher} register={props.studentAwait} auth={props.auth} profile={props.profiles.profiles} awaiting={props.awaiting.awaiting}/>
                                                 </Grid>
                                             );
                                         }
@@ -307,4 +331,4 @@ import { toast } from 'react-toastify';
                 </Container>
             );
     }
-export default TeacherRegs;
+export default connect(mapStatetoProps, mapDispatchToProps)(TeacherRegs);

@@ -3,7 +3,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import {Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
 
 
 const useStyles = makeStyles(theme => ({
@@ -22,9 +21,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function Review(props) {
   const classes = useStyles();
-  const {review, handleBack, setupProfile } = props;
+  const {review, handleBack, postProfile, setActiveStep, activeStep } = props;
   const {role, name, email} = review;
-  let history = useHistory();
   return (
     <React.Fragment>
       <Typography variant="h5" gutterBottom className={classes.headerText}>
@@ -48,9 +46,8 @@ export default function Review(props) {
         <Grid item>
         <Button variant="contained" color="primary" 
           onClick={()=> {
-            setupProfile({name,email,role});
-            history.push('/home');
-            return;
+            postProfile({name,email,role});
+            return setActiveStep(activeStep + 1);
           }}
         >
           Save

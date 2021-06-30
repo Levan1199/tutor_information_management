@@ -9,6 +9,19 @@ import DetailModal from "./DetailModal";
 import SubdirectoryArrowLeftIcon from '@material-ui/icons/SubdirectoryArrowLeft';
 import {Link} from 'react-router-dom';
 
+import {connect} from 'react-redux';
+import {fetchProfile, updateProfile} from '../../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    profiles: state.profiles,
+  }   
+}
+const mapDispatchToProps = dispatch => ({
+  fetchProfile:()=>{dispatch(fetchProfile())},
+  updateProfile: (props)=>{dispatch(updateProfile(props))},
+})
+
 const useStyles = makeStyles(theme => ({
     main:{
         backgroundColor:"#f5f5f5",
@@ -179,15 +192,20 @@ const RenderUI = (props) => {
 }
 
 const StudentInfo = (props) => {
-    // useEffect(()=>{
-    //     if(props.profile){
-    //         return (
-    //             <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
-    //         );
-    //     }
-    // },[props.profile]);
-    
-    if (props.isLoading) {
+    const {profiles, updateProfile, fetchProfile} = props;
+    console.log(profiles);
+    useEffect(()=>{
+        if(profiles.profiles.length == 0){
+            fetchProfile();
+        }
+    },[]);
+
+    useEffect(()=>{
+        return <RenderUI profile={profiles.profiles} updateProfile={updateProfile}/>
+    },[profiles]);
+
+
+    if (profiles.isLoading || !profiles) {
         return(
             <div className="container">
                 <div className="row">
@@ -196,20 +214,11 @@ const StudentInfo = (props) => {
             </div>
         );
     }
-    else if (props.errMess) {
-        return(
-            <div className="container">
-                <div className="row">
-                    <h4>{props.errMess}</h4>
-                </div>
-            </div>
-        );
-    }
-    else if (props.profile) {         
+    else {         
         return (
-            <RenderUI profile={props.profile} updateProfile={props.updateProfile}/>
+            <RenderUI profile={profiles.profiles} updateProfile={updateProfile}/>
         );
     }
 }
 
-export default StudentInfo;
+export default connect(mapStatetoProps, mapDispatchToProps)(StudentInfo);

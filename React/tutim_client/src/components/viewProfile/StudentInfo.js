@@ -1,10 +1,29 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import { Avatar, Grid, Typography,  Container,FormControlLabel, Radio, RadioGroup, Divider, Button} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles } from "@material-ui/core/styles";
 import { Loading } from '../LoadingComponent';
 import {Link} from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import {connect} from 'react-redux';
+import {teacherAwait, removeTeacherAwait, fetchStudentReg} from '../../redux/ActionCreators'
+
+const mapStatetoProps = state =>{
+  return{
+    studentRegs: state.studentRegs,
+    auth: state.auth,
+    profiles: state.profiles,
+    awaiting: state.awaiting,
+  }   
+}
+
+const mapDispatchToProps = dispatch => ({
+    removeTeacherAwait: (connecting)=>{dispatch(removeTeacherAwait(connecting))},
+    teacherAwait: (connecting)=>{dispatch(teacherAwait(connecting))},
+    fetchStudentReg: ()=>{dispatch(fetchStudentReg())},
+})
+ 
 const useStyles = makeStyles((theme) => ({
     main:{
         backgroundColor:"#f5f5f5",
@@ -61,10 +80,10 @@ const handleRegister = (register, studentId, auth, teacherId) =>{
 
 const RenderUI = (props) => {
     const classes = useStyles();
-    const {studentProfile} = props.stuProfile;
+    const {stuProfile} = props;
 
     const handleRemove = () => {
-        const obj = {studentId: studentProfile._id}
+        const obj = {studentId: stuProfile._id}
         return props.remove(obj);
     }
 
@@ -73,32 +92,32 @@ const RenderUI = (props) => {
         teacherId = props.profile.teacherProfile._id;
     }
 
-    const grade = studentProfile.grade?studentProfile.grade.join(', '):"";
-    const subject = studentProfile.subject?studentProfile.subject.join(', '):"";
-    const district = studentProfile.district?studentProfile.district.join(', '):""; 
-    var fee = (studentProfile.fee)?(studentProfile.fee.toLocaleString()):0;
+    const grade = stuProfile.grade?stuProfile.grade.join(', '):"";
+    const subject = stuProfile.subject?stuProfile.subject.join(', '):"";
+    const district = stuProfile.district?stuProfile.district.join(', '):""; 
+    var fee = (stuProfile.fee)?(stuProfile.fee.toLocaleString()):0;
     return (
         <Container maxWidth={false} className={classes.main}>
             <Container maxWidth="lg" className={classes.container}>
             <Grid container direction="row" spacing={2} >
                 <Grid item md={12} lg={3}>
                 <Avatar className={classes.profileImg} src=
-                    {avatarUrl+studentProfile.imgPath}
+                    {avatarUrl+stuProfile.imgPath}
                     alt="Student Avatar"/>                      
                 </Grid>
 
                 <Grid item md={10} lg={8}>
                     <Typography variant="h2" className={classes.headerText}>
-                            {studentProfile.name}
+                            {stuProfile.name}
                     </Typography>
                     <Typography variant="h6" className={classes.normalText}>
-                            Email: {studentProfile.email}
+                            Email: {stuProfile.email}
                     </Typography>   
 
                     <Divider/>
 
                     <Typography variant="h5" className={classes.normalText}>
-                            Description: {studentProfile.description}
+                            Description: {stuProfile.description}
                     </Typography>     
                   
                 </Grid>
@@ -107,7 +126,7 @@ const RenderUI = (props) => {
                         props.isStudentId
                     )?
                     <Button color="secondary" variant="contained" onClick={handleRemove}>Connecting</Button>
-                    :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,studentProfile._id,props.auth, teacherId)}>Connect</Button>}
+                    :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,stuProfile._id,props.auth, teacherId)}>Connect</Button>}
                 </Grid>
 
                 <Grid item md={12}>
@@ -131,7 +150,7 @@ const RenderUI = (props) => {
                         <b>Tuition Fee: </b>{fee}
                     </Typography>  
                     <Typography variant="body1" className={classes.normalText}>
-                        <b>Address: </b>{studentProfile.address} <Link to={`/map/${studentProfile.address}`}>Find!</Link>
+                        <b>Address: </b>{stuProfile.address} <Link to={`/map/${stuProfile.address}`}>Find!</Link>
                     </Typography>                   
                 </Grid>
                 <Grid item md={4}>
@@ -139,17 +158,17 @@ const RenderUI = (props) => {
                         Finding teacher: 
                     </Typography> 
                         <RadioGroup row aria-label="position" name="available" defaultValue="top"
-                            defaultChecked={studentProfile.available}
+                            defaultChecked={stuProfile.available}
                         >
                             <FormControlLabel
                                 value='true'
-                                control={<Radio name="available" checked={studentProfile.available===true}/>}
+                                control={<Radio name="available" checked={stuProfile.available===true}/>}
                                 label="Yes"
                                 labelPlacement="top"
                             />
                             <FormControlLabel
                                 value='false'
-                                control={<Radio name="available" checked={studentProfile.available===false} />}
+                                control={<Radio name="available" checked={stuProfile.available===false} />}
                                 label="No"
                                 labelPlacement="top"
                             />
@@ -164,25 +183,28 @@ const RenderUI = (props) => {
     );
 }
 
-const ViewStudentInfo = (props) => {
-    // useEffect(()=>{
-    //     if(props.profile){
-    //         return (
-    //             <RenderUI profile={props.profile}/>
-    //         );
-    //     }
-    // },[props.profile]);
+const ViewStudentInfo = (props) => {    
+    const {studentRegs, profileId, fetchStudentReg, profiles, awaiting} = props;
+    useEffect(()=>{
+        fetchStudentReg();
+      },[]);
+
+    const stuProfile = studentRegs.studentRegs.filter((student)=>student._id===profileId)[0];
     
-    if (props.isLoading) {
+    if (!stuProfile) {
         return(
             <Loading />
         );
     }
-    else if (props.profile) {         
+    else {         
+        const tempArr = awaiting.awaiting.filter((student)=>student.studentId._id === stuProfile._id);
+        const awaitObj = tempArr.filter((teacher)=>teacher.teacherId === profiles.profiles.teacherProfile._id)[0];
+        const isStudentId=(awaitObj)?true:false;
         return (
-            <RenderUI stuProfile={props.stuProfile} remove={props.remove}  isStudentId={props.isStudentId}  register={props.register} auth={props.auth} profile={props.profile} />
+            <RenderUI stuProfile={stuProfile} remove={props.removeTeacherAwait}  isStudentId={isStudentId}  register={props.teacherAwait} auth={props.auth.isAuthenticated} profile={props.profiles.profiles} />
         );
     }
+   
 }
 
-export default ViewStudentInfo;
+export default connect(mapStatetoProps, mapDispatchToProps)(ViewStudentInfo);
