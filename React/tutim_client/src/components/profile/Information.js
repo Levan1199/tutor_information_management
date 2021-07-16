@@ -78,7 +78,6 @@ export default function Information(props) {
                     () => validateForm()
                       .then((errors) => {                        
                         if(Object.entries(errors).length === 0 && errors.constructor === Object ) {
-                          // console.log('inside valid',values);
                           handleNext(values);
                         } else {
                           setTouched(errors);

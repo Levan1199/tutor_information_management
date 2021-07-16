@@ -112,7 +112,7 @@ const ComplexGrid = ({profile, remove}) => {
                 </Typography>
               </Grid>
               <Grid item>
-                <Link  to={`/profile/${profile._id}`}>
+                <Link  to={`/profile/teacher/${profile._id}`}>
                   <Button variant="contained" color="secondary">
                     More Information
                   </Button>
@@ -138,7 +138,10 @@ function RegisteredList(props){
     const classes = useStyles();
     const {fetchStudentAwait} = props;
     useEffect(()=>{
-      fetchStudentAwait();
+      async function fetchData(){
+        return await fetchStudentAwait();
+      }
+      fetchData();         
     },[]);
 
     if(props.awaiting.isLoading){
@@ -178,6 +181,7 @@ function RegisteredList(props){
                               </Grid>
                             );
                           }
+                          else return <Loading/>
                         });
                     })()}                  
                 </Grid>

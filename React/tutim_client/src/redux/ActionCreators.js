@@ -7,6 +7,10 @@ export const addComment = (comment) => ({
     payload: comment
 });
 
+export const loadComment = () => ({
+    type: ActionTypes.LOADING_COMMENTS
+});
+
 export const addComments = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
     payload: comments
@@ -24,7 +28,6 @@ export const postComment = (commentTo, rating, comment) => (dispatch) =>  {
         rating: rating,
         comment: comment
     }
-    console.log('in ', newComment);
     const bearer = 'Bearer ' + localStorage.getItem('token');
 
     return fetch(baseUrl + 'comments', {
@@ -34,7 +37,7 @@ export const postComment = (commentTo, rating, comment) => (dispatch) =>  {
             'Content-Type': 'application/json',
             'Authorization': bearer
         },
-        // credentials: 'same-origin'
+        credentials: 'same-origin'
     })
         .then(response => {
             if(response.ok){
@@ -52,12 +55,14 @@ export const postComment = (commentTo, rating, comment) => (dispatch) =>  {
         })
         .then(response => response.json())
         .then(response => dispatch(addComment(response)))
-        .catch(error => {console.log('Post comments ', error.message);
-            alert('Your comment could not be posted\nError: ' + error.message);});
+        .catch(error => {
+            toast.error("Your comment could not be posted");           
+        });
 }
 
 
 export const fetchComments = () => (dispatch) => {
+    dispatch(loadComment());
     return fetch(baseUrl + 'comments')
         .then(response => {
             if(response.ok){
@@ -78,48 +83,6 @@ export const fetchComments = () => (dispatch) => {
         .catch(error => dispatch(commentsFailed(error.message)));
 }
 
-
-
-
-// export const postFeedback = (firstname, lastname, telnum, email, agree, contactType, message) => (dispatch) =>  {
-//     const newFeedback = {
-//         firstname: firstname,
-//         lastname: lastname,
-//         telnum: telnum,
-//         email: email,
-//         agree: agree,
-//         contactType: contactType,
-//         message: message
-//     }
-//     newFeedback.date = new Date().toISOString();
-
-//     return fetch(baseUrl + 'feedback', {
-//         method: 'POST',
-//         body: JSON.stringify(newFeedback),
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         // credentials: 'same-origin'
-//     })
-//         .then(response => {
-//             if(response.ok){
-//                 return response;
-//             }
-//             else{
-//                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
-//                 error.response = response;
-//                 throw error;
-//             }
-//         },
-//         error => {
-//             var errmess = new Error(error.message);
-//             throw errmess;
-//         })
-//         .then(response => response.json())
-//         .then(response => alert('Thank you for your feedback!\n'+JSON.stringify(response)))
-//         .catch(error => {console.log('Post Feedback ', error.message);
-//             alert('Your feedback could not be posted\nError: ' + error.message);});
-// }
 //////
 
 export const fetchProfile = () => (dispatch) => {
@@ -129,7 +92,8 @@ export const fetchProfile = () => (dispatch) => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': bearer
-        }
+        },  
+        credentials: 'same-origin'  
     })
     .then(response => {
         if(response.status === 200){
@@ -150,18 +114,13 @@ export const fetchProfile = () => (dispatch) => {
         throw errmess;
     })
     .then(response => response.json())
-    .then(profile => {
-        if(profile.isTeacher){
-            localStorage.setItem("username",profile.teacherProfile.name);
-            localStorage.setItem("imgPath",profile.teacherProfile.imgPath);
-            localStorage.setItem("profileRoute","/profile/teacher");
+    .then(profile =>{ 
+        if(profile.isDisable){
+            toast.error("Your account is disabled");
         }
-        else if(profile.isStudent){
-            localStorage.setItem("username",profile.studentProfile.name);
-            localStorage.setItem("imgPath",profile.studentProfile.imgPath);
-            localStorage.setItem("profileRoute","/profile/student");
+        else{
+            dispatch(addProfile(profile))
         }
-        return dispatch(addProfile(profile));
     })
     .catch(error => dispatch(profileFailed(error.message)));
 }
@@ -202,11 +161,13 @@ export const postProfile = (props) => (dispatch) =>  {
             throw errmess;
         })
         .then(dispatch(fetchProfile()))
-        .catch(error => {console.log('Post profile ', error.message);
-            alert('Your registrations could not be posted\nError: ' + error.message);});
+        .catch(error => {
+            toast.error("Your registrations could not be posted");
+        });
 }
 
 export const updateProfile = (props) => (dispatch) => {
+    dispatch(profileLoading());
     const bearer = 'Bearer ' + localStorage.getItem('token');
     var formdata = new FormData();
     for ( var key in props ) {
@@ -241,11 +202,11 @@ export const updateProfile = (props) => (dispatch) => {
         })
         .then(response => response.json())
         .then(response =>{
-            console.log('update done'); 
-            dispatch(addProfile(response));
+            return dispatch(addProfile(response));
         })
-        .catch(error => {console.log('Update profile ', error.message);
-            alert('Your profile could not be updated\nError: ' + error.message);});
+        .catch(error => {
+            toast.error("Your profile could not be updated");
+        });
 }
 
 export const emptyProfile = () => ({
@@ -272,16 +233,17 @@ export const signUp = (creds) => (dispatch) => {
         method: 'POST',
         headers:{
             'Content-Type': 'application/json'
-        },
+        },        
+        credentials: 'same-origin', 
         body: JSON.stringify(creds)
     })
     .then((response)=>{
-
         if(response.ok){
             dispatch(loginUser(creds));
             return response;
         }
         else{
+            toast.error("Username already used");
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
@@ -306,7 +268,6 @@ export const receiveLogin = (response) => {
     return{
         type: ActionTypes.LOGIN_SUCCESS,
         token: response.token,
-        // teacherId: response.teacherId
     }
 }
 
@@ -316,18 +277,15 @@ export const loginError = (message) => {
         message
     }
 }
-
-// export const displayToast = (message) => {
-//     return{
-//         type: ActionTypes.LOGIN_FAILURE,
-//         message
-//     }
-// }
+export const logoutEmptyProfile = () => {
+    return{
+        type: ActionTypes.LOGOUT_PROFILE
+    }
+}
 
 export const loginUser = (creds) => (dispatch) => {
     // We dispatch requestLogin to kickoff the call to the API
     dispatch(requestLogin(creds));
-
     return fetch(baseUrl + 'users/login',{
         method: 'POST',
         headers:{
@@ -341,13 +299,13 @@ export const loginUser = (creds) => (dispatch) => {
             return response;
         }
         else if(response.status === 401){
-            toast.error("Account invalid!");        
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            toast.error("Wrong password or username!");        
+            let error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
         }
         else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            let error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
         }
@@ -386,9 +344,11 @@ export const loginWithFacebook = (accessToken) => (dispatch) => {
     })
     .then((response)=>{
         if(response.ok){
+            toast.success("Login successfully!"); 
             return response;
         }
         else{
+            toast.error("Wrong password or username");
             var error = new Error('Error ' + response.status + ': ' + response.statusText);
             error.response = response;
             throw error;
@@ -398,8 +358,7 @@ export const loginWithFacebook = (accessToken) => (dispatch) => {
     })
     .then((response)=>response.json())
     .then((response)=>{
-        localStorage.setItem('token', response.token);
-        
+        localStorage.setItem('token', response.token);        
         dispatch(fetchProfile());
         dispatch(receiveLogin(response));
     })
@@ -424,10 +383,7 @@ export const logoutUser = () => (dispatch) => {
     dispatch(requestLogout());
     localStorage.removeItem('token');
     localStorage.removeItem('creds');
-
-    localStorage.removeItem('username');
-    localStorage.removeItem('imgPath');
-    localStorage.removeItem('profileRoute');
+    dispatch(logoutEmptyProfile());
     dispatch(receiveLogout());
 }
 
@@ -436,7 +392,13 @@ export const logoutUser = () => (dispatch) => {
 
 export const fetchTeacherReg = () => (dispatch) => {
     dispatch(teacherRegLoading(true));
-    return fetch(baseUrl + 'teacherReg')
+    return fetch(baseUrl + 'teacherReg',{
+        method: 'GET',
+        headers:{
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'  
+    })
         .then(response => response.json())
         .then(teacherReg => dispatch(addTeacherReg(teacherReg)));
 }
@@ -513,6 +475,81 @@ export const fetchCourseDetail = (name) => (dispatch) => {
         .then(course => dispatch(addOneCourse(course)));
 }
 
+export const deleteCourseDetail = (name) => (dispatch) => {
+    dispatch(courseInfoLoading());
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'course/'+ name,{
+        method: 'DELETE',
+        headers:{
+            'Content-Type': 'application/json',
+            'Authorization': bearer      
+        },  
+        credentials: 'same-origin'  
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })      
+    .then(dispatch(fetchCourseInfo()))
+    .catch(error => dispatch(courseInfoFailed(error.message)));
+}
+
+
+export const updateCourse = (course) => (dispatch) => {
+    dispatch(courseInfoLoading());
+    const courseName = course.prevName;
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    var formdata = new FormData();
+    for ( var key in course ) {
+        if (key==='courseImg'){
+            formdata.append(key, course[key]);
+            continue;
+        }
+        formdata.append(key, JSON.stringify(course[key]));
+    }
+    return fetch(baseUrl + 'course/'+ courseName,{
+        method: 'PUT',  
+        headers:{
+            'Authorization': bearer      
+        },  
+        body:formdata,
+        credentials: 'same-origin'  
+    })
+    .then(response => response.json())
+    .then(course => dispatch(addCourseInfo(course)));
+}
+
+
+export const postCourse = (course) => (dispatch) => {
+    dispatch(courseInfoLoading());
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    var formdata = new FormData();
+    for ( var key in course ) {
+        if (key==='courseImg'){
+            formdata.append(key, course[key]);
+            continue;
+        }
+        formdata.append(key, JSON.stringify(course[key]));
+    }
+    return fetch(baseUrl + 'course/',{
+        method: 'POST',  
+        headers:{
+            'Authorization': bearer      
+        },  
+        body:formdata,
+        credentials: 'same-origin'  
+    })
+    .then(response => response.json())
+    .then(course => dispatch(addCourseInfo(course)));
+}
+
+
 export const addOneCourse = (course)=> ({
     type: ActionTypes.ADD_ONECOURSE,
     payload: course
@@ -573,6 +610,7 @@ export const removeStudentAwait = (connecting) => (dispatch) => {
     })
     .then(response => {
         if(response.status === 200){
+            toast.success("Disconnect successfully");
             return response;
         }
         else{
@@ -631,7 +669,6 @@ export const teacherAwait = (connecting) => (dispatch) => {
 
 export const fetchTeacherAwait = () => (dispatch) => {
     dispatch(awaitingLoading(true));
-    console.log('inside fetch teacher ');
     const bearer = 'Bearer ' + localStorage.getItem('token');
     return fetch(baseUrl + 'awaiting/teacher', {
         method: 'GET',
@@ -661,6 +698,7 @@ export const removeTeacherAwait = (connecting) => (dispatch) => {
     })
     .then(response => {
         if(response.status === 200){
+            toast.success("Disconnected successfully");
             return response;
         }
         else{
@@ -671,4 +709,139 @@ export const removeTeacherAwait = (connecting) => (dispatch) => {
     })   
     .then(dispatch(fetchTeacherAwait()))   
     .catch(error => dispatch(awaitingFailed(error.message)));
+}
+///////////
+
+export const addManagerProfile = (profiles)=> ({
+    type: ActionTypes.MANAGERPROFILE_ADD,
+    payload: profiles
+});
+
+export const failedManagerProfile = (errmess)=>({
+    type: ActionTypes.MANAGERPROFILE_FAILED,
+    payload: errmess
+})
+
+export const loadingManagerProfile = () =>({
+    type: ActionTypes.MANAGERPROFILE_LOADING
+})
+
+export const disableTeacherAcc = (userId) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/teacher/' + userId, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            toast.success("success");
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(dispatch(fetchTeacherAcc()))
+    .catch(error => dispatch(failedManagerProfile(error.message)));
+}
+
+
+
+export const fetchTeacherAcc = () => (dispatch) => {
+    dispatch(loadingManagerProfile());
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/teacher', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(response => response.json())
+    .then(response => dispatch(addManagerProfile(response)))   
+    .catch(error => dispatch(failedManagerProfile(error.message)));
+}
+//////////////////
+
+///////hold on
+export const addManagerStudent = (profiles)=> ({
+    type: ActionTypes.MANAGERSTUDENT_ADD,
+    payload: profiles
+});
+
+export const failedManagerStudent = (errmess)=>({
+    type: ActionTypes.MANAGERSTUDENT_FAILED,
+    payload: errmess
+})
+
+export const loadingManagerStudent = () =>({
+    type: ActionTypes.MANAGERSTUDENT_LOADING
+})
+
+export const fetchStudentAcc = () => (dispatch) => {
+    dispatch(loadingManagerStudent());
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/student', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(response => response.json())
+    .then(response => dispatch(addManagerStudent(response)))   
+    .catch(error => dispatch(failedManagerStudent(error.message)));
+}
+
+export const disableStudentAcc = (userId) => (dispatch) => {
+    const bearer = 'Bearer ' + localStorage.getItem('token');
+    return fetch(baseUrl + 'admin/student/' + userId, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': bearer
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if(response.status === 200){
+            toast.success("success");
+            return response;
+        }
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    })   
+    .then(dispatch(fetchStudentAcc()))   
+    .catch(error => dispatch(failedManagerStudent(error.message)));
 }

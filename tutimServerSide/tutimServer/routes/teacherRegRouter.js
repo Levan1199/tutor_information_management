@@ -18,17 +18,7 @@ teacherRegRouter.route('/')
 .options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
-// .get(cors.corsWithOptions, (req,res,next)=>{
-//     User.find({"isTeacher":true})
-//     .populate('teacherProfile')
-//     .populate('studentProfile')
-//     .then((teachers)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(teachers);
-//     },(err)=>next(err))
-//     .catch((err)=> next(err));
-// })
+
 
 .get(cors.corsWithOptions, (req,res,next)=>{
     TeacherReg.find()
@@ -51,10 +41,6 @@ teacherRegRouter.route('/')
     .catch((err)=> next(err));
 })
 
-// .put( cors(), (req,res,next)=>{
-//     res.statusCode = 403;
-//     res.end('PUT operation not supported on /dishes');
-// })
 
 .delete(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
     TeacherReg.remove({})
@@ -82,11 +68,9 @@ teacherRegRouter.route('/:teacherId')
 })
 
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-  
-        TeacherReg.findOneAndUpdate({teacherId:req.params.teacherId},{
+    TeacherReg.findOneAndUpdate({_id:req.params.teacherId},{
         $set: req.body
     },{new:true})
-    .then(TeacherReg.find({}))
     .then((teachers)=>{
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -94,60 +78,6 @@ teacherRegRouter.route('/:teacherId')
     },(err)=>next(err))
     .catch((err)=> next(err));
 })
-
-//////
-// teacherRegRouter.route('/add/:studentId')
-// .options(cors.cors, (req,res)=>{
-//     res.sendStatus(200);
-// })
-// .put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
-//     if (!req.user.isTeacher){
-//         err = new Error('Only teacher can register');
-//         err.status = 404;
-//         return next(err); 
-//     }
-//     StudentReg.findByIdAndUpdate({_id: req.params.studentId},{
-//         $push:{teacherReg:req.user.teacherProfile}
-//     })
-//     .then(()=>{
-//         TeacherReg.findOneAndUpdate({_id: req.user.teacherProfile},{
-//             $push:{studentReg:req.params.studentId}
-//         }, {new:true})
-//         .then((teacher)=>{    
-//             res.statusCode = 200;
-//             res.setHeader('Content-Type', 'application/json');
-//             res.json(teacher);
-//         },(err)=>next(err))
-//     },(err)=>next(err))
-//     .catch((err)=>next(err));
-// })
-
-// ////////////////////////////// add - remove with idy, find1ar push req param
-// teacherRegRouter.route('/remove/:studentId')
-// .options(cors.cors, (req,res)=>{
-//     res.sendStatus(200);
-// })
-// .put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
-//     if (!req.user.isTeacher){
-//         err = new Error('Only teacher can register');
-//         err.status = 404;
-//         return next(err); 
-//     }
-//     StudentReg.findByIdAndUpdate({_id: req.params.studentId},{
-//         $pull:{teacherReg:req.user.teacherProfile}
-//     })
-//     .then(()=>{
-//         TeacherReg.findOneAndUpdate({_id: req.user.teacherProfile},{
-//             $pull:{studentReg:req.params.studentId}
-//         }, {new:true})
-//         .then((teacher)=>{    
-//             res.statusCode = 200;
-//             res.setHeader('Content-Type', 'application/json');
-//             res.json(teacher);
-//         },(err)=>next(err))
-//     },(err)=>next(err))
-//     .catch((err)=>next(err));
-// })
 
 
 

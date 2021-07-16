@@ -121,6 +121,7 @@ const DetailModal = (props)=>{
         }
         return (
             <Multiselect
+                id={field.name}
                 options={option}
                 displayValue="name" 
                 showCheckbox
@@ -130,7 +131,7 @@ const DetailModal = (props)=>{
                     const arr = [];
                     value.map(e=>{
                         arr.push(e.name);
-                        form.setFieldValue(optionName,arr);
+                        return form.setFieldValue(optionName,arr);
                     });
                   
                 }}
@@ -138,7 +139,6 @@ const DetailModal = (props)=>{
         );
     }
     const renderRadio = ({form}) => {
-        // const {touched, errors} = form;
         return ( 
         <>
         <RadioGroup row aria-label="position" name="available" defaultValue="top"

@@ -52,7 +52,6 @@ const initialValues = {
 }
 
 const handleSubmit = (values, actions,setModalSU, signUp) => {
-  console.log('submit ',values);
   signUp(values);
   return setModalSU(false);
 }
@@ -81,7 +80,6 @@ const textField = ({field, form, type}) => {
 
 export default function SignUp(props) {
   const classes = useStyles();
-  console.log('inside signup');
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

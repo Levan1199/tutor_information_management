@@ -4,4 +4,6 @@ export const avatarUrl = 'http://localhost:3000/images/';
 
 export const courseUrl = 'http://localhost:3000/coursesImg/';
 
-export const appID = '131650262166906';
+export const homeUrl = 'http://localhost:3000/homeImg/';
+
+export const appID = '339580844299731';

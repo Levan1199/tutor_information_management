@@ -4,7 +4,13 @@ import Grid from '@material-ui/core/Grid';
 import {Button} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 
+import {connect} from 'react-redux';
+import {postProfile} from '../../redux/ActionCreators'
 
+const mapDispatchToProps = dispatch => ({
+  postProfile: (props)=>{dispatch(postProfile(props))},
+})
+ 
 const useStyles = makeStyles(theme => ({
   
   normalText:{
@@ -19,9 +25,10 @@ const useStyles = makeStyles(theme => ({
 },
 }));
 
-export default function Review(props) {
+const Review = (props) => {
   const classes = useStyles();
-  const {review, handleBack, postProfile, setActiveStep, activeStep } = props;
+  const {postProfile} = props;
+  const {review, handleBack, setActiveStep, activeStep } = props;
   const {role, name, email} = review;
   return (
     <React.Fragment>
@@ -57,3 +64,6 @@ export default function Review(props) {
     </React.Fragment>
   );
 }
+
+
+export default connect(null,mapDispatchToProps)(Review);

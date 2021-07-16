@@ -67,7 +67,6 @@ const IntroModal = (props)=>{
         const {name} = field;
         const helpText = "Input " + label;
         const initialValue = form.values[name];
-        console.log(errors[name], touched);
         return (
             <>
             <InputLabel className={classes.label} htmlFor={name}>{label}</InputLabel>

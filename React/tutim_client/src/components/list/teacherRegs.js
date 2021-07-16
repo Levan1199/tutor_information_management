@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom';
-// import {Loading} from '../LoadingComponent';
+import {Loading} from '../LoadingComponent';
 import {avatarUrl} from '../../shared/baseUrl';
 import {Card, CardHeader, Avatar, CardContent, Button, Container, Grid, Typography, Divider, Box} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,7 +10,8 @@ import * as FilterField from '../../shared/constValues';
 import "./findBar.css";
 import { toast } from 'react-toastify';
 import {connect} from 'react-redux';
-import {fetchTeacherReg, studentAwait} from '../../redux/ActionCreators'
+import InfiniteScroll from 'react-infinite-scroll-component';
+import {fetchTeacherReg, studentAwait, fetchStudentAwait} from '../../redux/ActionCreators'
 
 const mapStatetoProps = state =>{
   return{
@@ -24,7 +25,7 @@ const mapStatetoProps = state =>{
 const mapDispatchToProps = dispatch => ({
   fetchTeacherReg:()=>{dispatch(fetchTeacherReg())},
   studentAwait: (connecting)=>{dispatch(studentAwait(connecting))},
-
+  fetchStudentAwait:()=>{dispatch(fetchStudentAwait())},
 })
  
 
@@ -67,7 +68,42 @@ const mapDispatchToProps = dispatch => ({
         card:{
             maxHeight:"250px",
             minHeight:"250px"
-        }
+        },       
+        cardcontent: {
+            "&:last-child": {
+            padding: 0    
+            }
+        },
+        cardText:{
+            fontFamily:"Roboto",
+            fontWeight:"medium",
+            color: theme.text.title
+        },
+        cardTextBody:{
+            fontFamily:"Roboto",
+            fontWeight:"bold",
+            color: theme.text.body
+        },
+        cardTop:{
+            padding: "0 10px",
+            backgroundColor:theme.palette.secondary.light
+        },
+        cardBottom:{
+            padding: "0 10px",
+        },
+        regButton:{
+            backgroundColor:'#ffb916',
+            color:"white"
+        },
+        headerName:{
+            fontFamily:"Roboto",
+            color:theme.text.body,
+            fontWeight:"bold",
+            fontSize:"1.25rem"
+        },
+        headerBg:{
+            // backgroundColor:"#b9b9b9"
+        },
     }));
 
     
@@ -180,38 +216,56 @@ const mapDispatchToProps = dispatch => ({
         let fee = (teacher.fee)?teacher.fee.toLocaleString():""
         
         let studentId="";
-        if(profile.studentProfile){
+        if(profile && profile.studentProfile){
             studentId = profile.studentProfile._id;
         }
 
         return(       
         <Card className={classes.card}>
-            <CardHeader avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
-                        title={<Link to={`/profile/teacher/${teacher._id}`}>{teacher.name}</Link>}
-                        subheader={'Email: '+ teacher.email}
-                        titleTypographyProps={{variant:'h6' }}
-                        action= {
-                            (                        
-                                isInclude(awaiting, teacher._id)
-                            )
-                            ?
-                            <Button color="secondary" variant="contained">Connecting</Button>
-                            :
-                            <Button color="secondary" variant="contained" onClick={()=>
-                                        handleRegister(register,teacher._id,auth, studentId)
-                            }>Register</Button>
-                        }
+            <CardHeader 
+                className={classes.headerBg}
+                avatar={<Avatar alt="avatar" src={avatarUrl+teacher.imgPath} />}
+                title={<Link style={{textDecoration: 'none'}} className={classes.headerName} to={`/profile/teacher/${teacher._id}`}>{teacher.name}</Link>}
+                subheader={'Email: '+ teacher.email}
+                titleTypographyProps={{variant:'h6' }}
+                action= {
+                    (                        
+                        isInclude(awaiting, teacher._id)
+                    )
+                    ?
+                    <Button className={classes.regButton} variant="contained">Connecting</Button>
+                    :
+                    <Button className={classes.regButton} variant="contained" onClick={()=>
+                                handleRegister(register,teacher._id,auth, studentId)
+                    }>Register</Button>
+                }
             />
-            <CardContent>
-                <strong>Grade: </strong>{grade}
-                <br/>
-                <strong>Subject: </strong>{subject}
-                <br/>
-                <strong>District: </strong>{district}
-                <br/>
-                <strong>Tuition fee: </strong>{fee}
-                <br/>
-                <strong>Available Weekdays: </strong>{weekly}
+            <CardContent className={classes.cardcontent}>
+
+                <Box className={classes.cardTop}>
+                    <div>
+                    <Typography className={classes.cardText} display="inline"> Subject: </Typography>
+                    <Typography className={classes.cardTextBody} display="inline">{subject}</Typography>
+                    </div>
+                    <div>
+                    <Typography className={classes.cardText} display="inline"> District: </Typography>
+                    <Typography className={classes.cardTextBody} display="inline">{district}</Typography>
+                    </div>
+                    <div>
+                    <Typography className={classes.cardText} display="inline"> Grade: </Typography>
+                    <Typography className={classes.cardTextBody} display="inline">{grade}</Typography>
+                    </div>                   
+                </Box>                     
+                <Box className={classes.cardBottom}>                  
+                    <div>
+                    <Typography className={classes.cardText} display="inline"> Tuition fee: </Typography>
+                    <Typography className={classes.cardTextBody} display="inline">{fee}</Typography>
+                    </div>
+                    <div>
+                    <Typography className={classes.cardText} display="inline"> Available Weekdays: </Typography>
+                    <Typography className={classes.cardTextBody} display="inline">{weekly}</Typography>
+                    </div>
+                </Box>          
             </CardContent> 
         </Card>
         );
@@ -223,9 +277,13 @@ const mapDispatchToProps = dispatch => ({
             grade:[],
             subject:[]});
 
-        const {fetchTeacherReg} = props;
+        const {fetchTeacherReg, teacherRegs, fetchStudentAwait} = props;
         useEffect(()=>{
-            fetchTeacherReg();
+            async function fetchData(){
+                await fetchTeacherReg();
+                return await fetchStudentAwait();
+            }
+            fetchData();           
         },[]);
 
         const {subjectName} = props;
@@ -237,10 +295,15 @@ const mapDispatchToProps = dispatch => ({
             }
         },[]);
  
-        let foundTeachers = props.teacherRegs.teacherRegs.filter((teacher)=>{           
-            return filterProps(filterVals, teacher);
-        });
+        const [foundTeachers, setFoundTeachers] = useState();
 
+        useEffect(()=>{
+            const temp = teacherRegs.teacherRegs.filter((teacher)=>{           
+                return filterProps(filterVals, teacher);
+            });
+            setFoundTeachers(temp);
+        },[teacherRegs, filterVals])
+    
         const handleSubmit = (values) => {
             var filterName = {};
                 filterName.district = values.district.map(district=>district.name);
@@ -248,6 +311,49 @@ const mapDispatchToProps = dispatch => ({
                 filterName.subject = values.subject.map(subject=>subject.name);
             setFilterVals(filterName);
         }
+
+        const ScrollData = () =>{
+            const [tempArr, setTempArr] = useState(foundTeachers);
+            const [tempDataLength, setTempDataLength] = useState([]);            
+            const fetchData = () => {      
+                const moreFive = tempArr.slice(0,5);
+                setTempDataLength((prev)=>[...prev,...moreFive])
+                setTempArr(tempArr.slice(5,tempArr.length));
+            }
+            const checkLeft = () =>{
+                if(tempDataLength.length < foundTeachers.length){
+                    return true;
+                }
+                else return false;
+            }          
+            return (
+                <InfiniteScroll
+                dataLength={tempDataLength.length} 
+                next={fetchData}
+                hasMore={checkLeft()}
+                loader={<Loading/>}
+                style={{"overflow-x":"hidden","overflow-y":"hidden"}}
+                >
+                    <Grid container direction="row" spacing={1} justify="center" >
+                        {tempDataLength.map((teacher, index)=>{
+                            if(teacher.available){
+                                return (
+                                    <Grid item xs={12} md={5} key={index}>
+                                    <RenderTeacherCard teacher={teacher} register={props.studentAwait} auth={props.auth} profile={props.profiles.profiles} awaiting={props.awaiting.awaiting}/>
+                                    </Grid>
+                                );
+                            }
+                            else return null;
+                        })}
+                    </Grid>                           
+                </InfiniteScroll>
+            )          
+            }
+
+        if(!foundTeachers){
+            return <Loading/>
+        }
+        else{
             return (
                 <Container maxWidth={false} className={classes.main}>
                 <Box className={classes.box}>
@@ -310,25 +416,12 @@ const mapDispatchToProps = dispatch => ({
                             <Divider/>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid container direction="row" spacing={2} justify="center">
-                            {(()=>{
-                                if(foundTeachers!=null){
-                                    return foundTeachers.map((teacher, index)=>{
-                                        if(teacher.available){
-                                        return (
-                                                <Grid item xs={12} md={5} key={index}>
-                                                <RenderTeacherCard teacher={teacher} register={props.studentAwait} auth={props.auth} profile={props.profiles.profiles} awaiting={props.awaiting.awaiting}/>
-                                                </Grid>
-                                            );
-                                        }
-                                    });
-                                }
-                            })()}
-                            </Grid>
+                            <ScrollData/>                          
                         </Grid>
                     </Grid>
                 </Container>
                 </Container>
             );
+        }
     }
 export default connect(mapStatetoProps, mapDispatchToProps)(TeacherRegs);

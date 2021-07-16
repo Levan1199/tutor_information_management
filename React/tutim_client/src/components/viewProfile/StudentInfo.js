@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import { Avatar, Grid, Typography,  Container,FormControlLabel, Radio, RadioGroup, Divider, Button} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles } from "@material-ui/core/styles";
 import { Loading } from '../LoadingComponent';
 import {Link} from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+import PhoneIcon from '@material-ui/icons/Phone';
+import MailIcon from '@material-ui/icons/Mail';
 import {connect} from 'react-redux';
 import {teacherAwait, removeTeacherAwait, fetchStudentReg} from '../../redux/ActionCreators'
 
@@ -88,7 +89,7 @@ const RenderUI = (props) => {
     }
 
     let teacherId="";
-    if(props.profile.teacherProfile){
+    if(props.profile && props.profile.teacherProfile){
         teacherId = props.profile.teacherProfile._id;
     }
 
@@ -107,12 +108,15 @@ const RenderUI = (props) => {
                 </Grid>
 
                 <Grid item md={10} lg={8}>
-                    <Typography variant="h2" className={classes.headerText}>
+                    <Typography variant="h3" className={classes.headerText}>
                             {stuProfile.name}
-                    </Typography>
+                    </Typography>               
                     <Typography variant="h6" className={classes.normalText}>
-                            Email: {stuProfile.email}
+                        <MailIcon/> Email : {stuProfile.email}                   
                     </Typography>   
+                    <Typography variant="h6" className={classes.normalText}>
+                        <PhoneIcon/> Phone : {stuProfile.telnum}                   
+                    </Typography> 
 
                     <Divider/>
 
@@ -185,26 +189,29 @@ const RenderUI = (props) => {
 
 const ViewStudentInfo = (props) => {    
     const {studentRegs, profileId, fetchStudentReg, profiles, awaiting} = props;
+  
     useEffect(()=>{
-        fetchStudentReg();
-      },[]);
+        async function fetchData(){
+            return await fetchStudentReg();             
+        }
+        fetchData();
+    },[]);
 
-    const stuProfile = studentRegs.studentRegs.filter((student)=>student._id===profileId)[0];
-    
-    if (!stuProfile) {
-        return(
-            <Loading />
-        );
-    }
-    else {         
+  
+  if (studentRegs.studentRegs.length === 0 || studentRegs.isLoading) {
+      return(
+          <Loading />
+      );
+  }
+  else {         
+        const stuProfile = studentRegs.studentRegs.filter((student)=>student._id===profileId)[0];
         const tempArr = awaiting.awaiting.filter((student)=>student.studentId._id === stuProfile._id);
         const awaitObj = tempArr.filter((teacher)=>teacher.teacherId === profiles.profiles.teacherProfile._id)[0];
         const isStudentId=(awaitObj)?true:false;
-        return (
-            <RenderUI stuProfile={stuProfile} remove={props.removeTeacherAwait}  isStudentId={isStudentId}  register={props.teacherAwait} auth={props.auth.isAuthenticated} profile={props.profiles.profiles} />
-        );
-    }
-   
+      return (
+          <RenderUI stuProfile={stuProfile} remove={props.removeTeacherAwait}  isStudentId={isStudentId}  register={props.teacherAwait} auth={props.auth.isAuthenticated} profile={props.profiles.profiles} />
+      );
+  }
 }
 
 export default connect(mapStatetoProps, mapDispatchToProps)(ViewStudentInfo);

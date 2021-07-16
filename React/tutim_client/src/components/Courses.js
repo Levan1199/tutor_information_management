@@ -99,15 +99,16 @@ const CoursesRender = (props) => {
 
 const Courses = (props) => {
     const classes = useStyles();
-    useEffect(()=>{
-      if(props.courseInfo.courseInfo.length == 0)
-      {
-        props.fetchCourseInfo();
-      }
-      return
+    const {courseInfo, fetchCourseInfo} = props;
+      useEffect(()=>{
+        async function fetchData(){
+          return await fetchCourseInfo();
+        }
+        fetchData();     
     },[]);
-    if(props.courseInfo.isLoadingCourse){
-      return (<Loading/>);
+
+    if(courseInfo.isLoading){
+      return <Loading/>;
     }
     else{
     return(    

@@ -2,6 +2,7 @@ import * as ActionTypes from './ActionTypes';
 
 export const Comments = (state= {
         errMess: null,
+        isLoading:false,
         comments: []
     }, action) => {
     switch(action.type){
@@ -11,8 +12,9 @@ export const Comments = (state= {
             return {...state, isLoading: false, errMess: action.payload, comments:[]}
         case ActionTypes.ADD_COMMENT:
             var comment = action.payload;
-            return {...state, comments: state.comments.concat(comment)};
-        
+            return {...state, isLoading:false,comments: state.comments.concat(comment)};
+        case ActionTypes.LOADING_COMMENTS:
+            return {...state, isLoading: true, errMess: null} 
         default:
             return state;
     }

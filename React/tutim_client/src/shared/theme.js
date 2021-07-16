@@ -20,6 +20,10 @@ const theme = createMuiTheme({
         backGround:{
             main:"#f5f5f5"
         }
+    },
+    text:{
+        title:"#8d8d8d",
+        body:"#474747"
     }
 });
 

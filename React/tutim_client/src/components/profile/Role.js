@@ -29,7 +29,6 @@ export default function Role(props) {
                   <RadioGroup row aria-label="position" name="role" defaultValue="top" onChange={(e)=>{
                     setFieldValue('role',e.target.value);
                     validateForm();
-                    console.log('valid: ',isValid);
                   }}>
                     <Grid container justify="space-evenly">
                         <Grid item>

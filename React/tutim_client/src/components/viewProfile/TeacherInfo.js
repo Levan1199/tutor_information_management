@@ -1,13 +1,15 @@
 import React, {useEffect} from "react";
-import {avatarUrl, baseUrl} from "../../shared/baseUrl";
+import {avatarUrl} from "../../shared/baseUrl";
 import { Avatar, Grid, Typography, Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container, Button, Paper, Modal} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Loading } from '../LoadingComponent';
 import { toast } from 'react-toastify';
 import CommentModal from './CommentModal'
-
+import StarIcon from '@material-ui/icons/Star';
 import {connect} from 'react-redux';
 import {studentAwait, removeStudentAwait, fetchTeacherReg, fetchComments, postComment} from '../../redux/ActionCreators'
+import PhoneIcon from '@material-ui/icons/Phone';
+import MailIcon from '@material-ui/icons/Mail';
 
 const mapStatetoProps = state =>{
   return{
@@ -37,7 +39,6 @@ const useStyles = makeStyles(theme => ({
     },
     root: {
       flexGrow: 1,
-    //   padding: '20px 100px'
     },
     profileImg: {
         height:'300px',
@@ -71,8 +72,11 @@ const useStyles = makeStyles(theme => ({
         padding:'2px',
         maxWidth: '100%',
         backgroundColor: '#f5f5f5',      
-    }   
-
+    },
+    star:{
+        width: "25px",
+        height:"25px"
+    }
 }));
 
 const checkBoxValues = [
@@ -130,7 +134,7 @@ const Comment = ({cmt}) =>{
                       {cmt.commenter.name} 
                     </Typography> 
                     <Typography variant="body1" className={classes.cmt}>
-                      rate:  {cmt.rating} 
+                      rate:  {cmt.rating}/5
                     </Typography>                  
                     <Typography variant="body2" className={classes.cmt}>
                       {cmt.comment}
@@ -141,6 +145,26 @@ const Comment = ({cmt}) =>{
           </Paper>
         </div>
       );
+}
+
+const StarRating = ({rating}) => {      
+    const classes = useStyles();
+    return (
+        <>
+            {[...Array(5)].map((star, i)=>{
+                const ratingValue = i+1;
+                return (
+                    <>
+                    <label>
+                        <StarIcon className={classes.star}
+                        style={{fill: ratingValue <= (rating) ? "#ffc107":"#e4e5e9"}}
+                        />
+                    </label>                        
+                    </>
+                )
+            })}  
+        </>
+    );
 }
 
 const RenderUI = (props) => {
@@ -155,7 +179,7 @@ const RenderUI = (props) => {
     }
 
     let studentId="";
-    if(props.profile.studentProfile){
+    if(props.profile && props.profile.studentProfile){
         studentId = props.profile.studentProfile._id;
     }
 
@@ -173,7 +197,6 @@ const RenderUI = (props) => {
     const district = teaProfile.district?teaProfile.district.join(', '):"";
 
     var fee = (teaProfile.fee)?(teaProfile.fee.toLocaleString()):0;
-
     return (
         <Container maxWidth={false} className={classes.main}>
             <Container maxWidth="lg" className={classes.container}>
@@ -185,15 +208,19 @@ const RenderUI = (props) => {
                 </Grid>
 
                 <Grid item md={10} lg={8}>
-                    <Typography variant="h2" className={classes.headerText}>
+                    <Typography variant="h3" className={classes.headerText}>
                             {teaProfile.name}
                     </Typography>
+                    <StarRating rating={props.rating}/>
                     <Typography variant="h6" className={classes.normalText}>
-                            Email: {teaProfile.email}                   
+                        <MailIcon/> Email : {teaProfile.email}                   
+                    </Typography>   
+                    <Typography variant="h6" className={classes.normalText}>
+                        <PhoneIcon/> Phone : {teaProfile.telnum}                   
                     </Typography>   
 
                     <Divider/>
-                    
+                                        
                     <Typography variant="h5" className={classes.normalText}>
                             Description: {teaProfile.description}
                     </Typography>     
@@ -203,7 +230,7 @@ const RenderUI = (props) => {
                     {(                                                
                         props.isTeacherId
                     )?
-                    <Button  color="secondary" variant="contained" onClick={handleRemove}>Connecting</Button>
+                    <Button  color="secondary" variant="contained" onClick={handleRemove}>Disconnect</Button>
                     :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,teaProfile._id,props.auth, studentId)}>Connect</Button>}
                 </Grid>
            
@@ -313,27 +340,30 @@ const ViewTeacherInfo = (props) => {
 
     const {teacherRegs, profileId, fetchTeacherReg, profiles, awaiting, comments, postComment, fetchComments} = props;
     useEffect(()=>{
-        fetchTeacherReg();
-        fetchComments();
-      },[]);
+        async function fetchData(){   
+            await fetchComments();
+            return await fetchTeacherReg();
+        }
+        fetchData();
+    },[]);
+    
 
-    const teaProfile = teacherRegs.teacherRegs.filter((teacher)=>teacher._id===profileId)[0];
 
-    if (!teaProfile) {
+    if (teacherRegs.teacherRegs.length===0 || teacherRegs.isLoading) {
         return(
             <Loading />
         );
     }  
-    else {         
-    
+    else {            
+        const teaProfile = teacherRegs.teacherRegs.filter((teacher)=>teacher._id===profileId)[0];
         const tempArr = awaiting.awaiting.filter((teacher)=>teacher.teacherId._id === teaProfile._id);
         const awaitObj = tempArr.filter((student)=>student.studentId === profiles.profiles.studentProfile._id)[0];
-        const isTeacherId=(awaitObj)?true:false;
-    
+        const isTeacherId=(awaitObj)?true:false;        
         const cmt = comments.comments.filter((comment)=>comment.commentTo===teaProfile._id);
+        const rate = (teaProfile.rate / teaProfile.commentCount).toFixed(1);
         return (
             <RenderUI 
-            teaProfile={teaProfile} remove={props.removeStudentAwait}  isTeacherId={isTeacherId}  register={props.studentAwait} auth={props.auth.isAuthenticated} profile={props.profiles.profiles} cmt = {(cmt)?cmt:""} postComment={postComment}
+            teaProfile={teaProfile} remove={props.removeStudentAwait}  isTeacherId={isTeacherId}  register={props.studentAwait} auth={props.auth.isAuthenticated} profile={props.profiles.profiles} cmt = {cmt} postComment={postComment} rating={rate}
             />
         );   
     }

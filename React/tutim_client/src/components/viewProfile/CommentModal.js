@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react'
-import { Grid,Paper, TextField, Button, Typography, InputLabel } from '@material-ui/core'
+import { Grid,Paper, TextField, Button, Typography } from '@material-ui/core'
 import { makeStyles } from "@material-ui/core/styles";
 import StarIcon from '@material-ui/icons/Star';
 import { toast } from 'react-toastify';
@@ -52,7 +52,7 @@ const CommentModal = (props)=>{
     
     const handleSubmit = ()=>{   
       
-        if(rating == null || comment == ""){
+        if(rating === null || comment === ""){
             toast.error("You need to rate and comment");      
         }
         else

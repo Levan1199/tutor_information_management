@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { Avatar, Grid, Typography, Button, Box, Modal, Container,FormControlLabel, Radio, RadioGroup, Divider} from "@material-ui/core";
 import {avatarUrl} from "../../shared/baseUrl";
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,7 +8,8 @@ import IntroModal from "./IntroModal";
 import DetailModal from "./DetailModal";
 import SubdirectoryArrowLeftIcon from '@material-ui/icons/SubdirectoryArrowLeft';
 import {Link} from 'react-router-dom';
-
+import PhoneIcon from '@material-ui/icons/Phone';
+import MailIcon from '@material-ui/icons/Mail';
 import {connect} from 'react-redux';
 import {fetchProfile, updateProfile} from '../../redux/ActionCreators'
 
@@ -85,10 +86,10 @@ const RenderUI = (props) => {
                             {studentProfile.name}
                     </Typography>
                     <Typography variant="h6" className={classes.normalText}>
-                            Email: {studentProfile.email}
+                        <MailIcon/> Email : {studentProfile.email}
                     </Typography>   
                     <Typography variant="h6" className={classes.normalText}>
-                            Phone Number: {studentProfile.telnum}                   
+                        <PhoneIcon/> Phone : {studentProfile.telnum}                   
                     </Typography>   
 
                     <Divider/>
@@ -192,20 +193,9 @@ const RenderUI = (props) => {
 }
 
 const StudentInfo = (props) => {
-    const {profiles, updateProfile, fetchProfile} = props;
-    console.log(profiles);
-    useEffect(()=>{
-        if(profiles.profiles.length == 0){
-            fetchProfile();
-        }
-    },[]);
-
-    useEffect(()=>{
-        return <RenderUI profile={profiles.profiles} updateProfile={updateProfile}/>
-    },[profiles]);
-
-
-    if (profiles.isLoading || !profiles) {
+    const {profiles, updateProfile} = props;
+    
+    if (!profiles.profiles || profiles.isLoading) {
         return(
             <div className="container">
                 <div className="row">

@@ -6,26 +6,6 @@ const teacherRegSchema = new Schema({
         type: String,
         required: true
     },   
-    sex:{
-        type:String,
-        default:''
-    },
-    dateOfBirth:{
-        type:Date,
-        default:''
-    },
-    district:[{
-        type: String,
-        default:''
-    }],   
-    identify:{
-        type:Number,
-        default:''
-    },
-    address:{
-        type:String,
-        default:''
-    },
     telnum:{
         type: String,
         default: ''
@@ -34,6 +14,10 @@ const teacherRegSchema = new Schema({
         type:String,
         default: ''
     },
+    district:[{
+        type: String,
+        default:''
+    }],    
     grade:[{
         type:String,
         default:''
@@ -42,10 +26,6 @@ const teacherRegSchema = new Schema({
         type:String,
         default:''
     }],   
-    students:{
-        type:Number,
-        default:''
-    },
     fee:{
         type:Number,
         default:''
@@ -66,12 +46,14 @@ const teacherRegSchema = new Schema({
         type:String,
         default:''
     },
-    studentReg:[
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:'StudentReg'
-        }
-    ]
+    rate:{
+        type:Number,
+        default:3
+    },
+    commentCount:{
+        type:Number,
+        default:1
+    }
 },{
     timestamps: true
 });

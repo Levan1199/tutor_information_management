@@ -71,7 +71,6 @@ const textField = ({field, form, type}) => {
 
 
 const responseFacebook = (response, loginWithFacebook) =>{
-  console.log('res ',response.accessToken);
   loginWithFacebook(response.accessToken);
 }
 
@@ -105,11 +104,6 @@ function SignIn(props){
                     type="password">               
                 </Field>
 
-               
-                {/* <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
-                    label="Remember me"
-                /> */}
                 <Button
                     type="submit"
                     fullWidth
@@ -121,17 +115,10 @@ function SignIn(props){
                 </Button>
                 <FacebookLogin
                   appId={appID}
-                  // autoLoad={true}
                   fields="name"
-                  // onClick={componentClicked}
                   callback={(response)=>responseFacebook(response,props.loginWithFacebook)}
                 />
-                <Grid container>
-                    {/* <Grid item xs>
-                    <Link href="#" variant="body2">
-                        Forgot password?
-                    </Link>
-                    </Grid> */}
+                <Grid container>                   
                     <Grid item>
                     <Link  variant="body2" onClick={()=>{props.switchModal();}}>
                         {"Don't have an account? Sign Up"}

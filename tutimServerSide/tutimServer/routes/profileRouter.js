@@ -18,11 +18,10 @@ const { urlencoded } = require('express');
 const profileRouter = express.Router();
 
 profileRouter.use(bodyParser.json());
-// profileRouter.use(urlencoded());
 
 
 profileRouter.route('/')
-.options(cors.cors, (req,res)=>{
+.options(cors.corsWithOptions, (req,res)=>{
     res.sendStatus(200);
 })
 .get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next)=>{
@@ -46,6 +45,15 @@ profileRouter.route('/')
         else if(user.isStudent){
             User.findOne(req.user._id)
             .populate('studentProfile')
+            .then((profile)=>{
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(profile);                   
+            },(err)=>next(err))
+            .catch((err)=> next(err));
+        }
+        else if (user.admin){
+            User.findOne(req.user._id)
             .then((profile)=>{
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -113,12 +121,15 @@ profileRouter.route('/')
             .populate('teacherProfile')
             .then((profile)=>{      
                 if(isImg && profile.teacherProfile.imgPath){
-                    fs.unlink(__dirname+'/../public/images/'+profile.teacherProfile.imgPath, (err)=>{
-                        if(err){
-                            next(err);
-                        }
-                    })
-                    .catch((err)=> next(err));
+                    const thePath = __dirname+'/../public/images/'+profile.teacherProfile.imgPath;
+                    if (fs.existsSync(thePath)) {
+                        fs.unlink(thePath, (err)=>{
+                            if(err){
+                                next(err);
+                            }
+                        })
+                        .catch((err)=> next(err));
+                    }                 
                 }
                 profile.teacherProfile.updateOne({
                     $set: req.body
@@ -162,53 +173,6 @@ profileRouter.route('/')
     },(err)=>next(err))
     .catch((err)=> next(err));   
 })
-
-// .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req,res,next)=>{
-//     TeacherRegs.remove({})
-//     .then((resp)=>{
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json(resp);
-//     },(err)=> next(err))
-//     .catch((err)=>next(err));
-// });
-
-// profileRouter.route('/:profileId')
-// .options(cors.cors, (req,res)=>{
-//     res.sendStatus(200);
-// })
-// .get(cors.corsWithOptions,(req,res,next)=>{
-//     User.findOne(req.params._id)
-//     .then((user)=>{
-//         if(user.teacherProfile == null && user.studentProfile == null){
-//             res.statusCode = 204;
-//             res.setHeader('Content-Type', 'application/json');
-//             res.json(user);
-//         }
-//         else if (user.isTeacher){
-//             User.findOne(req.user._id)
-//             .populate('teacherProfile')
-//             .then((profile)=>{
-//                 res.statusCode = 200;
-//                 res.setHeader('Content-Type', 'application/json');
-//                 res.json(profile);   
-//             },(err)=>next(err))
-//             .catch((err)=> next(err));
-//         }
-//         else if(user.isStudent){
-//             User.findOne(req.user._id)
-//             .populate('studentProfile')
-//             .then((profile)=>{
-//                 // console.log('profiles: ',profile);
-//                 res.statusCode = 200;
-//                 res.setHeader('Content-Type', 'application/json');
-//                 res.json(profile);                   
-//             },(err)=>next(err))
-//             .catch((err)=> next(err));
-//         }
-//     },(err)=>next(err))
-//     .catch((err)=> next(err));  
-// })
 
 
 module.exports = profileRouter;

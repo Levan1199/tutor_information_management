@@ -13,9 +13,7 @@ router.use(bodyParser.json());
 router.options('*', cors.corsWithOptions, (req,res)=>{
   res.sendStatus(200);
 });
-
 router.get('/', cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-  // res.send('respond with a resource');
   User.find({})
   .populate('teacherProfile')
   .populate('studentProfile')
@@ -97,6 +95,7 @@ router.get('/logout',(req,res)=>{
 
 router.get('/facebook/token',cors.corsWithOptions, passport.authenticate('facebook-token'), (req, res)=>{
   if (req.user){
+    console.log(req.user);
     var token = authenticate.getToken({_id: req.user._id});
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
@@ -121,6 +120,8 @@ router.get('/checkJWTToken', cors.corsWithOptions, (req, res)=>{
     }
   })(req, res);
 });
+
+
 
 module.exports = router;
  

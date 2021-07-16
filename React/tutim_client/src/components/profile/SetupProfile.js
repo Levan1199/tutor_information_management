@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Stepper from '@material-ui/core/Stepper';
@@ -8,21 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Role from './Role';
 import Information from './Information';
 import Review from './Review';
-import {Button, Grid}from '@material-ui/core';
-import {Link, useHistory, useLocation} from 'react-router-dom';
-
-import {connect} from 'react-redux';
-import {postProfile} from '../../redux/ActionCreators'
-
-const mapStatetoProps = state =>{
-  return{
-    profiles: state.profiles,
-  }   
-}
-
-const mapDispatchToProps = dispatch => ({
-  postProfile: (props)=>{dispatch(postProfile(props))},
-})
+import {Button}from '@material-ui/core';
+import {Link} from 'react-router-dom';
  
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -37,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 'auto',
       marginRight: 'auto',
     },
+    height:"100vh"
   },
   paper: {
     marginTop: theme.spacing(3),
@@ -143,6 +131,5 @@ const SetupProfile = (props) => {
   );
 }
 
-
-export default connect(mapStatetoProps,mapDispatchToProps)(SetupProfile);
+export default SetupProfile;
 

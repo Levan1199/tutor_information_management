@@ -20,9 +20,9 @@ import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
 import {avatarUrl} from '../shared/baseUrl';
 import SignIn from './entrance/signIn';
 import SignUp from './entrance/signUp';
-
+import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 import {connect} from 'react-redux';
-import {loginUser, logoutUser, loginWithFacebook, signUp, fetchProfile} from '../redux/ActionCreators'
+import {loginUser, logoutUser, loginWithFacebook, signUp} from '../redux/ActionCreators'
 
 const mapStatetoProps = state =>{
   return{
@@ -36,7 +36,6 @@ const mapDispatchToProps = dispatch => ({
   loginWithFacebook: (accessToken) => dispatch(loginWithFacebook(accessToken)),
   loginUser: (creds) => dispatch(loginUser(creds)),
   logoutUser: () => dispatch(logoutUser()),
-  fetchProfile: () => dispatch(fetchProfile())
 })
  
 
@@ -98,33 +97,13 @@ const HeaderComponent = React.forwardRef((props, ref) => {
   const [openModal, setOpenModal] = useState(false);
   const [modalSignUp, setModalSU] = useState(false);
 
+  const {profiles} = props;
+  const [username, setusername] = useState("");
+  const [imgPath, setimgPath] = useState("");
+  const [profileRoute, setprofileRoute] = useState("");
 
-  const username = localStorage.getItem("username");
-  const imgPath = localStorage.getItem("imgPath");
-  const profileRoute = localStorage.getItem("profileRoute");
-  
 
-  const handleMenu = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleLogout = () => {
-    props.logoutUser();
-    return history.push('/home');
-  }
-
-  const switchModal = () => {
-    if (openModal){
-      setModalSU(true);
-      return setOpenModal(false);
-    }
-    else{
-      setOpenModal(true);
-      return setModalSU(false);
-    }
-  }
-
-  const navRoute =[
+  let navRouteInit =[
     {
       link: '/home',
       nameLink: 'Home',
@@ -150,7 +129,61 @@ const HeaderComponent = React.forwardRef((props, ref) => {
       nameLink: 'Map',
       icon: <NotListedLocationIcon/>
     }
-  ]
+  ] 
+  const [navRoute, setNavRoute] = useState(navRouteInit);
+
+  useEffect(()=>{
+    if(profiles.profiles){
+      if(profiles.profiles.admin){
+        const temp = {
+          link: '/admin/view',
+          nameLink: 'Admin',
+          icon: <PlaylistAddCheckIcon/>
+        }
+        setNavRoute(prev => ([...prev, temp]));
+      }
+      if(profiles.profiles.isTeacher){
+        setusername(profiles.profiles.teacherProfile.name);
+        setimgPath(profiles.profiles.teacherProfile.imgPath);
+        setprofileRoute("/profile/teacher")
+      }
+      else if(profiles.profiles.isStudent){
+        setusername(profiles.profiles.studentProfile.name);
+        setimgPath(profiles.profiles.studentProfile.imgPath);
+        setprofileRoute("/profile/student")
+      }
+      setOpenModal(false);
+      setModalSU(false);
+    }     
+    else if(profiles.profiles === null){
+      setNavRoute(navRouteInit)
+      setusername("");
+      setimgPath("");
+      setprofileRoute("")
+    }
+  },[profiles]);  
+
+
+  const handleMenu = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = () => {
+    props.logoutUser();
+    return history.push('/home');
+  }
+
+  const switchModal = () => {
+    if (openModal){
+      setModalSU(true);
+      return setOpenModal(false);
+    }
+    else{
+      setOpenModal(true);
+      return setModalSU(false);
+    }
+  }
+
 
   return (
     <div className={classes.root}>       

@@ -6,6 +6,8 @@ import { StudentRegs } from './studentReg';
 import {Profiles} from './profile';
 import {CourseInfo} from './courseInfo';
 import {Awaiting} from './awaiting';
+import { ManagerProfile} from './managerProfile';
+import { ManagerStudentProfile } from './managerStudentProfile';
 import thunk from 'redux-thunk';
 // import logger from 'redux-logger';
 import { InitialFeedback } from './forms';
@@ -21,6 +23,8 @@ export const ConfigureStore = () => {
                 profiles: Profiles,
                 courseInfo: CourseInfo,
                 awaiting: Awaiting,
+                managerProfiles: ManagerProfile,
+                managerStudentProfiles: ManagerStudentProfile,
                 auth: Auth,
                 ...createForms({
                     feedback: InitialFeedback

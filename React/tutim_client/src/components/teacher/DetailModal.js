@@ -9,9 +9,9 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import { makeStyles } from "@material-ui/core/styles";
 import { Formik, Form, Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
-// import * as Yup from "yup"; 
+import * as Yup from "yup"; 
 import * as FilterField from '../../shared/constValues';
-
+import './teacher.css';
 const useStyles = makeStyles(theme => ({
     paperStyle:{
         padding :'20px',
@@ -39,18 +39,17 @@ const useStyles = makeStyles(theme => ({
         padding:'5px'
     },
     checkbox:{
-        color: theme.palette.secondary.main,
-        
+        color: theme.palette.secondary.main,        
     }
 
 }));
 
 
-// const validationSchema = Yup.object({
-//     fee: Yup.number()
-//         .typeError('you must specify a number')
-//         .positive('The number must be positive')
-// });
+const validationSchema = Yup.object({
+    fee: Yup.number()
+        .typeError('you must specify a number')
+        .positive('The number must be positive')
+});
 
 const checkBoxValues = [
     {label:'Mon', value:2},
@@ -159,13 +158,14 @@ const DetailModal = (props)=>{
                 options={option}
                 displayValue="name" 
                 showCheckbox
+                style={{"min-height":"100px"}}
                 selectedValues = {preValue}
                 placeholder={label}
                 onSelect={(value)=>{
                     const arr = [];
                     value.map(e=>{
                         arr.push(e.name);
-                        form.setFieldValue(optionName,arr);
+                        return form.setFieldValue(optionName,arr);
                     });
                   
                 }}
@@ -174,7 +174,6 @@ const DetailModal = (props)=>{
     }
 
     const renderRadio = ({form}) => {
-        // const {touched, errors} = form;
         return ( 
         <>
         <RadioGroup row aria-label="position" name="available" defaultValue="top"
@@ -202,41 +201,51 @@ const DetailModal = (props)=>{
                 <Formik 
                 initialValues={initialValues}
                 onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
+                validationSchema={validationSchema}
                 >         
                   {({ errors, touched}) => (        
                     <Form>
                     <Grid container spacing={2}>
-                        <Grid item sm={12} md={6} className={classes.outerColumn}>
+                        <Grid item sm={12} md={6} className={classes.outerColumn} container spacing={1}>
+                        
                         <Typography variant="h5" color="primary">Edit requirement for the class</Typography>
-                        <Field 
-                            component={multiSelectDropdown}
-                            name="grade"
-                            type="text"
-                            label="Grade"
-                            option={FilterField.gradOption}
-                        />
-                        <Field 
-                            component={multiSelectDropdown}
-                            name="subject"
-                            type="text"
-                            label="Subject"
-                            option={FilterField.subjOption}
-                        />
-                        <Field 
-                            component={multiSelectDropdown}
-                            name="district"
-                            type="text"
-                            label="District"
-                            option={FilterField.distOption}
-                        />
-                        <Field 
-                            component={inputBar}
-                            name="fee"
-                            type="text"
-                            label="Tuition Fee"
-                            errors={errors}
-                            touched={touched}
-                        />
+                        <Grid item xs={12}>
+                            <Field 
+                                component={multiSelectDropdown}
+                                name="grade"
+                                type="text"
+                                label="Grade"
+                                option={FilterField.gradOption}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Field 
+                                component={multiSelectDropdown}
+                                name="subject"
+                                type="text"
+                                label="Subject"
+                                option={FilterField.subjOption}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Field 
+                                component={multiSelectDropdown}
+                                name="district"
+                                type="text"
+                                label="District"
+                                option={FilterField.distOption}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Field 
+                                component={inputBar}
+                                name="fee"
+                                type="text"
+                                label="Tuition Fee"
+                                errors={errors}
+                                touched={touched}
+                            />
+                        </Grid>
                 </Grid>
 
                 <Grid item sm={12} md={6}>

@@ -10,6 +10,10 @@ const studentRegSchema = new Schema({
         type:String,
         default:''
     },
+    telnum:{
+        type: String,
+        default:''
+    }, 
     district:[{
         type: String,
         default:''
@@ -18,10 +22,6 @@ const studentRegSchema = new Schema({
         type:String,
         default:''
     },
-    telnum:{
-        type: String,
-        default:''
-    },   
     grade:[{
         type:String,
         default:''
@@ -30,18 +30,7 @@ const studentRegSchema = new Schema({
         type:String,
         default:''
     }],   
-    students:{
-        type:Number,
-        default:''
-    },
-    periodAWeek:{
-        type:Number,
-        default:''
-    },
-    time:{
-        type:String,
-        default:''
-    },
+   
     fee:{
         type:Number,
         default: 0
@@ -58,12 +47,7 @@ const studentRegSchema = new Schema({
         type:Boolean,
         default:false
     },
-    teacherReg:[
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref:'TeacherReg'
-        }
-    ]
+  
 },{
     timestamps: true
 });

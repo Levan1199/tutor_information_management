@@ -9,6 +9,10 @@ var User = new Schema({
         type: Boolean,
         default: false
     },
+    isDisable:{
+        type:Boolean,
+        default:false
+    },
     teacherProfile:{
         type: mongoose.Schema.Types.ObjectId,
         ref:'TeacherReg'

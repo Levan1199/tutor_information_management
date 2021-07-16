@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {avatarUrl} from "../../shared/baseUrl";
-import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container} from "@material-ui/core";
+import { Avatar, Grid, Typography, Button, Box, Modal , Divider, FormControlLabel, Checkbox, Radio, RadioGroup, Container, Paper} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import EditIcon from '@material-ui/icons/Edit';
 import { Loading } from '../LoadingComponent';
@@ -8,18 +8,22 @@ import IntroModal from "./IntroModal";
 import DetailModal from "./DetailModal";
 import SubdirectoryArrowLeftIcon from '@material-ui/icons/SubdirectoryArrowLeft';
 import {Link} from 'react-router-dom';
-
+import StarIcon from '@material-ui/icons/Star';
+import PhoneIcon from '@material-ui/icons/Phone';
+import MailIcon from '@material-ui/icons/Mail';
 import {connect} from 'react-redux';
-import {fetchProfile, updateProfile} from '../../redux/ActionCreators'
+import {fetchProfile, updateProfile, fetchComments} from '../../redux/ActionCreators'
 
 const mapStatetoProps = state =>{
   return{
     profiles: state.profiles,
+    comments: state.comments
   }   
 }
 const mapDispatchToProps = dispatch => ({
   fetchProfile:()=>{dispatch(fetchProfile())},
   updateProfile: (props)=>{dispatch(updateProfile(props))},
+  fetchComments:()=>{dispatch(fetchComments())},
 })
 
 const useStyles = makeStyles(theme => ({
@@ -58,6 +62,15 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "bold",
     fontFamily:"Roboto"
   },
+  cmt:{
+    fontFamily:"Segoe UI",
+    fontWeight:"medium",
+},
+paper: {
+    padding:'2px',
+    maxWidth: '100%',
+    backgroundColor: '#f5f5f5',      
+},
 }));
 
 const checkBoxValues = [
@@ -81,6 +94,53 @@ const RenderCheckBox = (props) => {
         labelPlacement="top"
         />
     );
+}
+
+const StarRating = ({rating}) => {      
+    const classes = useStyles();
+    return (
+        <>
+            {[...Array(5)].map((star, i)=>{
+                const ratingValue = i+1;
+                return (
+                    <>
+                    <label>
+                        <StarIcon className={classes.star}
+                        style={{fill: ratingValue <= (rating) ? "#ffc107":"#e4e5e9"}}
+                        />
+                    </label>                        
+                    </>
+                )
+            })}  
+        </>
+    );
+}
+
+const Comment = ({cmt}) =>{
+    const classes = useStyles();
+    
+    return (
+        <Paper className={classes.paper} variant="outlined" > 
+        <Grid container alignItems="center" >
+            <Grid sm={1} justify="center" container>
+            <Avatar alt="avatar" src={avatarUrl+cmt.commenter.imgPath}/>                     
+            </Grid>
+            <Grid item sm={10} container alignItems="center">                
+                <Grid item>
+                <Typography variant="subtitle1" className={classes.headerText}>
+                    {cmt.commenter.name} 
+                </Typography> 
+                <Typography variant="body1" className={classes.cmt}>
+                    rate:  {cmt.rating}/5
+                </Typography>                  
+                <Typography variant="body2" className={classes.cmt}>
+                    {cmt.comment}
+                </Typography>
+                </Grid>                
+            </Grid>
+        </Grid>
+        </Paper>
+      );
 }
 
 const RenderUI = (props) => {
@@ -109,13 +169,13 @@ const RenderUI = (props) => {
                     <Typography variant="h2" className={classes.headerText}>
                             {teacherProfile.name}
                     </Typography>
+                    <StarRating rating={props.rating}/>
                     <Typography variant="h6" className={classes.normalText}>
-                            Email: {teacherProfile.email}                   
+                        <MailIcon/> Email : {teacherProfile.email}                   
                     </Typography>   
                     <Typography variant="h6" className={classes.normalText}>
-                            Phone Number: {teacherProfile.telnum}                   
+                        <PhoneIcon/> Phone : {teacherProfile.telnum}                   
                     </Typography>   
-
 
                     <Divider/>
                     
@@ -216,23 +276,48 @@ const RenderUI = (props) => {
                     <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...teacherProfile}/>   
             </Modal>    
             </Container>
+
+            <Container maxWidth="lg" className={classes.container}>
+               
+               <Grid container justify="center" spacing={2}>
+                   <Grid item xs={12}> 
+                       <Typography variant="h4" className={classes.headerText} color="secondary">
+                           Comments:                 
+                       </Typography>                 
+                   </Grid>              
+               </Grid>
+
+               <Grid container justify="center" spacing={2}>
+               {(()=>{
+                   if(props.cmt){
+                       return props.cmt.map((comment,i)=>{
+                       return (      
+                           <Grid item xs={12} key={i}>                     
+                               <Comment cmt={comment}/>
+                           </Grid>
+                           )
+                       })
+                   }                    
+               })()}              
+               </Grid>
+
+
+           </Container>
         </Container>
     );
 }
 
 const TeacherInfo = (props) => {
-    const {profiles, updateProfile, fetchProfile} = props;
+    const {profiles, updateProfile, comments, fetchComments} = props;
+
     useEffect(()=>{
-        if(profiles.profiles.length == 0){
-            fetchProfile();
+        async function fetchData(){
+            return await fetchComments();
         }
+        fetchData();
     },[]);
-
-    useEffect(()=>{
-        return <RenderUI profile={profiles.profiles} updateProfile={updateProfile}/>
-    },[profiles]);
-
-    if (profiles.isLoading || !profiles) {
+   
+    if (!profiles.profiles || profiles.isLoading) {
         return(
             <div className="container">
                 <div className="row">
@@ -242,8 +327,10 @@ const TeacherInfo = (props) => {
         );
     }
     else {  
+        const cmt = comments.comments.filter((comment)=>comment.commentTo===profiles.profiles.teacherProfile._id);
+        const rate = (profiles.profiles.teacherProfile.rate / profiles.profiles.teacherProfile.commentCount).toFixed(1);   
         return (
-            <RenderUI profile={profiles.profiles} updateProfile={updateProfile}/>
+            <RenderUI profile={profiles.profiles} updateProfile={updateProfile}  cmt = {cmt} rating={rate} />
         );   
     }
 }
