@@ -6,4 +6,4 @@ export const courseUrl = 'http://localhost:3000/coursesImg/';
 
 export const homeUrl = 'http://localhost:3000/homeImg/';
 
-export const appID = '339580844299731';
+export const appID = '';
