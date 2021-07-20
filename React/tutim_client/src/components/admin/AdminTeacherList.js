@@ -94,7 +94,6 @@ const useStyles = makeStyles((theme)=>({
 }));
 
 const ComplexGrid = (props) => {
-  console.log('a ',props);
     const classes = useStyles();
     const profile = props.profile.teacherProfile;
     let subject = (profile.subject)?profile.subject.join(', '):"";
@@ -171,7 +170,6 @@ const AdminTeacherList = (props) =>{
     },[managerProfiles])
 
     if(!teachers || teachers.length===0){
-        console.log('loading');  
       return <Loading/>
     }
     else{

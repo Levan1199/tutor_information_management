@@ -41,7 +41,6 @@ courseRouter.route('/')
         }
         req.body[ele] = JSON.parse(req.body[ele]);
     }
-    console.log('in pose', req.body);
     Course.create(req.body)
     .then(()=>{
         Course.find()

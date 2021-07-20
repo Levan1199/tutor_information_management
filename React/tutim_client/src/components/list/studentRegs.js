@@ -66,9 +66,8 @@ const useStyles = makeStyles((theme)=>({
         color: theme.palette.primary.dark
     },
     card:{
-        minHeight:"265px",
-        maxHeight:"265px",
-        // backgroundColor:"#FEF4C5"
+        minHeight:"240px",
+        maxHeight:"240px",
     },
     
     cardcontent: {
@@ -79,7 +78,7 @@ const useStyles = makeStyles((theme)=>({
     cardText:{
         fontFamily:"Roboto",
         fontWeight:"medium",
-        color: theme.text.title
+        color: theme.text.title,
     },
     cardTextBody:{
         fontFamily:"Roboto",
@@ -88,24 +87,24 @@ const useStyles = makeStyles((theme)=>({
     },
     cardTop:{
         padding: "0 10px",
-        backgroundColor:  theme.palette.secondary.light
-      
+        backgroundColor:  "#d2e9f3",
+        border: "2px solid #aed7e9"      
     },
     cardBottom:{
         padding: "0 10px",
     },
     regButton:{
-        backgroundColor:'#ffb916',
-        color:"white"
+        backgroundColor:'#ffc334',
+        color:"white",
+        '&:hover': {
+            backgroundColor: '#f2a900',
+        },
     },
     headerName:{
         fontFamily:"Roboto",
         color:theme.text.body,
         fontWeight:"bold",
-        fontSize:"1.25rem"
-    },
-    headerBg:{
-        // backgroundColor:"#b9b9b9"
+        fontSize:"1.3rem"
     },
     findLink:{
         fontFamily:"Roboto",
@@ -189,12 +188,12 @@ function RenderStudentCard({student, auth, profile,register, awaiting}){
             <CardHeader 
                 className={editStyle.headerBg}
                 avatar={<Avatar alt="avatar" src={avatarUrl+student.imgPath}/>}
-                subheader={<Link style={{textDecoration: 'none'}} className={editStyle.headerName}  to={`/profile/student/${student._id}`}>Student: {student.name}</Link>}               
+                subheader={<Link style={{textDecoration: 'none'}} className={editStyle.headerName}  to={`/profile/student/${student._id}`}>{student.name}</Link>}               
                 action={
                     (                                                
                         isInclude(awaiting, student._id)
                     )?
-                    <Button className={editStyle.regButton} variant="contained">Connecting</Button>
+                    <Button color="secondary" variant="contained">Connecting</Button>
                     :<Button className={editStyle.regButton} variant="contained" onClick={()=>
                         handleRegister(register,student._id,auth, teacherId)
                     }>Register</Button>
@@ -202,37 +201,59 @@ function RenderStudentCard({student, auth, profile,register, awaiting}){
             />
             <CardContent className={editStyle.cardcontent}>       
                 <Box className={editStyle.cardTop}>
-                    <div>
-                    <Typography className={editStyle.cardText} display="inline"> Subject: </Typography>
-                    <Typography className={editStyle.cardTextBody} display="inline">{subject}</Typography>
-                    </div>
-                    <div>
-                    <Typography className={editStyle.cardText} display="inline"> District: </Typography>
-                    <Typography className={editStyle.cardTextBody} display="inline">{dist}</Typography>
-                    </div>
-                    <div>
-                    <Typography className={editStyle.cardText} display="inline"> Grade: </Typography>
-                    <Typography className={editStyle.cardTextBody} display="inline">{grade}</Typography>
-                    </div>
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>
+                            <Typography className={editStyle.cardText} align="left"> Subject: </Typography>                            
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={editStyle.cardTextBody} noWrap align="right">{subject}</Typography>
+                        </Grid>
+                    </Grid>                 
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>  
+                            <Typography className={editStyle.cardText} align="left"> District: </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={editStyle.cardTextBody} noWrap align="right">{dist}</Typography>
+                        </Grid>                        
+                    </Grid>
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>
+                            <Typography className={editStyle.cardText} align="left"> Grade: </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={editStyle.cardTextBody} noWrap align="right">{grade}</Typography>
+                        </Grid>
+                    </Grid>
                 </Box>                     
                 <Box className={editStyle.cardBottom}>
-                    <div>
-                    <Typography className={editStyle.cardText} display="inline">Recommend Tuition Fee: </Typography>
-                    <Typography className={editStyle.cardTextBody} display="inline">{fee}</Typography>
-                    </div>
+                    <Grid container justify="space-between">  
+                        <Typography className={editStyle.cardText} display="inline">Recommend Tuition Fee: </Typography>
+                        <Typography className={editStyle.cardTextBody} display="inline">{fee}</Typography>
+                    </Grid>
 
-                    <div>
-                    <Typography className={editStyle.cardText} display="inline"> Address: </Typography>
-                    <Typography className={editStyle.cardTextBody} display="inline">{student.address}<Link className={editStyle.findLink} style={{textDecoration:"none", textDecorationColor:"none"}}to={`/map/${student.address}`}> - Find<SearchIcon/></Link>
-                    </Typography>
-                    </div>
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>
+                            <Typography className={editStyle.cardText} align="left"> Address: </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={editStyle.cardTextBody}  noWrap align="right">
+                                <Link className={editStyle.findLink} style={{textDecoration:"none", textDecorationColor:"none"}}to={`/map/${student.address}`}> Find<SearchIcon/></Link>{student.address} 
+                            </Typography>
+                        </Grid>
+                    </Grid>
 
-                    <div>
-                    <Typography className={editStyle.cardText} display="inline"> Description: </Typography>
-                    <Typography className={editStyle.cardTextBody} display="inline">{student.description}</Typography>
-                    </div>                
-                </Box>              
-                
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2} >
+                            <Typography className={editStyle.cardText} align="left">Description:</Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={editStyle.cardTextBody}  noWrap align="right">
+                                {student.description}
+                            </Typography>
+                        </Grid>
+                    </Grid>                
+                </Box>            
             </CardContent> 
         </Card>
     );
@@ -246,6 +267,7 @@ const StudentRegs = (props) =>{
     const {fetchStudentReg, studentRegs, fetchTeacherAwait} = props;
 
     useEffect(()=>{       
+        window.scrollTo(0,0);
         async function fetchData(){
             await fetchStudentReg();
             return await fetchTeacherAwait();
@@ -261,8 +283,7 @@ const StudentRegs = (props) =>{
             return filterProps(filterVals, student);
         });
         setFoundStudents(temp);
-    },[studentRegs, filterVals])
-
+    },[studentRegs, filterVals])    
 
     const handleSubmit = (values) => {
         var filterName = {};
@@ -274,7 +295,7 @@ const StudentRegs = (props) =>{
 
     const ScrollData = () =>{
         const [tempArr, setTempArr] = useState(foundStudents);
-        const [tempDataLength, setTempDataLength] = useState([]);
+        const [tempDataLength, setTempDataLength] = useState(tempArr.slice(0,5));
         
         const fetchData = () => {      
             const moreFive = tempArr.slice(0,5);
@@ -288,14 +309,13 @@ const StudentRegs = (props) =>{
             }
             else return false;
         }
-       
         return (
             <InfiniteScroll
             dataLength={tempDataLength.length} 
             next={fetchData}
             hasMore={checkLeft()}
             loader={<Loading/>}
-            style={{"overflow-y":"hidden","overflow-x":"hidden" }}
+            style={{"overflowY":"hidden","overflowX":"hidden" }}
             >
                 <Grid container direction="row" spacing={1} justify="center" >
                     {tempDataLength.map((student, index)=>{
@@ -328,7 +348,7 @@ const StudentRegs = (props) =>{
                     Current classes
                 </Typography>
                 <Typography variant="body1" align="center" className={classes.normalText}>
-                    Current classes that is in need of teachers requested by students 
+                    Current classes that is in need of teachers
                 </Typography>
             </Box>
             <Container maxWidth="lg" className={classes.container}>

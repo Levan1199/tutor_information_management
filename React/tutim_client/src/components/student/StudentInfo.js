@@ -11,7 +11,7 @@ import {Link} from 'react-router-dom';
 import PhoneIcon from '@material-ui/icons/Phone';
 import MailIcon from '@material-ui/icons/Mail';
 import {connect} from 'react-redux';
-import {fetchProfile, updateProfile} from '../../redux/ActionCreators'
+import {fetchProfile} from '../../redux/ActionCreators'
 
 const mapStatetoProps = state =>{
   return{
@@ -20,7 +20,6 @@ const mapStatetoProps = state =>{
 }
 const mapDispatchToProps = dispatch => ({
   fetchProfile:()=>{dispatch(fetchProfile())},
-  updateProfile: (props)=>{dispatch(updateProfile(props))},
 })
 
 const useStyles = makeStyles(theme => ({
@@ -175,7 +174,7 @@ const RenderUI = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <IntroModal closeModal={()=>setModalIntro(false)} updateProfile={props.updateProfile} {...studentProfile}/>              
+                <IntroModal closeModal={()=>setModalIntro(false)} {...studentProfile}/>              
             </Modal>    
 
             <Modal
@@ -185,7 +184,7 @@ const RenderUI = (props) => {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 >
-                    <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...studentProfile}/>   
+                    <DetailModal closeModal={()=>setModalDetail(false)} {...studentProfile}/>   
             </Modal>    
         </Container>
         </Container>
@@ -193,7 +192,7 @@ const RenderUI = (props) => {
 }
 
 const StudentInfo = (props) => {
-    const {profiles, updateProfile} = props;
+    const {profiles} = props;
     
     if (!profiles.profiles || profiles.isLoading) {
         return(
@@ -206,7 +205,7 @@ const StudentInfo = (props) => {
     }
     else {         
         return (
-            <RenderUI profile={profiles.profiles} updateProfile={updateProfile}/>
+            <RenderUI profile={profiles.profiles}/>
         );
     }
 }

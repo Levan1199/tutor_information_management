@@ -62,44 +62,40 @@ class Main extends Component{
     return (
       <div>      
         <ToastContainer position="top-center" autoClose={3000}/>
-        <HeaderComponent/>
-        <TransitionGroup>
-          <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
-              <Switch>
+        <HeaderComponent/>      
+            <Switch>
+            
+              <Route path="/home" component={()=><Home/>}/>
+
+              <Route exact path="/teacherList" component={() => <TeacherRegs/>}/>                
+              <Route path="/teacherList/:subjectName" component={({match}) => <TeacherRegs 
+              subjectName={match.params.subjectName}/>}/>
+              <Route path="/studentList" component={() => <StudentRegs/>}/>                                       
               
-                <Route path="/home" component={()=><Home/>}/>
+              <Route exact path="/profile/teacher" component={()=><TeacherInfo/>}/>
+              <Route exact path="/profile/student" component={()=><StudentInfo />}/>
 
-                <Route exact path="/teacherList" component={() => <TeacherRegs/>}/>                
-                <Route path="/teacherList/:subjectName" component={({match}) => <TeacherRegs 
-                subjectName={match.params.subjectName}/>}/>
-                <Route path="/studentList" component={() => <StudentRegs/>}/>                                       
-               
-                <Route exact path="/profile/teacher" component={()=><TeacherInfo/>}/>
-                <Route exact path="/profile/student" component={()=><StudentInfo />}/>
+              <Route path="/profile/student/:profileId" component={({match}) => <ViewStudentInfo profileId={match.params.profileId}/>}/>  
+              <Route path="/profile/teacher/:profileId" component={({match}) => <ViewTeacherInfo profileId={match.params.profileId}/>}/>              
 
-                <Route path="/profile/student/:profileId" component={({match}) => <ViewStudentInfo profileId={match.params.profileId}/>}/>  
-                <Route path="/profile/teacher/:profileId" component={({match}) => <ViewTeacherInfo profileId={match.params.profileId}/>}/>              
+              <Route path='/courseDetail/:courseName' component={({match})=><CourseDetail courseName={match.params.courseName}/> }/>               
+              <Route path='/courses' component={()=><Courses/>}/> 
 
-                <Route path='/courseDetail/:courseName' component={({match})=><CourseDetail courseName={match.params.courseName}/> }/>               
-                <Route path='/courses' component={()=><Courses/>}/> 
+              <Route exact path='/map' component={()=><Map/>}/> 
+              <Route path='/map/:address' component={({match})=><Map address={match.params.address}/>}/> 
 
-                <Route exact path='/map' component={()=><Map/>}/> 
-                <Route path='/map/:address' component={({match})=><Map address={match.params.address}/>}/> 
+              <PrivateRoute path='/awaiting' component={()=><RegisteredList/>}/> 
+              <PrivateRoute path='/teaAwaiting' component={()=><TeaRegisteredList />}/> 
 
-                <PrivateRoute path='/awaiting' component={()=><RegisteredList/>}/> 
-                <PrivateRoute path='/teaAwaiting' component={()=><TeaRegisteredList />}/> 
+              <PrivateRoute path='/admin/view' component={()=><AdminView/>}/> 
+              <PrivateRoute path='/admin/studentList' component={()=><AdminStudentList/>}/> 
+              <PrivateRoute path='/admin/teacherList' component={()=><AdminTeacherList/>}/> 
 
-                <PrivateRoute path='/admin/view' component={()=><AdminView/>}/> 
-                <PrivateRoute path='/admin/studentList' component={()=><AdminStudentList/>}/> 
-                <PrivateRoute path='/admin/teacherList' component={()=><AdminTeacherList/>}/> 
+              <Route path="/stepper" component={()=><SetupProfile/>}/>
 
-                <Route path="/stepper" component={()=><SetupProfile/>}/>
-
-                <Redirect to="/home"/>              
-              </Switch>
-            </CSSTransition>
-        </TransitionGroup>  
-      <Footer/>          
+              <Redirect to="/home"/>              
+            </Switch>         
+          <Footer/>          
       </div>
     );
   }

@@ -10,6 +10,13 @@ import { Formik, Form,  Field } from "formik";
 import {Multiselect} from 'multiselect-react-dropdown';
 import * as Yup from "yup"; 
 import * as FilterField from '../../shared/constValues';
+import {connect} from 'react-redux';
+import {updateProfile} from '../../redux/ActionCreators'
+
+
+const mapDispatchToProps = dispatch => ({
+  updateProfile: (props)=>{dispatch(updateProfile(props))},
+})
 
 const useStyles = makeStyles(theme => ({
     paperStyle:{
@@ -51,18 +58,17 @@ const validationSchema = Yup.object({
         .positive('The number must be positive')
 });
 
-
-
-const handleInput = (values, actions, updateProfile, closeModal)=>{   
-    updateProfile(values);
-    return closeModal();
-}
-
-
 const DetailModal = (props)=>{
     const classes = useStyles();
-    const {grade, subject, district, fee, address, available} = props;
+    const {grade, subject, district, fee, address, available, updateProfile, closeModal} = props;
 
+    async function updateInfo(values){
+        return await updateProfile(values);
+    }
+    const handleInput = (values)=>{   
+        updateInfo(values);
+        return closeModal();
+    }
    
 
     const preGrade = [];
@@ -165,7 +171,7 @@ const DetailModal = (props)=>{
         <Paper elevation={10} className={classes.paperStyle}>
                 <Formik 
                 initialValues={initialValues}
-                onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
+                onSubmit={handleInput}
                 validationSchema={validationSchema}
                 >               
                  {({ errors, touched}) => (  
@@ -240,7 +246,7 @@ const DetailModal = (props)=>{
                                     <Button className={classes.btn} type="submit" fullWidth>Save</Button>
                                 </Grid>
                                 <Grid item md={2}>
-                                    <Button className={classes.btn} fullWidth onClick={props.closeModal}>Cancel</Button>
+                                    <Button className={classes.btn} fullWidth onClick={closeModal}>Cancel</Button>
                                 </Grid>
                             </Grid>             
                         </Grid>
@@ -252,5 +258,5 @@ const DetailModal = (props)=>{
     );
 }
 
-export default DetailModal
+export default connect(null,mapDispatchToProps)(DetailModal);
 

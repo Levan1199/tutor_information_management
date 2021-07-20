@@ -10,6 +10,9 @@ import DraftsIcon from '@material-ui/icons/Drafts';
 import SchoolIcon from '@material-ui/icons/School';
 import HomeIcon from '@material-ui/icons/Home';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import DescriptionIcon from '@material-ui/icons/Description';
+import NotListedLocationIcon from '@material-ui/icons/NotListedLocation';
+
 const useStyles = makeStyles({
    footer:{
     // position: "fixed",
@@ -35,7 +38,7 @@ const Footer = () => {
                             </Grid>
                             <Grid item xs={12} sm={3}>                       
                                 <List component="nav" aria-label="main mailbox folders">
-                                    <Link to="/home">
+                                    <Link to="/home" style={{color:"black"}}>
                                     <ListItem button>
                                         <ListItemIcon>
                                             <HomeIcon />
@@ -44,7 +47,7 @@ const Footer = () => {
                                     </ListItem>
                                     </Link>
 
-                                    <Link to="/studentList">
+                                    <Link to="/studentList" style={{color:"black"}}>
                                     <ListItem button>
                                         <ListItemIcon>
                                             <PermIdentityIcon />
@@ -57,7 +60,7 @@ const Footer = () => {
                             </Grid>
                             <Grid item xs={12} sm={3}>
                                 <List component="nav" aria-label="main mailbox folders">
-                                    <Link to="/teacherList">
+                                    <Link to="/teacherList" style={{color:"black"}}>
                                         <ListItem button>
                                             <ListItemIcon>
                                                 <SchoolIcon />
@@ -66,14 +69,28 @@ const Footer = () => {
                                         </ListItem>
                                     </Link>
 
+                                <Link to="/courses" style={{color:"black"}}>
                                     <ListItem button>
                                         <ListItemIcon>
-                                            <DraftsIcon />
+                                            <DescriptionIcon/>
                                         </ListItemIcon>
-                                        <ListItemText primary="Drafts" />
+                                        <ListItemText primary="Courses" />
                                     </ListItem>
+                                </Link>
                                 </List>
-                            </Grid>               
+                            </Grid>             
+                            <Grid item xs={12} sm={3}>
+                                <List component="nav" aria-label="main mailbox folders">
+                                    <Link to="/map" style={{color:"black"}}>
+                                        <ListItem button>
+                                            <ListItemIcon>
+                                                <NotListedLocationIcon/>
+                                            </ListItemIcon>
+                                            <ListItemText primary="Map" />
+                                        </ListItem>
+                                    </Link>                               
+                                </List>
+                            </Grid>          
                         </Grid>
                     </Grid>
 

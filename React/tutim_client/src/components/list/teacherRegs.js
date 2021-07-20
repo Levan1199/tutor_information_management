@@ -66,8 +66,8 @@ const mapDispatchToProps = dispatch => ({
             color: theme.palette.primary.dark
         },
         card:{
-            maxHeight:"250px",
-            minHeight:"250px"
+            maxHeight:"230px",
+            minHeight:"230px"
         },       
         cardcontent: {
             "&:last-child": {
@@ -86,14 +86,18 @@ const mapDispatchToProps = dispatch => ({
         },
         cardTop:{
             padding: "0 10px",
-            backgroundColor:theme.palette.secondary.light
+            backgroundColor:  "#d2e9f3",
+            border: "2px solid #aed7e9"      
         },
         cardBottom:{
             padding: "0 10px",
         },
         regButton:{
-            backgroundColor:'#ffb916',
-            color:"white"
+            backgroundColor:'#ffc334',
+            color:"white",
+            '&:hover': {
+                backgroundColor: '#f2a900',
+            },
         },
         headerName:{
             fontFamily:"Roboto",
@@ -101,9 +105,7 @@ const mapDispatchToProps = dispatch => ({
             fontWeight:"bold",
             fontSize:"1.25rem"
         },
-        headerBg:{
-            // backgroundColor:"#b9b9b9"
-        },
+       
     }));
 
     
@@ -233,7 +235,7 @@ const mapDispatchToProps = dispatch => ({
                         isInclude(awaiting, teacher._id)
                     )
                     ?
-                    <Button className={classes.regButton} variant="contained">Connecting</Button>
+                    <Button color="secondary" variant="contained">Connecting</Button>
                     :
                     <Button className={classes.regButton} variant="contained" onClick={()=>
                                 handleRegister(register,teacher._id,auth, studentId)
@@ -241,31 +243,49 @@ const mapDispatchToProps = dispatch => ({
                 }
             />
             <CardContent className={classes.cardcontent}>
-
-                <Box className={classes.cardTop}>
-                    <div>
-                    <Typography className={classes.cardText} display="inline"> Subject: </Typography>
-                    <Typography className={classes.cardTextBody} display="inline">{subject}</Typography>
-                    </div>
-                    <div>
-                    <Typography className={classes.cardText} display="inline"> District: </Typography>
-                    <Typography className={classes.cardTextBody} display="inline">{district}</Typography>
-                    </div>
-                    <div>
-                    <Typography className={classes.cardText} display="inline"> Grade: </Typography>
-                    <Typography className={classes.cardTextBody} display="inline">{grade}</Typography>
-                    </div>                   
+            <Box className={classes.cardTop}>
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>
+                            <Typography className={classes.cardText} align="left"> Subject: </Typography>                            
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={classes.cardTextBody} noWrap align="right">{subject}</Typography>
+                        </Grid>
+                    </Grid>                 
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>  
+                            <Typography className={classes.cardText} align="left"> District: </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={classes.cardTextBody} noWrap align="right">{district}</Typography>
+                        </Grid>                        
+                    </Grid>
+                    <Grid container justify="space-between">  
+                        <Grid item xs={2}>
+                            <Typography className={classes.cardText} align="left"> Grade: </Typography>
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Typography className={classes.cardTextBody} noWrap align="right">{grade}</Typography>
+                        </Grid>
+                    </Grid>
                 </Box>                     
-                <Box className={classes.cardBottom}>                  
-                    <div>
-                    <Typography className={classes.cardText} display="inline"> Tuition fee: </Typography>
-                    <Typography className={classes.cardTextBody} display="inline">{fee}</Typography>
-                    </div>
-                    <div>
-                    <Typography className={classes.cardText} display="inline"> Available Weekdays: </Typography>
-                    <Typography className={classes.cardTextBody} display="inline">{weekly}</Typography>
-                    </div>
-                </Box>          
+                <Box className={classes.cardBottom}>
+                    <Grid container justify="space-between">  
+                        <Typography className={classes.cardText} display="inline">Tuition Fee: </Typography>
+                        <Typography className={classes.cardTextBody} display="inline">{fee}</Typography>
+                    </Grid>                   
+
+                    <Grid container justify="space-between">  
+                        <Grid item xs={4} >
+                            <Typography className={classes.cardText} align="left">Available Weekdays:</Typography>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Typography className={classes.cardTextBody}  noWrap align="right">
+                                {weekly}
+                            </Typography>
+                        </Grid>
+                    </Grid>                
+                </Box>     
             </CardContent> 
         </Card>
         );
@@ -279,6 +299,7 @@ const mapDispatchToProps = dispatch => ({
 
         const {fetchTeacherReg, teacherRegs, fetchStudentAwait} = props;
         useEffect(()=>{
+            window.scrollTo(0,0);
             async function fetchData(){
                 await fetchTeacherReg();
                 return await fetchStudentAwait();
@@ -314,7 +335,7 @@ const mapDispatchToProps = dispatch => ({
 
         const ScrollData = () =>{
             const [tempArr, setTempArr] = useState(foundTeachers);
-            const [tempDataLength, setTempDataLength] = useState([]);            
+            const [tempDataLength, setTempDataLength] = useState(tempArr.slice(0,5));            
             const fetchData = () => {      
                 const moreFive = tempArr.slice(0,5);
                 setTempDataLength((prev)=>[...prev,...moreFive])
@@ -332,7 +353,7 @@ const mapDispatchToProps = dispatch => ({
                 next={fetchData}
                 hasMore={checkLeft()}
                 loader={<Loading/>}
-                style={{"overflow-x":"hidden","overflow-y":"hidden"}}
+                style={{"overflowX":"hidden","overflowY":"hidden"}}
                 >
                     <Grid container direction="row" spacing={1} justify="center" >
                         {tempDataLength.map((teacher, index)=>{

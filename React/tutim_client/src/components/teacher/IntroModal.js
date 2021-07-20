@@ -6,6 +6,12 @@ import { Formik, Form,  Field } from "formik";
 import ImageUploader from "react-images-upload";
 import * as Yup from "yup"; 
 
+import {connect} from 'react-redux';
+import {updateProfile} from '../../redux/ActionCreators';
+
+const mapDispatchToProps = dispatch => ({
+  updateProfile: (props)=>{dispatch(updateProfile(props))},
+})
 
 const useStyles = makeStyles(theme => ({
     paperStyle:{
@@ -53,16 +59,9 @@ const validationSchema = Yup.object({
 
 
 
-
-
-const handleInput = (values, actions, updateProfile, closeModal)=>{   
-    updateProfile(values);
-    return closeModal();
-}
-
 const IntroModal = (props)=>{
     const classes = useStyles();
-    const {name, email, telnum, description} = props;
+    const {name, email, telnum, description, updateProfile, closeModal} = props;
 
     const initialValues = {
         name: name,
@@ -71,6 +70,17 @@ const IntroModal = (props)=>{
         telnum: telnum,
         avatar:''
     }
+
+    async function updateInfo(values){
+        return await updateProfile(values);
+    }
+
+
+    const handleInput = (values)=>{   
+        updateInfo(values);
+        return closeModal();
+    }
+
 
     const inputBar = ({field, form, type, label, errors, touched}) => {
         const {name} = field;
@@ -132,7 +142,7 @@ const IntroModal = (props)=>{
         <Paper elevation={10} className={classes.paperStyle}>
             <Formik 
             initialValues={initialValues}
-            onSubmit={(values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal)}
+            onSubmit={handleInput}
             validationSchema={validationSchema}
             validateOnChange={true}
             validateOnBlur={true}
@@ -212,4 +222,4 @@ const IntroModal = (props)=>{
     );
 }
 
-export default IntroModal
+export default connect(null,mapDispatchToProps)(IntroModal);

@@ -12,7 +12,7 @@ import StarIcon from '@material-ui/icons/Star';
 import PhoneIcon from '@material-ui/icons/Phone';
 import MailIcon from '@material-ui/icons/Mail';
 import {connect} from 'react-redux';
-import {fetchProfile, updateProfile, fetchComments} from '../../redux/ActionCreators'
+import {fetchProfile, fetchComments} from '../../redux/ActionCreators'
 
 const mapStatetoProps = state =>{
   return{
@@ -22,7 +22,6 @@ const mapStatetoProps = state =>{
 }
 const mapDispatchToProps = dispatch => ({
   fetchProfile:()=>{dispatch(fetchProfile())},
-  updateProfile: (props)=>{dispatch(updateProfile(props))},
   fetchComments:()=>{dispatch(fetchComments())},
 })
 
@@ -263,7 +262,7 @@ const RenderUI = (props) => {
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
             >
-                <IntroModal closeModal={()=>setModalIntro(false)} updateProfile={props.updateProfile} {...teacherProfile}/>              
+                <IntroModal closeModal={()=>setModalIntro(false)} {...teacherProfile}/>              
             </Modal>    
 
             <Modal
@@ -273,7 +272,7 @@ const RenderUI = (props) => {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
                 >
-                    <DetailModal closeModal={()=>setModalDetail(false)} updateProfile={props.updateProfile} {...teacherProfile}/>   
+                    <DetailModal closeModal={()=>setModalDetail(false)} {...teacherProfile}/>   
             </Modal>    
             </Container>
 

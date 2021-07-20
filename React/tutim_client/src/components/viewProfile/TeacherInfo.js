@@ -76,7 +76,14 @@ const useStyles = makeStyles(theme => ({
     star:{
         width: "25px",
         height:"25px"
-    }
+    }, 
+    regButton:{
+        backgroundColor:'#ffc334',
+        color:"white",
+        '&:hover': {
+            backgroundColor: '#f2a900',
+        },
+    },
 }));
 
 const checkBoxValues = [
@@ -230,7 +237,7 @@ const RenderUI = (props) => {
                     {(                                                
                         props.isTeacherId
                     )?
-                    <Button  color="secondary" variant="contained" onClick={handleRemove}>Disconnect</Button>
+                    <Button variant="contained" onClick={handleRemove} className={classes.regButton}>Disconnect</Button>
                     :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,teaProfile._id,props.auth, studentId)}>Connect</Button>}
                 </Grid>
            

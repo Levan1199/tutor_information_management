@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .eslintcache
+
+.public/assets/private/certificate.cert
+.public/assets/private/private.key

@@ -9,7 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import {Grid, Container,Box} from '@material-ui/core';
+import {Grid, Container,Box, Fade, Slide, Grow} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {useHistory, useLocation} from 'react-router-dom';
 import {connect} from 'react-redux';
@@ -121,11 +121,9 @@ const StarRating = ({rating}) => {
           {[...Array(5)].map((star, i)=>{
               const ratingValue = i+1;
               return (
-                  <>
-                    <StarIcon className={classes.star}
-                    style={{fill: ratingValue <= (rating) ? "#ffc107":"#e4e5e9"}}
-                    />
-                  </>
+                <StarIcon className={classes.star} key={i}
+                style={{fill: ratingValue <= (rating) ? "#ffc107":"#e4e5e9"}}
+                />
               )
           })}  
       </>
@@ -230,60 +228,66 @@ function Home(props){
     else{
     return(
         <>
-        <Paper className={classes.paperStyle} variant="outlined">
-          <Typography color="primary" variant="h1" align="center" className={classes.headerText}>
-            GET STUDY
-          </Typography>
-          <Typography color="primary" variant="h2" align="center" className={classes.headerText}>
-            A place for pupils and teachers
-          </Typography>
-        </Paper>
+        <Fade in={true} timeout={{enter:2000}}>
+          <Paper className={classes.paperStyle} variant="outlined">
+            <Typography color="primary" variant="h1" align="center" className={classes.headerText}>
+              GET STUDY
+            </Typography>
+            <Typography color="primary" variant="h2" align="center" className={classes.headerText}>
+              A place for pupils and teachers
+            </Typography>
+          </Paper>
+        </Fade>
 
         <Container maxWidth={false} className={classes.main}>
-          <Container maxWidth={false} className={classes.infoSection}>
-            <Container maxWidth="lg">
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="h2" align="center" className={classes.headerText}>
-                    This can be the starting place
+          <Slide direction='right' in={true} timeout={2000}>
+            <Container maxWidth={false} className={classes.infoSection}>
+              <Container maxWidth="lg">
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography variant="h2" align="center" className={classes.headerText}>
+                      This can be the starting place
+                    </Typography>
+                    <Typography variant="h4" align="center" className={classes.normalText}>
+                      Natural science and mathematics, English, Art talent training and soft skills development for children will help your child make great progress and find a passion for discovering the world.
+                    </Typography>
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  <div className={classes.infoImg}>
+                    <img className={classes.img} alt="Teacher" src={homeUrl+"art.png"} />                  
+                  </div>
+                  <Typography variant="h6" align="center" className={classes.headerText}> ART </Typography>
+                  <Typography variant="body1" align="center" className={classes.normalText}>
+                    Painting, Chess, siging in English, Modern Dancing, Dancing, Ukulele, Piano... improve creativity, intelligence and train children's body flexibility.
                   </Typography>
-                  <Typography variant="h4" align="center" className={classes.normalText}>
-                    Natural science and mathematics, English, Art talent training and soft skills development for children will help your child make great progress and find a passion for discovering the world.
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <div className={classes.infoImg}>
+                    <img className={classes.img} alt="Teacher" src={homeUrl+"language.png"} />
+                  </div>
+                  <Typography variant="h6" align="center" className={classes.headerText}> LANGUAGE </Typography>
+                  <Typography variant="body1" align="center" className={classes.normalText}>
+                  Learning a new language means your brain has to cope with complexity as it makes sense of and absorbs new patterns. As our brains work out the meaning, endeavoring to communicate, we develop key learning skills such as cognitive thinking and problem-solving.
+
                   </Typography>
+                </Grid>
+                <Grid item xs={12} md={4}> 
+                  <div className={classes.infoImg}>
+                    <img className={classes.img} alt="Teacher" src={homeUrl+"softskill.png"} />
+                  </div>
+                  <Typography variant="h6" align="center" className={classes.headerText}> SOFT SKILLS </Typography>
+                  <Typography variant="body1" align="center" className={classes.normalText}>
+                    Soft skills are attributes that help determine how we approach our work and also how we work with others. Soft skills pump up the curious minds to act and make the path to success    
+                  </Typography>
+                </Grid>
               </Grid>
+              </Container>
+            </Container>
+          </Slide>
 
-              <Grid item xs={12} md={4} justify="center">
-                <div className={classes.infoImg}>
-                  <img className={classes.img} alt="Teacher" src={homeUrl+"art.png"} />                  
-                </div>
-                <Typography variant="h6" align="center" className={classes.headerText}> ART </Typography>
-                <Typography variant="body1" align="center" className={classes.normalText}>
-                  Painting, Chess, siging in English, Modern Dancing, Dancing, Ukulele, Piano... improve creativity, intelligence and train children's body flexibility.
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <div className={classes.infoImg}>
-                  <img className={classes.img} alt="Teacher" src={homeUrl+"language.png"} />
-                </div>
-                <Typography variant="h6" align="center" className={classes.headerText}> LANGUAGE </Typography>
-                <Typography variant="body1" align="center" className={classes.normalText}>
-                 Learning a new language means your brain has to cope with complexity as it makes sense of and absorbs new patterns. As our brains work out the meaning, endeavoring to communicate, we develop key learning skills such as cognitive thinking and problem-solving.
 
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}> 
-                <div className={classes.infoImg}>
-                  <img className={classes.img} alt="Teacher" src={homeUrl+"softskill.png"} />
-                </div>
-                <Typography variant="h6" align="center" className={classes.headerText}> SOFT SKILLS </Typography>
-                <Typography variant="body1" align="center" className={classes.normalText}>
-                  Soft skills are attributes that help determine how we approach our work and also how we work with others. Soft skills pump up the curious minds to act and make the path to success    
-                </Typography>
-              </Grid>
-            </Grid>
-          </Container>
-          </Container>
-
+        
           <Box className={classes.box}>
               <Typography variant="h4" align="center" className={classes.normalText}>
                   Lastest Courses
@@ -292,6 +296,8 @@ function Home(props){
                   Discover courses for all ages and exciting subjects
               </Typography>
           </Box>
+
+          <Grow in={true} timeout={2000}>
           <Container maxWidth="lg" className={classes.container}>                
                 <Grid item xs={12}>             
                   <Grid container spacing={2} justify="center">
@@ -312,7 +318,9 @@ function Home(props){
                   </Grid>
                 </Grid>
           </Container>
-            
+          </Grow>
+
+
             <Box className={classes.box}>
               <Typography variant="h4" align="center" className={classes.normalText}>
                 Top Teachers
@@ -323,6 +331,7 @@ function Home(props){
 
             </Box>
 
+            <Grow in={true} timeout={2000}>
             <Container maxWidth="lg" className={classes.container}>
                 <Grid container justify="center" spacing={2}>
                   {(()=>{
@@ -352,7 +361,8 @@ function Home(props){
                     })()}                  
                 </Grid>
             </Container>
-
+            </Grow>
+            
             <Container maxWidth={false}>
             <Box className={classes.box}>
                 <Typography variant="h4" align="center" className={classes.headerText}>

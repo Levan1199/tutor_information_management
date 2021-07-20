@@ -12,6 +12,13 @@ import {Multiselect} from 'multiselect-react-dropdown';
 import * as Yup from "yup"; 
 import * as FilterField from '../../shared/constValues';
 import './teacher.css';
+import {connect} from 'react-redux';
+import {updateProfile} from '../../redux/ActionCreators'
+
+
+const mapDispatchToProps = dispatch => ({
+  updateProfile: (props)=>{dispatch(updateProfile(props))},
+})
 const useStyles = makeStyles(theme => ({
     paperStyle:{
         padding :'20px',
@@ -62,17 +69,20 @@ const checkBoxValues = [
 ]
 
 
-const handleInput = (values, actions, updateProfile, closeModal)=>{   
-    updateProfile(values);
-    return closeModal();
-}
-
 
 const DetailModal = (props)=>{
     const classes = useStyles();
-    const {grade, subject, district, fee, weekly, available} = props;
+    const {grade, subject, district, fee, weekly, available, updateProfile,closeModal} = props;
 
    
+    async function updateInfo(values){
+        return await updateProfile(values);
+    }
+    const handleInput = (values)=>{   
+        updateInfo(values);
+        return closeModal();
+    }   
+
 
     const preGrade = [];
     grade.map((e)=>{
@@ -200,7 +210,7 @@ const DetailModal = (props)=>{
         <Paper elevation={10} className={classes.paperStyle}>
                 <Formik 
                 initialValues={initialValues}
-                onSubmit={ (values, actions) => handleInput(values, actions, props.updateProfile, props.closeModal) }
+                onSubmit={handleInput}
                 validationSchema={validationSchema}
                 >         
                   {({ errors, touched}) => (        
@@ -290,5 +300,5 @@ const DetailModal = (props)=>{
     );
 }
 
-export default DetailModal
+export default connect(null,mapDispatchToProps)(DetailModal);
 

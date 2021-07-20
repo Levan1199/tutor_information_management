@@ -60,7 +60,14 @@ const useStyles = makeStyles((theme) => ({
     headerText:{
     fontWeight: "bold",
     fontFamily:"Roboto"
-  },
+    }, 
+    regButton:{
+        backgroundColor:'#ffc334',
+        color:"white",
+        '&:hover': {
+            backgroundColor: '#f2a900',
+        },
+    },
 }));
 
 const handleRegister = (register, studentId, auth, teacherId) =>{
@@ -129,7 +136,7 @@ const RenderUI = (props) => {
                     {(                                                
                         props.isStudentId
                     )?
-                    <Button color="secondary" variant="contained" onClick={handleRemove}>Connecting</Button>
+                    <Button variant="contained" onClick={handleRemove} className={classes.regButton}>Disconnect</Button>
                     :<Button color="secondary" variant="contained" onClick={()=>handleRegister(props.register,stuProfile._id,props.auth, teacherId)}>Connect</Button>}
                 </Grid>
 

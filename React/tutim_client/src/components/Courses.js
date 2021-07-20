@@ -114,7 +114,7 @@ const Courses = (props) => {
     return(    
         <Container maxWidth={false} className={classes.main}>
             <Box className={classes.box}>
-                <Typography variant="h4" align="center" className={classes.normalText}>
+                <Typography variant="h4" align="center" className={classes.headerText}>
                     Courses
                 </Typography>
                 <Typography variant="body1" align="center" className={classes.normalText}>

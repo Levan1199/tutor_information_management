@@ -171,10 +171,8 @@ const AdminStudentList = (props) =>{
       setStudents(managerStudentProfiles.managerStudentProfiles);
     },[managerStudentProfiles])
 
-    console.log(students);
 
     if(!students || students.length==0){
-      console.log('loading');  
         return <Loading/>
     }
     else{

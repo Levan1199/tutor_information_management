@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme)=>({
     padding: theme.spacing(2),
     margin: 'auto',
     maxWidth: '80%',
-    backgroundColor: "#f7e7e2"
+    backgroundColor: "#d2e9f3",
+    border: "2px solid #7db0c5"
   },
   image: {
     width: 128,
@@ -43,7 +44,6 @@ const useStyles = makeStyles((theme)=>({
     maxWidth: '100%',
     maxHeight: '100%',
   },
-
   media: {
     height: 140,
   },
@@ -78,6 +78,13 @@ const useStyles = makeStyles((theme)=>({
   container:{
     padding:"20px 0px"
   }, 
+  buttonRemove:{
+    backgroundColor:'#ffc334',
+    color: "white",
+    '&:hover': {
+        backgroundColor: '#f2a900',
+    },
+  },
 }));
 
 
@@ -113,7 +120,7 @@ const ComplexGrid = ({profile, remove}) => {
               </Grid>
               <Grid item>
                 <Link  to={`/profile/teacher/${profile._id}`}>
-                  <Button variant="contained" color="secondary">
+                  <Button variant="contained" color="primary">
                     More Information
                   </Button>
                 </Link>
@@ -121,8 +128,8 @@ const ComplexGrid = ({profile, remove}) => {
             </Grid>
           </Grid>
           <Grid item sm={2}>
-            <Button variant="contained" color="secondary" onClick={handleClick}>
-              Remove
+            <Button variant="contained" className={classes.buttonRemove} onClick={handleClick}>
+              Disconnect
             </Button>
           </Grid>
         </Grid>
@@ -160,7 +167,7 @@ function RegisteredList(props){
                 <Grid container spacing={1} justify="center">
                     <Grid item xs={12}>
                         <Grid item>
-                            <Link to={`/profile/teacher`}>
+                            <Link to={`/profile/student`}>
                                 <Button variant="contained" color="primary">
                                     Back to your Profile <SubdirectoryArrowLeftIcon/>
                                 </Button>
